@@ -21,7 +21,8 @@ if len(sys.argv) > 1:
         folder = folder_name
     else:
         folder = os.path.join(folder, folder_name)
-outputFile = "viz.json" # a list if scenes containing and array of DataRep objects
+
+outputFile = "viz.json" # a list of scenes containing an array of DataRep objects
 assetURL = ""
 doSaveEncoding = True
 title = ""
@@ -998,7 +999,6 @@ def saveVizRep():
         outfile.close()
 
 # ---- main ----
-
 try:
     with open(os.path.join(folder, 'settings.json'), 'r') as data:
         execute(json.load(data))

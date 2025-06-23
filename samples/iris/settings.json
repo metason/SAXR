@@ -10,15 +10,8 @@
         "url": "../data/iris.json"
     },
     "assetURL": "$SERVER/run/vis/",
-    "output": "viz.json",
     "gridcolor": "#DDDE00",
     "bgcolor": "#FFFFFF",
-    "palette": {
-        "metrical": "Blues",
-        "temporal": "Greys",
-        "ordinal": "Oranges",
-        "nominal": "tab10"
-    },
     "mark": "circle",
     "plot": "scatter",
     "encoding": {
@@ -37,9 +30,6 @@
         "color": {
             "field": "class",
             "title": "Iris Classes"
-        },
-        "opacity": {
-            "value": 0.8
         }
     },
     "panels": [

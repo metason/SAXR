@@ -1,8 +1,25 @@
 # SAXR: Situated Analytics in eXtended Reality
 
-## TODO
+![systemarchitecture](docu/images/systemarch.png)
 
-- encoding / dimensions def
+## Features
+
+* __2D and 3D__: Mix of 2D and 3D data plots
+* __2D Plot → 3D Stage__: Spatial domain-range scaling aligned in 2D and 3D
+* __2D Panels__: panels for stage boundaries and legends
+* __DataReps__: list of simple DataRep elements 
+* __Grammer of Graphics__: Specification of aligned 2D/3D plots
+
+
+## 3D Plot Layouts
+
+* 3D bar charts
+* 3D scatter plot
+* 3D cluster: minmax category cluster with median   
+
+<img src="docu/images/bar.png" height="256"/>
+<img src="docu/images/scatter.png" height="256"/>
+<img src="docu/images/cluster.png" height="256"/>
 
 ## Data Viz Scenery
 
@@ -17,6 +34,64 @@
 - auxreps
 
 ## Settings
+
+Grammer of graphics to define 2D and 3D plots.
+
+```json
+{
+    "description": "3D data viz of Iris data set.",
+    "title": "Iris",
+    "stage": {
+        "width": 0.8,
+        "height": 0.8,
+        "depth": 0.8
+    },
+    "data": {
+        "url": "../data/iris.json"
+    },
+    "assetURL": "$SERVER/run/vis/",
+    "output": "viz.json",
+    "gridcolor": "#DDDE00",
+    "bgcolor": "#FFFFFF",
+    "palette": {
+        "metrical": "Blues",
+        "temporal": "Greys",
+        "ordinal": "Oranges",
+        "nominal": "tab10"
+    },
+    "mark": "circle",
+    "plot": "scatter",
+    "encoding": {
+        "x": {
+            "field": "sepal width"
+        },
+        "y": {
+            "field": "petal length"
+        },
+        "z": {
+            "field": "petal width"
+        },
+        "size": {
+            "value": 0.022
+        },
+        "color": {
+            "field": "class",
+            "title": "Iris Classes"
+        },
+        "opacity": {
+            "value": 0.8
+        }
+    },
+    "panels": [
+        "xy",
+        "-xy",
+        "zy",
+        "-zy",
+        "xz",
+        "lc=_"
+    ]
+}
+```
 
 ### Color Palette
 
@@ -98,9 +173,10 @@ https://vega.github.io/vega-lite/examples/stacked_bar_weather.html
 Economics
 https://data.worldbank.org/indicator/FS.AST.PRVT.GD.ZS?locations=EU
 https://www.macrotrends.net/global-metrics/countries/chn/china/gdp-per-capita
+
 Source: https://en.wikipedia.org/wiki/Economy_of_the_European_Union
 
 ## VIDEOS
 irisLOD: https://youtu.be/UL8XRe5luu8
-ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
 
+ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk

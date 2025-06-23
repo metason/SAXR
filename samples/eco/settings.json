@@ -1,0 +1,91 @@
+{
+    "description": "Economic situation of US, EU, and CN in 2000-2024.",
+    "title": "USD Per Capita",
+    "stage": {
+        "width": 0.7,
+        "height": 0.55,
+        "depth": 0.55
+    },
+    "data": {
+        "url": "data/perCapita.json"
+    },
+    "dimension": {
+        "value": {
+            "domain": [0.0, 125000.0]
+        }
+    },
+    "sequence": {
+        "field": "year",
+        "domain": [
+            2000,
+            2024
+        ]
+    },
+    "assetURL": "$SERVER/run/vis/",
+    "output": "viz.json",
+    "gridcolor": "#66CCFF",
+    "bgcolor": "#111122CC",
+    "palette": {
+        "metrical": "Blues",
+        "temporal": "Greys",
+        "ordinal": "Oranges",
+        "nominal": "tab10"
+    },
+    "mark": "box",
+    "plot": "bar",
+    "encoding": {
+        "x": {
+            "field": "category"
+        },
+        "y": {
+            "field": "value"
+        },
+        "z": {
+            "field": "region"
+        },
+        "color": {
+            "field": "category",
+            "title": "per capita in USD"
+        }
+    },
+    "panels": [
+        "XY",
+        "-XY",
+        "ZY",
+        "-ZY",
+        "XZ",
+        "LC=_"
+    ],
+    "auxreps": [
+        {
+            "type": "US",
+            "x": -0.45,
+            "y": 0.0,
+            "z": -0.13640522883309394,
+            "w": 0.15,
+            "d": 0.1,
+            "h": 0,
+            "asset": "$SERVER/run/vis/USflag.png"
+        },
+        {
+            "type": "EU",
+            "x": -0.45,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.15,
+            "d": 0.1,
+            "h": 0,
+            "asset": "$SERVER/run/vis/EUflag.png"
+        },
+        {
+            "type": "CN",
+            "x": -0.45,
+            "y": 0.0,
+            "z": 0.13640522883309394,
+            "w": 0.15,
+            "d": 0.1,
+            "h": 0,
+            "asset": "$SERVER/run/vis/CNflag.png"
+        }
+    ]
+}
