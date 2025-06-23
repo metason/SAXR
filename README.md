@@ -9,8 +9,8 @@
 * __2D Panels__: panels for stage boundaries and legends
 * __DataReps__: list of simple DataRep elements for visual XR front-ends 
 * __Grammer of Graphics__: Specification of aligned 2D/3D plots
-* __Python-based__: use Pandas for data prep and Matplotlib for 2D charts
-* __Data Exploration in AR__: Immersive exploration of data
+* __Python-based__: use of Pandas for data prep and of Matplotlib for 2D charts
+* __Data Exploration in AR__: Immersive exploration of data in XR
 
 ## 3D Plot Layouts
 
@@ -20,6 +20,15 @@
 
 <img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/>
 
+## Situated Analytics in AR/XR front-end
+
+List of DataRep scenes are interpreted as time series, level of details, or sequence in narrative 3D data viz.
+* Proximity controls level of detail (LOD): https://youtu.be/UL8XRe5luu8
+* Animation controls time series: https://youtube.com/shorts/PjelVMMz4Dk
+
+[<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) 
+[<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) 
+  
 ## Data Viz Scenery
 
 - Data Viz *Stage* (stage : Bühne)
