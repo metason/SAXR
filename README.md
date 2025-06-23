@@ -9,6 +9,7 @@
 * __2D Panels__: panels for stage boundaries and legends
 * __DataReps__: list of simple DataRep elements for visual XR front-ends 
 * __Grammer of Graphics__: Specification of aligned 2D/3D plots
+* __Python-based__: use Pandas for data prep and Matplotlib for 2D charts
 * __Data Exploration in AR__: Immersive exploration of data
 
 ## 3D Plot Layouts
