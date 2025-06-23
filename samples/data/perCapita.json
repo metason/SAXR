@@ -1,0 +1,1352 @@
+[
+    {
+        "year": 2000,
+        "region": "US",
+        "category": "GDP",
+        "value": 36329.97
+    },
+    {
+        "year": 2001,
+        "region": "US",
+        "category": "GDP",
+        "value": 37133.62
+    },
+    {
+        "year": 2002,
+        "region": "US",
+        "category": "GDP",
+        "value": 37997.74
+    },
+    {
+        "year": 2003,
+        "region": "US",
+        "category": "GDP",
+        "value": 39490.3
+    },
+    {
+        "year": 2004,
+        "region": "US",
+        "category": "GDP",
+        "value": 41724.64
+    },
+    {
+        "year": 2005,
+        "region": "US",
+        "category": "GDP",
+        "value": 44123.4
+    },
+    {
+        "year": 2006,
+        "region": "US",
+        "category": "GDP",
+        "value": 46301.99
+    },
+    {
+        "year": 2007,
+        "region": "US",
+        "category": "GDP",
+        "value": 48050.23
+    },
+    {
+        "year": 2008,
+        "region": "US",
+        "category": "GDP",
+        "value": 48570.06
+    },
+    {
+        "year": 2009,
+        "region": "US",
+        "category": "GDP",
+        "value": 47194.95
+    },
+    {
+        "year": 2010,
+        "region": "US",
+        "category": "GDP",
+        "value": 48650.66
+    },
+    {
+        "year": 2011,
+        "region": "US",
+        "category": "GDP",
+        "value": 50065.98
+    },
+    {
+        "year": 2012,
+        "region": "US",
+        "category": "GDP",
+        "value": 51784.41
+    },
+    {
+        "year": 2013,
+        "region": "US",
+        "category": "GDP",
+        "value": 53409.75
+    },
+    {
+        "year": 2014,
+        "region": "US",
+        "category": "GDP",
+        "value": 55304.32
+    },
+    {
+        "year": 2015,
+        "region": "US",
+        "category": "GDP",
+        "value": 57040.21
+    },
+    {
+        "year": 2016,
+        "region": "US",
+        "category": "GDP",
+        "value": 58206.61
+    },
+    {
+        "year": 2017,
+        "region": "US",
+        "category": "GDP",
+        "value": 60322.26
+    },
+    {
+        "year": 2018,
+        "region": "US",
+        "category": "GDP",
+        "value": 63201.05
+    },
+    {
+        "year": 2019,
+        "region": "US",
+        "category": "GDP",
+        "value": 65604.68
+    },
+    {
+        "year": 2020,
+        "region": "US",
+        "category": "GDP",
+        "value": 64411.37
+    },
+    {
+        "year": 2021,
+        "region": "US",
+        "category": "GDP",
+        "value": 71318.31
+    },
+    {
+        "year": 2022,
+        "region": "US",
+        "category": "GDP",
+        "value": 78035.18
+    },
+    {
+        "year": 2023,
+        "region": "US",
+        "category": "GDP",
+        "value": 82769.41
+    },
+    {
+        "year": 2024,
+        "region": "US",
+        "category": "GDP",
+        "value": 85812.0
+    },
+    {
+        "year": 2000,
+        "region": "EU",
+        "category": "GDP",
+        "value": 16975.92
+    },
+    {
+        "year": 2001,
+        "region": "EU",
+        "category": "GDP",
+        "value": 17230.65
+    },
+    {
+        "year": 2002,
+        "region": "EU",
+        "category": "GDP",
+        "value": 18799.1
+    },
+    {
+        "year": 2003,
+        "region": "EU",
+        "category": "GDP",
+        "value": 23025.76
+    },
+    {
+        "year": 2004,
+        "region": "EU",
+        "category": "GDP",
+        "value": 26377.6
+    },
+    {
+        "year": 2005,
+        "region": "EU",
+        "category": "GDP",
+        "value": 27444.18
+    },
+    {
+        "year": 2006,
+        "region": "EU",
+        "category": "GDP",
+        "value": 29217.95
+    },
+    {
+        "year": 2007,
+        "region": "EU",
+        "category": "GDP",
+        "value": 33729.27
+    },
+    {
+        "year": 2008,
+        "region": "EU",
+        "category": "GDP",
+        "value": 37203.14
+    },
+    {
+        "year": 2009,
+        "region": "EU",
+        "category": "GDP",
+        "value": 33670.63
+    },
+    {
+        "year": 2010,
+        "region": "EU",
+        "category": "GDP",
+        "value": 33164.0
+    },
+    {
+        "year": 2011,
+        "region": "EU",
+        "category": "GDP",
+        "value": 36020.49
+    },
+    {
+        "year": 2012,
+        "region": "EU",
+        "category": "GDP",
+        "value": 33378.83
+    },
+    {
+        "year": 2013,
+        "region": "EU",
+        "category": "GDP",
+        "value": 34803.35
+    },
+    {
+        "year": 2014,
+        "region": "EU",
+        "category": "GDP",
+        "value": 35539.2
+    },
+    {
+        "year": 2015,
+        "region": "EU",
+        "category": "GDP",
+        "value": 30716.63
+    },
+    {
+        "year": 2016,
+        "region": "EU",
+        "category": "GDP",
+        "value": 31404.43
+    },
+    {
+        "year": 2017,
+        "region": "EU",
+        "category": "GDP",
+        "value": 33327.67
+    },
+    {
+        "year": 2018,
+        "region": "EU",
+        "category": "GDP",
+        "value": 36002.56
+    },
+    {
+        "year": 2019,
+        "region": "EU",
+        "category": "GDP",
+        "value": 35341.57
+    },
+    {
+        "year": 2020,
+        "region": "EU",
+        "category": "GDP",
+        "value": 34635.49
+    },
+    {
+        "year": 2021,
+        "region": "EU",
+        "category": "GDP",
+        "value": 39180.38
+    },
+    {
+        "year": 2022,
+        "region": "EU",
+        "category": "GDP",
+        "value": 37948.95
+    },
+    {
+        "year": 2023,
+        "region": "EU",
+        "category": "GDP",
+        "value": 41422.8
+    },
+    {
+        "year": 2024,
+        "region": "EU",
+        "category": "GDP",
+        "value": 40060.0
+    },
+    {
+        "year": 2000,
+        "region": "CN",
+        "category": "GDP",
+        "value": 959.36
+    },
+    {
+        "year": 2001,
+        "region": "CN",
+        "category": "GDP",
+        "value": 1053.11
+    },
+    {
+        "year": 2002,
+        "region": "CN",
+        "category": "GDP",
+        "value": 1148.51
+    },
+    {
+        "year": 2003,
+        "region": "CN",
+        "category": "GDP",
+        "value": 1288.64
+    },
+    {
+        "year": 2004,
+        "region": "CN",
+        "category": "GDP",
+        "value": 1508.67
+    },
+    {
+        "year": 2005,
+        "region": "CN",
+        "category": "GDP",
+        "value": 1753.41
+    },
+    {
+        "year": 2006,
+        "region": "CN",
+        "category": "GDP",
+        "value": 2099.22
+    },
+    {
+        "year": 2007,
+        "region": "CN",
+        "category": "GDP",
+        "value": 2693.96
+    },
+    {
+        "year": 2008,
+        "region": "CN",
+        "category": "GDP",
+        "value": 3468.33
+    },
+    {
+        "year": 2009,
+        "region": "CN",
+        "category": "GDP",
+        "value": 3832.23
+    },
+    {
+        "year": 2010,
+        "region": "CN",
+        "category": "GDP",
+        "value": 4550.47
+    },
+    {
+        "year": 2011,
+        "region": "CN",
+        "category": "GDP",
+        "value": 5614.39
+    },
+    {
+        "year": 2012,
+        "region": "CN",
+        "category": "GDP",
+        "value": 6300.58
+    },
+    {
+        "year": 2013,
+        "region": "CN",
+        "category": "GDP",
+        "value": 7020.39
+    },
+    {
+        "year": 2014,
+        "region": "CN",
+        "category": "GDP",
+        "value": 7636.07
+    },
+    {
+        "year": 2015,
+        "region": "CN",
+        "category": "GDP",
+        "value": 8016.45
+    },
+    {
+        "year": 2016,
+        "region": "CN",
+        "category": "GDP",
+        "value": 8094.39
+    },
+    {
+        "year": 2017,
+        "region": "CN",
+        "category": "GDP",
+        "value": 8817.05
+    },
+    {
+        "year": 2018,
+        "region": "CN",
+        "category": "GDP",
+        "value": 9905.41
+    },
+    {
+        "year": 2019,
+        "region": "CN",
+        "category": "GDP",
+        "value": 10143.86
+    },
+    {
+        "year": 2020,
+        "region": "CN",
+        "category": "GDP",
+        "value": 10408.72
+    },
+    {
+        "year": 2021,
+        "region": "CN",
+        "category": "GDP",
+        "value": 12617.51
+    },
+    {
+        "year": 2022,
+        "region": "CN",
+        "category": "GDP",
+        "value": 12662.58
+    },
+    {
+        "year": 2023,
+        "region": "CN",
+        "category": "GDP",
+        "value": 12614.06
+    },
+    {
+        "year": 2024,
+        "region": "CN",
+        "category": "GDP",
+        "value": 13324.0
+    },
+    {
+        "year": 2000,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 217.8514688
+    },
+    {
+        "year": 2001,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 255.4002372
+    },
+    {
+        "year": 2002,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 293.4787603
+    },
+    {
+        "year": 2003,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 340.4329152
+    },
+    {
+        "year": 2004,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 392.2542
+    },
+    {
+        "year": 2005,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 454.308531
+    },
+    {
+        "year": 2006,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 528.4576428
+    },
+    {
+        "year": 2007,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 773.3820368
+    },
+    {
+        "year": 2008,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 926.5643595
+    },
+    {
+        "year": 2009,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 1302.3833655
+    },
+    {
+        "year": 2010,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 1517.2632121
+    },
+    {
+        "year": 2011,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 1863.0791776
+    },
+    {
+        "year": 2012,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 2131.171185
+    },
+    {
+        "year": 2013,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 2558.0897082
+    },
+    {
+        "year": 2014,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 3001.5863956
+    },
+    {
+        "year": 2015,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 3269.268639
+    },
+    {
+        "year": 2016,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 4024.530708
+    },
+    {
+        "year": 2017,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 4752.6544615
+    },
+    {
+        "year": 2018,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 5505.1297157
+    },
+    {
+        "year": 2019,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 6029.6118226
+    },
+    {
+        "year": 2020,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 7185.659852
+    },
+    {
+        "year": 2021,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 8850.8047397
+    },
+    {
+        "year": 2022,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 9554.2964874
+    },
+    {
+        "year": 2023,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 10345.2951684
+    },
+    {
+        "year": 2024,
+        "region": "CN",
+        "category": "gov debt",
+        "value": 11768.68948
+    },
+    {
+        "year": 2000,
+        "region": "US",
+        "category": "gov debt",
+        "value": 12086.981019
+    },
+    {
+        "year": 2001,
+        "region": "US",
+        "category": "gov debt",
+        "value": 19472.870328
+    },
+    {
+        "year": 2002,
+        "region": "US",
+        "category": "gov debt",
+        "value": 20465.582764
+    },
+    {
+        "year": 2003,
+        "region": "US",
+        "category": "gov debt",
+        "value": 22213.29375
+    },
+    {
+        "year": 2004,
+        "region": "US",
+        "category": "gov debt",
+        "value": 23641.181024
+    },
+    {
+        "year": 2005,
+        "region": "US",
+        "category": "gov debt",
+        "value": 24947.37036
+    },
+    {
+        "year": 2006,
+        "region": "US",
+        "category": "gov debt",
+        "value": 25683.713853
+    },
+    {
+        "year": 2007,
+        "region": "US",
+        "category": "gov debt",
+        "value": 26744.758018
+    },
+    {
+        "year": 2008,
+        "region": "US",
+        "category": "gov debt",
+        "value": 30997.412292
+    },
+    {
+        "year": 2009,
+        "region": "US",
+        "category": "gov debt",
+        "value": 35792.65008
+    },
+    {
+        "year": 2010,
+        "region": "US",
+        "category": "gov debt",
+        "value": 41333.600736
+    },
+    {
+        "year": 2011,
+        "region": "US",
+        "category": "gov debt",
+        "value": 44834.08509
+    },
+    {
+        "year": 2012,
+        "region": "US",
+        "category": "gov debt",
+        "value": 48496.099965
+    },
+    {
+        "year": 2013,
+        "region": "US",
+        "category": "gov debt",
+        "value": 50910.1737
+    },
+    {
+        "year": 2014,
+        "region": "US",
+        "category": "gov debt",
+        "value": 52787.97344
+    },
+    {
+        "year": 2015,
+        "region": "US",
+        "category": "gov debt",
+        "value": 54735.785516
+    },
+    {
+        "year": 2016,
+        "region": "US",
+        "category": "gov debt",
+        "value": 57001.733173
+    },
+    {
+        "year": 2017,
+        "region": "US",
+        "category": "gov debt",
+        "value": 58524.656652
+    },
+    {
+        "year": 2018,
+        "region": "US",
+        "category": "gov debt",
+        "value": 62221.433725
+    },
+    {
+        "year": 2019,
+        "region": "US",
+        "category": "gov debt",
+        "value": 65644.042808
+    },
+    {
+        "year": 2020,
+        "region": "US",
+        "category": "gov debt",
+        "value": 80198.596787
+    },
+    {
+        "year": 2021,
+        "region": "US",
+        "category": "gov debt",
+        "value": 84440.87904
+    },
+    {
+        "year": 2022,
+        "region": "US",
+        "category": "gov debt",
+        "value": 88039.290076
+    },
+    {
+        "year": 2023,
+        "region": "US",
+        "category": "gov debt",
+        "value": 94986.174916
+    },
+    {
+        "year": 2024,
+        "region": "US",
+        "category": "gov debt",
+        "value": 106406.88
+    },
+    {
+        "year": 2000,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 10511.489664
+    },
+    {
+        "year": 2001,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 10384.912755
+    },
+    {
+        "year": 2002,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 11516.32866
+    },
+    {
+        "year": 2003,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 14041.108448
+    },
+    {
+        "year": 2004,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 16180.01984
+    },
+    {
+        "year": 2005,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 16979.714166
+    },
+    {
+        "year": 2006,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 17066.204595
+    },
+    {
+        "year": 2007,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 18675.896799
+    },
+    {
+        "year": 2008,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 22280.960546
+    },
+    {
+        "year": 2009,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 22960.002597
+    },
+    {
+        "year": 2010,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 23742.1076
+    },
+    {
+        "year": 2011,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 26129.263446
+    },
+    {
+        "year": 2012,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 27377.316366
+    },
+    {
+        "year": 2013,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 29387.94874
+    },
+    {
+        "year": 2014,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 32017.26528
+    },
+    {
+        "year": 2015,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 26923.126195
+    },
+    {
+        "year": 2016,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 27513.421123
+    },
+    {
+        "year": 2017,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 28415.171442
+    },
+    {
+        "year": 2018,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 29918.12736
+    },
+    {
+        "year": 2019,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 29792.94351
+    },
+    {
+        "year": 2020,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 34850.230038
+    },
+    {
+        "year": 2021,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 37201.77081
+    },
+    {
+        "year": 2022,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 30211.159095
+    },
+    {
+        "year": 2023,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 34546.6152
+    },
+    {
+        "year": 2024,
+        "region": "EU",
+        "category": "gov debt",
+        "value": 32448.6
+    },
+    {
+        "year": 2000,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 72.6251637248
+    },
+    {
+        "year": 2001,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 83.1640335134
+    },
+    {
+        "year": 2002,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 113.2835250371
+    },
+    {
+        "year": 2003,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 150.817657632
+    },
+    {
+        "year": 2004,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 255.86741466
+    },
+    {
+        "year": 2005,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 432.419837265
+    },
+    {
+        "year": 2006,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 619.32867816
+    },
+    {
+        "year": 2007,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 797.898958572
+    },
+    {
+        "year": 2008,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 1131.975510084
+    },
+    {
+        "year": 2009,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 1296.613176789
+    },
+    {
+        "year": 2010,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 1529.451190948
+    },
+    {
+        "year": 2011,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 1722.319121593
+    },
+    {
+        "year": 2012,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 2186.094600976
+    },
+    {
+        "year": 2013,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 2476.425723564
+    },
+    {
+        "year": 2014,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 2888.118977042
+    },
+    {
+        "year": 2015,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 3722.68225758
+    },
+    {
+        "year": 2016,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 4271.646768627
+    },
+    {
+        "year": 2017,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 5079.965400125
+    },
+    {
+        "year": 2018,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 5474.667608327
+    },
+    {
+        "year": 2019,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 6234.919491456
+    },
+    {
+        "year": 2020,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 7620.522642264
+    },
+    {
+        "year": 2021,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 7822.8562
+    },
+    {
+        "year": 2022,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 7850.7996
+    },
+    {
+        "year": 2023,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 7984.69998
+    },
+    {
+        "year": 2024,
+        "region": "CN",
+        "category": "priv debt",
+        "value": 8127.64
+    },
+    {
+        "year": 2000,
+        "region": "US",
+        "category": "priv debt",
+        "value": 53586.70575
+    },
+    {
+        "year": 2001,
+        "region": "US",
+        "category": "priv debt",
+        "value": 52729.7404
+    },
+    {
+        "year": 2002,
+        "region": "US",
+        "category": "priv debt",
+        "value": 50916.9716
+    },
+    {
+        "year": 2003,
+        "region": "US",
+        "category": "priv debt",
+        "value": 55562.8521
+    },
+    {
+        "year": 2004,
+        "region": "US",
+        "category": "priv debt",
+        "value": 58831.7424
+    },
+    {
+        "year": 2005,
+        "region": "US",
+        "category": "priv debt",
+        "value": 63096.462
+    },
+    {
+        "year": 2006,
+        "region": "US",
+        "category": "priv debt",
+        "value": 66906.37555
+    },
+    {
+        "year": 2007,
+        "region": "US",
+        "category": "priv debt",
+        "value": 81685.391
+    },
+    {
+        "year": 2008,
+        "region": "US",
+        "category": "priv debt",
+        "value": 83540.5032
+    },
+    {
+        "year": 2009,
+        "region": "US",
+        "category": "priv debt",
+        "value": 69376.5765
+    },
+    {
+        "year": 2010,
+        "region": "US",
+        "category": "priv debt",
+        "value": 71516.4702
+    },
+    {
+        "year": 2011,
+        "region": "US",
+        "category": "priv debt",
+        "value": 76600.9494
+    },
+    {
+        "year": 2012,
+        "region": "US",
+        "category": "priv debt",
+        "value": 76796.28003
+    },
+    {
+        "year": 2013,
+        "region": "US",
+        "category": "priv debt",
+        "value": 72103.1625
+    },
+    {
+        "year": 2014,
+        "region": "US",
+        "category": "priv debt",
+        "value": 76319.9616
+    },
+    {
+        "year": 2015,
+        "region": "US",
+        "category": "priv debt",
+        "value": 80997.0982
+    },
+    {
+        "year": 2016,
+        "region": "US",
+        "category": "priv debt",
+        "value": 85563.7167
+    },
+    {
+        "year": 2017,
+        "region": "US",
+        "category": "priv debt",
+        "value": 87225.98796
+    },
+    {
+        "year": 2018,
+        "region": "US",
+        "category": "priv debt",
+        "value": 92715.94035
+    },
+    {
+        "year": 2019,
+        "region": "US",
+        "category": "priv debt",
+        "value": 100375.1604
+    },
+    {
+        "year": 2020,
+        "region": "US",
+        "category": "priv debt",
+        "value": 101963.19871
+    },
+    {
+        "year": 2021,
+        "region": "US",
+        "category": "priv debt",
+        "value": 107191.41993
+    },
+    {
+        "year": 2022,
+        "region": "US",
+        "category": "priv debt",
+        "value": 120174.1772
+    },
+    {
+        "year": 2023,
+        "region": "US",
+        "category": "priv debt",
+        "value": 122084.87975
+    },
+    {
+        "year": 2024,
+        "region": "US",
+        "category": "priv debt",
+        "value": 121853.04
+    },
+    {
+        "year": 2000,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 18911.17488
+    },
+    {
+        "year": 2001,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 19729.09425
+    },
+    {
+        "year": 2002,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 21769.3578
+    },
+    {
+        "year": 2003,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 27331.57712
+    },
+    {
+        "year": 2004,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 31600.3648
+    },
+    {
+        "year": 2005,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 34113.11574
+    },
+    {
+        "year": 2006,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 37720.37345
+    },
+    {
+        "year": 2007,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 45028.57545
+    },
+    {
+        "year": 2008,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 51451.94262
+    },
+    {
+        "year": 2009,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 49731.52051
+    },
+    {
+        "year": 2010,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 48386.276
+    },
+    {
+        "year": 2011,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 52085.62854
+    },
+    {
+        "year": 2012,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 48666.33414
+    },
+    {
+        "year": 2013,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 49977.6106
+    },
+    {
+        "year": 2014,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 50323.5072
+    },
+    {
+        "year": 2015,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 43402.59819
+    },
+    {
+        "year": 2016,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 44123.22415
+    },
+    {
+        "year": 2017,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 45925.52926
+    },
+    {
+        "year": 2018,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 49035.48672
+    },
+    {
+        "year": 2019,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 47993.85206
+    },
+    {
+        "year": 2020,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 50948.80579
+    },
+    {
+        "year": 2021,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 55401.05732
+    },
+    {
+        "year": 2022,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 50510.05245
+    },
+    {
+        "year": 2023,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 51902.7684
+    },
+    {
+        "year": 2024,
+        "region": "EU",
+        "category": "priv debt",
+        "value": 48072.0
+    }
+]
