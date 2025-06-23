@@ -4,12 +4,12 @@
 
 ## Features
 
-* __2D and 3D__: Mix of 2D and 3D data plots
+* __2D and 3D Plots__: Mix of 2D and 3D data plots
 * __2D Plot → 3D Stage__: Spatial domain-range scaling aligned in 2D and 3D
 * __2D Panels__: panels for stage boundaries and legends
-* __DataReps__: list of simple DataRep elements 
+* __DataReps__: list of simple DataRep elements for visual XR front-ends 
 * __Grammer of Graphics__: Specification of aligned 2D/3D plots
-
+* __Data Exploration in AR__: Immersive exploration of data
 
 ## 3D Plot Layouts
 
@@ -17,9 +17,7 @@
 * 3D scatter plot
 * 3D cluster: minmax category cluster with median   
 
-<img src="docu/images/bar.png" height="256"/>
-<img src="docu/images/scatter.png" height="256"/>
-<img src="docu/images/cluster.png" height="256"/>
+<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/>
 
 ## Data Viz Scenery
 
