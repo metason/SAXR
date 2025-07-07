@@ -18,7 +18,7 @@
 * 3D scatter plot
 * 3D cluster: minmax category cluster with median   
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/>
+<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
 
 ## Situated Analytics in AR/XR front-end
 
