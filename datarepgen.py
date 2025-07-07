@@ -13,7 +13,8 @@ from matplotlib import colormaps
 
 # ---- SETTINGS ----
 # can be overwritten in settings.json
-folder = os.path.split(os.path.realpath(sys.argv[0]))[0] # default folder is script location
+#folder = os.path.split(os.path.realpath(sys.argv[0]))[0] # default folder is script location
+folder = os.getcwd()
 if len(sys.argv) > 1:
     folder_name = sys.argv[1]
     print(folder_name)
@@ -21,6 +22,7 @@ if len(sys.argv) > 1:
         folder = folder_name
     else:
         folder = os.path.join(folder, folder_name)
+print(folder)
 
 outputFile = "viz.json" # a list of scenes containing an array of DataRep objects
 assetURL = ""
@@ -39,6 +41,8 @@ chartWidth = 1.0 # will be derived from height depending on stage layouting
 chartDepth = 1.0 # will be derived from height depending on stage layouting
 bgColor = [1.0,1.0,1.0]
 gridColor = [0.7,0.85,1.0]
+labelColor = gridColor
+titleColor = gridColor
 sequence = None # sequence spec
 visuals = [] # list of all visual 3D elements (datareps, annotations, scene panels, ...) building a scene
 scenes = [] # list of scenes: may be interpreted as animatable time series, as level of details, or as storytelling sequence
@@ -181,6 +185,10 @@ def execute(settings):
     global df
     global stage
     global dimension
+    global bgColor
+    global gridColor
+    global labelColor
+    global titleColor
     if 'title' in settings:
         global title
         title = settings["title"]
@@ -215,9 +223,9 @@ def execute(settings):
         print(df.dtypes)
         deduceDimensions()
 
-    if 'auxreps' in settings:
+    if 'auxReps' in settings:
         global visuals
-        visuals = settings["auxreps"]
+        visuals = settings["auxReps"]
 
     if 'panels' in settings:
         global panelsSpec
@@ -245,13 +253,21 @@ def execute(settings):
         encoding = enc
         deduceEncoding()
 
-    if 'bgcolor' in settings:
-        global bgColor
-        bgColor = settings["bgcolor"] 
+    if 'background' in settings:
+        bgColor = settings["background"] 
+    if 'bgColor' in settings:
+        bgColor = settings["bgColor"] 
 
-    if 'gridcolor' in settings:
-        global gridColor
-        gridColor = settings["gridcolor"] 
+    if 'gridColor' in settings:
+        gridColor = settings["gridColor"] 
+    if 'labelColor' in settings:
+        labelColor = settings["labelColor"] 
+    else:
+        labelColor = gridColor
+    if 'titleColor' in settings:
+        titleColor = settings["titleColor"] 
+    else:
+        titleColor = gridColor
 
     if 'output' in settings:
         global outputFile
@@ -269,6 +285,8 @@ def deduceDimensions():
         spec = {}
         if col in dimension and 'domain' in dimension[col]:
             spec['domain'] = dimension[col]['domain']
+            if 'range' in dimension[col]:
+                spec['range'] = dimension[col]['range']
             calcDomain = False
 
         if df[col].dtype == 'object' or df[col].dtype == 'category':
@@ -296,66 +314,104 @@ def deduceEncoding():
     global encoding
     if 'x' in encoding:
         key = 'x'
-        if 'field' in encoding["x"]:
-            key = encoding["x"]['field']
+        scale = None
+        if key in dimension and 'domain' in dimension[key]:
+            scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            encoding['x']['scale'] = scale
+        if 'field' in encoding["x"] and isinstance(encoding["x"]['field'], str):
+            xkey = encoding["x"]['field']
+            if xkey != key:
+                dimension[xkey] = dimension[key]
+                key = xkey
             if 'title' not in encoding['x']:
                 encoding['x']['title'] = key
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
+            encoding['x']['type'] = type
             if type == 'quantitative' and 'domain' in dimension[key]:
                 min = dimension[key]["domain"][0]
                 max = dimension[key]["domain"][1]
                 global lowerX
                 global upperX
                 delta = 0.0
-                if plot == 'scatter':
+                if plot == 'scatter' and 'range' not in dimension[key]:
                     delta = (max - min) * 0.05
                 lowerX = min - delta
-                upperX = max + delta                
-
+                upperX = max + delta
+            if type == 'quantitative' and 'range' in dimension[key]:     
+                global factorX
+                factorX = (dimension[key]['range'][1] - dimension[key]['range'][0]) / (upperX - lowerX)   
     if 'y' in encoding:
         key = 'y'
-        if 'field' in encoding["y"]:
-            key = encoding["y"]['field']
+        scale = None
+        if key in dimension and 'domain' in dimension[key]:
+            scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            encoding['y']['scale'] = scale
+        if 'field' in encoding["y"] and isinstance(encoding["y"]['field'], str):
+            ykey = encoding["y"]['field']
+            if ykey != key:
+                dimension[ykey] = dimension[key]
+                key = ykey
             if 'title' not in encoding['y']:
                 encoding['y']['title'] = key
         if key in dimension  and 'type' in dimension[key]:
             type = dimension[key]['type']
+            encoding['y']['type'] = type
             if type == 'quantitative' and 'domain' in dimension[key]:
                 min = dimension[key]["domain"][0]
                 max = dimension[key]["domain"][1]
                 global lowerY
                 global upperY
                 delta = 0.0
-                if plot == 'scatter':
+                if plot == 'scatter' and 'range' not in dimension[key]:
                     delta = (max - min) * 0.05
                 lowerY = min - delta
                 upperY = max + delta
-
+        
     if 'z' in encoding:
         key = 'z'
-        if 'field' in encoding["z"]:
-            key = encoding["z"]['field']
+        scale = None
+        if key in dimension and 'domain' in dimension[key]:
+            scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            encoding['z']['scale'] = scale
+        if 'field' in encoding["z"] and isinstance(encoding["z"]['field'], str):
+            zkey = encoding["z"]['field']
+            if zkey != key:
+                dimension[zkey] = dimension[key]
+                key = zkey
             if 'title' not in encoding['z']:
                 encoding['z']['title'] = key
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
+            encoding['z']['type'] = type
             if type == 'quantitative' and 'domain' in dimension[key]:
                 min = dimension[key]["domain"][0]
                 max = dimension[key]["domain"][1]
                 global lowerZ
                 global upperZ
                 delta = 0.0
-                if plot == 'scatter':
+                if plot == 'scatter' and 'range' not in dimension[key]:
                     delta = (max - min) * 0.05
                 lowerZ = min - delta
                 upperZ = max + delta
-
+            if type == 'quantitative' and 'range' in dimension[key]:     
+                global factorZ
+                factorZ = (dimension[key]['range'][1] - dimension[key]['range'][0]) / (upperZ - lowerZ)  
+        
     if 'color' in encoding:
         key = 'color'
         if 'field' in encoding["color"]:
             key = encoding["color"]['field']
             cat = []
+            if key in dimension and 'type' in dimension[key]:
+                type = dimension[key]['type']
+                encoding['color']['type'] = type
             if key in dimension and 'domain' in dimension[key]:
                 cat = dimension[key]['domain']
                 if len(cat) <= 10:
@@ -370,6 +426,9 @@ def deduceEncoding():
         if 'field' in encoding['shape']:
             key = encoding['shape']['field']
         cat = []
+        if key in dimension and 'type' in dimension[key]:
+            type = dimension[key]['type']
+            encoding['shape']['type'] = type
         if key in dimension and 'domain' in dimension[key]:
             cat = dimension[key]['domain']
             if len(cat) <= 7:
@@ -381,6 +440,9 @@ def deduceEncoding():
         key = 'size'
         if 'field' in encoding["size"]:
             key = encoding["size"]['field']
+        if key in dimension and 'type' in dimension[key]:
+            type = dimension[key]['type']
+            encoding['size']['type'] = type
         cat = []
         if key in dimension and 'domain' in dimension[key]:
             cat = dimension[key]['domain']
@@ -588,10 +650,22 @@ def createBar():
             
             posX = 0.0
             posZ = 0.0
-            idx = indexOf(x, 'x')
-            posX = encoding['x']['scale']['range'][idx]
-            idx = indexOf(z, 'z')
-            posZ = encoding['z']['scale']['range'][idx]
+            if encoding['x']['type'] == "quantitative":
+                posX = placeX(x)
+            else:
+                idx = indexOf(x, 'x')
+                posX = encoding['x']['scale']['range'][idx]
+            if encoding['z']['type'] == "quantitative":
+                posZ = placeZ(z)
+            else:
+                idx = indexOf(z, 'z')
+                posZ = encoding['z']['scale']['range'][idx]
+            if 'x' in dimension and 'offset' in dimension['x']:
+                posX = posX + dimension['x']['offset']
+            if 'y' in dimension and 'offset' in dimension['y']:
+                posY = posY + dimension['y']['offset']
+            if 'z' in dimension and 'offset' in dimension['z']:
+                posZ = posZ + dimension['z']['offset']
             datavis = {"type": "box", "x":posX, "y":sh/2.0, "z":posZ, "w":sw, "h": sh, "d":sd, "color": color}
             visuals.append(datavis)
     
@@ -652,6 +726,7 @@ def createPanels(spec):
     global factorY
     global factorZ
 
+    adjustBaseSize = False
     chartWidth = stage['width']
     plotWidth = chartWidth
     panelWidth = chartWidth
@@ -671,6 +746,9 @@ def createPanels(spec):
     maptype = dict(zip(speclc, spec))
     spec = speclc
 
+    if any(p.startswith('xz') for p in spec):
+        adjustBaseSize = True
+
     # generate xy and -xy panels
     if any(p.startswith('xy') or p.startswith('-xy') for p in spec):
          # xy panels ----
@@ -678,8 +756,8 @@ def createPanels(spec):
         fig.set_size_inches(4.8*stage['width']/stage['height'], 4.8)
         ax.set_facecolor(bgColor)
         ax.grid(color = gridColor, linewidth = 1.25)
-        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False, color=gridColor, labelcolor=gridColor)
-        ax.set_title(title, color=gridColor)
+        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False, color=gridColor, labelcolor=labelColor)
+        ax.set_title(title, color=titleColor)
         ax.xaxis.set_label_position("top")
         ax.spines['top'].set_visible(False)
         ax2 = ax.twinx()
@@ -688,13 +766,13 @@ def createPanels(spec):
         if dimension[key('y')]['type'] == 'quantitative':
             ax.set_ylim(lowerY, upperY)
             ax2.set_ylim(lowerY, upperY)
-        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=gridColor)
+        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=labelColor)
         ax2.spines['top'].set_visible(False)
         if 'title' in encoding['x']:
-            ax.set_xlabel(encoding['x']['title'], color=gridColor)
+            ax.set_xlabel(encoding['x']['title'], color=labelColor)
         if 'title' in encoding['y']:
-            ax.set_ylabel(encoding['y']['title'], color=gridColor)
-            ax2.set_ylabel(encoding['y']['title'], color=gridColor)
+            ax.set_ylabel(encoding['y']['title'], color=labelColor)
+            ax2.set_ylabel(encoding['y']['title'], color=labelColor)
         if dimension[key('x')]['type'] == 'quantitative' and dimension[key('y')]['type'] == 'quantitative':
             ax.scatter(df[key('x')], df[key('y')], alpha=0)
         else:
@@ -713,13 +791,13 @@ def createPanels(spec):
             #ax.scatter(df['x'], df['y'], c=df['color'].map(encoding['color']['map']), s=getSize2D() , marker=getMarker())
             ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
             plt.savefig(os.path.join(folder, 'xy+s.png'))
-            panel = {"type": maptype["xy"], "x":0.0, "y":float(panelY), "z":-float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "xy+s.png"}
+            panel = {"type": maptype["xy+s"][:2], "x":0.0, "y":float(panelY), "z":-float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "xy+s.png"}
             visuals.append(panel)
         ax.xaxis.set_inverted(True)
         if '-xy+s' in spec:
             ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
             plt.savefig(os.path.join(folder, '-xy+s.png'))
-            panel = {"type": maptype["-xy"], "x":0.0, "y":float(panelY), "z":float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "-xy+s.png"}            
+            panel = {"type": maptype["-xy+s"][:3], "x":0.0, "y":float(panelY), "z":float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "-xy+s.png"}            
             visuals.append(panel)
 
         # access plot size, must run after savefig()!
@@ -729,12 +807,19 @@ def createPanels(spec):
         panelHeight = chartHeight / plotHeight
         panelY = -chartBox.y0 * panelHeight
         plotWidth = chartBox.x1 - chartBox.x0
-        panelWidth = panelHeight * fig_width / fig_height
-        chartWidth = panelWidth * plotWidth
+        if adjustBaseSize:
+            panelWidth = panelHeight * fig_width / fig_height
+            chartWidth = panelWidth * plotWidth
+        else:
+            panelWidth = chartWidth / plotWidth
         if dimension[key('x')]['type'] == 'quantitative':
-            factorX = chartWidth / (upperX - lowerX)
-            scale = {'domain': [lowerX, upperX], 'range': [placeX(lowerX), placeX(upperX)]}
-            encoding['x']['scale'] = scale
+            if 'scale' not in encoding['x']:
+                factorX = chartWidth / (upperX - lowerX)
+                scale = {'domain': [lowerX, upperX], 'range': [placeX(lowerX), placeX(upperX)]}
+                encoding['x']['scale'] = scale
+            else:
+                factorX = (encoding['x']['scale']['range'][1] - encoding['x']['scale']['range'][0]) / (upperX - lowerX)
+
         else:
             min, max = ax.get_xlim()
             if min > max: # from inverse panel
@@ -747,9 +832,14 @@ def createPanels(spec):
             encoding['x']['scale'] = scale
     
         if dimension[key('y')]['type'] == 'quantitative':
-            factorY = chartHeight / (upperY - lowerY)
-            scale = {'domain': [lowerY, upperY], 'range': [placeY(lowerY), placeY(upperY)]}
-            encoding['y']['scale'] = scale
+            if 'scale' not in encoding['y']:
+                factorY = chartHeight / (upperY - lowerY)
+                scale = {'domain': [lowerY, upperY], 'range': [placeY(lowerY), placeY(upperY)]}
+                encoding['y']['scale'] = scale
+            else:
+                if 'range' not in encoding['y']['scale']:
+                    encoding['y']['scale']['range'] = [0.0, chartHeight]
+                factorY = (encoding['y']['scale']['range'][1] - encoding['y']['scale']['range'][0]) / (upperY - lowerY)
         else:
             min, max = ax.get_ylim()
             if min > max: # from inverse panel
@@ -772,19 +862,19 @@ def createPanels(spec):
         if dimension[key('y')]['type'] == 'quantitative':
             ax.set_ylim(lowerY, upperY)
         ax.grid(color = gridColor, linewidth = 1.25)
-        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False, color=gridColor, labelcolor=gridColor)
-        ax.set_title(title, color=gridColor)
+        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False, color=gridColor, labelcolor=labelColor)
+        ax.set_title(title, color=titleColor)
         ax.xaxis.set_label_position("top")
         ax.spines['top'].set_visible(False)
         ax2 = ax.twinx()
-        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=gridColor)
+        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=labelColor)
         ax2.set_ylim(lowerY, upperY)
         ax2.spines['top'].set_visible(False)
         if 'title' in encoding['z']:
-            ax.set_xlabel(encoding['z']['title'], color=gridColor)
+            ax.set_xlabel(encoding['z']['title'], color=labelColor)
         if 'title' in encoding['y']:
-            ax.set_ylabel(encoding['y']['title'], color=gridColor)
-            ax2.set_ylabel(encoding['y']['title'], color=gridColor)
+            ax.set_ylabel(encoding['y']['title'], color=labelColor)
+            ax2.set_ylabel(encoding['y']['title'], color=labelColor)
         if dimension[key('z')]['type'] == 'quantitative' and dimension[key('y')]['type'] == 'quantitative':
             ax.scatter(df[key('z')], df[key('y')], alpha=0)
         else:
@@ -802,13 +892,13 @@ def createPanels(spec):
         if 'zy+s' in spec:
             ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
             plt.savefig(os.path.join(folder, 'zy+s.png'))
-            panel = {"type": maptype["zy"], "x":float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "zy+s.png"}
+            panel = {"type": maptype["zy+s"][:2], "x":float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "zy+s.png"}
             visuals.append(panel)
         ax.xaxis.set_inverted(True)
         if '-zy+s' in spec:
             ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
             plt.savefig(os.path.join(folder, '-zy+s.png'))
-            panel = {"type": maptype["-zy"], "x":-float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "-zy+s.png"}
+            panel = {"type": maptype["-zy+s"][:3], "x":-float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "-zy+s.png"}
             visuals.append(panel)
 
         fig_width, fig_height = plt.gcf().get_size_inches()
@@ -817,13 +907,19 @@ def createPanels(spec):
         panelHeight2 = chartHeight / plotHeight2
         panelY2 = -chartBox.y0 * panelHeight2
         plotDepth2 = chartBox.x1 - chartBox.x0
-        panelDepth2 = panelHeight2  * fig_width / fig_height
-        chartDepth = panelDepth2 * plotDepth2
+        if adjustBaseSize:
+            panelDepth2 = panelHeight2  * fig_width / fig_height
+            chartDepth = panelDepth2 * plotDepth2
+        else:
+            panelDepth2 = chartDepth / plotDepth2
         shiftZ = (chartBox.x0 - (1.0 - chartBox.x1)) * panelDepth2 / 2.0
         if dimension[key('z')]['type'] == 'quantitative':
-            factorZ = abs(chartDepth / (upperZ - lowerZ))
-            scale = {'domain': [lowerZ, upperZ], 'range': [placeZ(lowerZ), placeZ(upperZ)]}
-            encoding['z']['scale'] = scale
+            if 'scale' not in encoding['z']:
+                factorZ = abs(chartDepth / (upperZ - lowerZ))
+                scale = {'domain': [lowerZ, upperZ], 'range': [placeZ(lowerZ), placeZ(upperZ)]}
+                encoding['z']['scale'] = scale
+            else:
+                factorZ = (encoding['z']['scale']['range'][1] - encoding['z']['scale']['range'][0]) / (upperZ - lowerZ)
         else:
             min, max = ax.get_xlim()
             print(min, max)
@@ -866,9 +962,9 @@ def createPanels(spec):
         fig.set_size_inches(4.8*stage['width']/stage['height'], 4.8*stage['depth']/stage['height'])
         ax.set_facecolor(bgColor)
         plt.yticks(rotation=-90)
-        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=True, right=False, labelright=False, color=gridColor, labelcolor=gridColor) # labelbottom=False, bottom=True, 
+        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=True, right=False, labelright=False, color=gridColor, labelcolor=labelColor) # labelbottom=False, bottom=True, 
         ax2 = ax.twinx()
-        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=gridColor) # labelrotation=90, 
+        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=labelColor) # labelrotation=90, 
         if dimension[key('x')]['type'] == 'quantitative':
             ax.set_xlim(lowerX, upperX)
             ax2.set_xlim(lowerX, upperX)
@@ -892,11 +988,11 @@ def createPanels(spec):
             ax2.set_yticklabels(ax.get_yticklabels(), rotation=--90)
         ax2.spines['top'].set_visible(False)   
         if 'title' in encoding['x']:
-            ax.set_xlabel(encoding['x']['title'], color=gridColor)
-            ax2.set_xlabel(encoding['x']['title'], color=gridColor)
+            ax.set_xlabel(encoding['x']['title'], color=labelColor)
+            ax2.set_xlabel(encoding['x']['title'], color=labelColor)
         if 'title' in encoding['y']:
-            ax.set_ylabel(encoding['z']['title'], color=gridColor, rotation=-90, labelpad=12)
-            ax2.set_ylabel(encoding['z']['title'], color=gridColor, )
+            ax.set_ylabel(encoding['z']['title'], color=labelColor, rotation=-90, labelpad=12)
+            ax2.set_ylabel(encoding['z']['title'], color=labelColor, )
         if 'xz' in spec:     
             plt.savefig(os.path.join(folder, 'xz.png'))
         if 'xz+s' in spec:
@@ -915,7 +1011,7 @@ def createPanels(spec):
             panel = {"type": maptype["xz"], "x":0.0-shiftX, "y":0.0, "z":shiftZ, "w":float(panelWidth3), "d": float(panelDepth3), "h":0.0, "asset": assetURL + "xz.png"}
             visuals.append(panel)
         if 'xz+s' in spec: 
-            panel = {"type": maptype["xz+s"], "x":0.0-shiftX, "y":0.0, "z":shiftZ, "w":float(panelWidth3), "d": float(panelDepth3), "h":0.0, "asset": assetURL + "xz+s.png"}
+            panel = {"type": maptype["xz+s"][:2], "x":0.0-shiftX, "y":0.0, "z":shiftZ, "w":float(panelWidth3), "d": float(panelDepth3), "h":0.0, "asset": assetURL + "xz+s.png"}
             visuals.append(panel)
 
     # legend panels
@@ -1005,6 +1101,7 @@ try:
 except FileNotFoundError:
     print("Usage: python3 datarepgen.py <folder>")
     print("folder needs to contain a <settings.json> file!")
+    print(folder)
     sys.exit(1)
 createPanels(panelsSpec)
 createDataViz()

@@ -8,7 +8,7 @@
 * __2D Plot → 3D Stage__: Spatial domain-range scaling aligned in 2D and 3D
 * __2D Panels__: panels for stage boundaries and legends
 * __DataReps__: list of simple DataRep elements for visual XR front-ends 
-* __Grammer of Graphics__: Specification of aligned 2D/3D plots
+* __Grammer of Graphics__: Generation of aligned 2D/3D plots controlled by JSON specification
 * __Python-based__: use of Pandas for data prep and of Matplotlib for 2D charts
 * __Data Exploration in AR__: Immersive exploration of data in XR
 
@@ -183,6 +183,13 @@ https://data.worldbank.org/indicator/FS.AST.PRVT.GD.ZS?locations=EU
 https://www.macrotrends.net/global-metrics/countries/chn/china/gdp-per-capita
 
 Source: https://en.wikipedia.org/wiki/Economy_of_the_European_Union
+https://www.kaggle.com/
+CH: https://opendata.swiss/de
+
+https://stats.swiss/vis?lc=de&df[ds]=disseminate&df[id]=DF_COU_HEALTH_COSTS&df[ag]=CH1.COU&df[vs]=1.0.0&dq=_T._T.M_1%2BM_2._T._T._T.4%2B5%2B6%2B7%2B8%2B9%2B10%2B11%2B12%2B13%2B14%2B15%2B16%2B17%2B18%2B19%2B20%2B21%2B22%2B23%2B24%2B25%2B26%2B3%2B2%2B1.CHF_R_POP_R_MH.A&lom=LASTNPERIODS&lo=1&to[TIME_PERIOD]=false&vw=ov
+
+https://swiss-maps.interactivethings.io
+
 
 ## VIDEOS
 irisLOD: https://youtu.be/UL8XRe5luu8

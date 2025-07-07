@@ -1,0 +1,53 @@
+service;canton;acr;monthly;value
+stationary;Zürich;ZH;327.935;3935.22
+stationary;Bern;BE;382.951;4595.412
+stationary;Luzern;LU;323.738;3884.856
+stationary;Uri;UR;376.317;4515.804
+stationary;Schwyz;SZ;347.537;4170.444
+stationary;Obwalden;OW;305.883;3670.596
+stationary;Nidwalden;NW;285.12;3421.44
+stationary;Glarus;GL;429.648;5155.776
+stationary;Zug;ZG;274.245;3290.94
+stationary;Freiburg;FR;291.593;3499.116
+stationary;Solothurn;SO;363.186;4358.232
+stationary;Basel-Stadt;BS;522.769;6273.228
+stationary;Basel-Landschaft;BL;408.006;4896.072
+stationary;Schaffhausen;SH;434.708;5216.496
+stationary;Appenzell Ausserrhoden;AR;402.661;4831.932
+stationary;Appenzell Innerrhoden;AI;310.736;3728.832
+stationary;St. Gallen;SG;363.748;4364.976
+stationary;Graubünden;GR;387.148;4645.776
+stationary;Aargau;AA;340.57;4086.84
+stationary;Thurgau;TH;350.288;4203.456
+stationary;Tessin;TI;377.298;4527.576
+stationary;Waadt;VD;304.625;3655.5
+stationary;Wallis;VS;315.614;3787.368
+stationary;Neuenburg;NE;364.053;4368.636
+stationary;Genf;GE;329.114;3949.368
+stationary;Jura;JU;426.681;5120.172
+ambulant;Zürich;ZH;389.581;4674.972
+ambulant;Bern;BE;445.66;5347.92
+ambulant;Luzern;LU;331.94;3983.28
+ambulant;Uri;UR;252.164;3025.968
+ambulant;Schwyz;SZ;338.939;4067.268
+ambulant;Obwalden;OW;350.072;4200.864
+ambulant;Nidwalden;NW;355.762;4269.144
+ambulant;Glarus;GL;391.028;4692.336
+ambulant;Zug;ZG;346.301;4155.612
+ambulant;Freiburg;FR;410.776;4929.312
+ambulant;Solothurn;SO;402.982;4835.784
+ambulant;Basel-Stadt;BS;479.932;5759.184
+ambulant;Basel-Landschaft;BL;471.476;5657.712
+ambulant;Schaffhausen;SH;359.907;4318.884
+ambulant;Appenzell Ausserrhoden;AR;331.972;3983.664
+ambulant;Appenzell Innerrhoden;AI;308.999;3707.988
+ambulant;St. Gallen;SG;344.704;4136.448
+ambulant;Graubünden;GR;381.632;4579.584
+ambulant;Aargau;AA;393.262;4719.144
+ambulant;Thurgau;TH;341.621;4099.452
+ambulant;Tessin;TI;521.578;6258.936
+ambulant;Waadt;VD;469.744;5636.928
+ambulant;Wallis;VS;407.055;4884.66
+ambulant;Neuenburg;NE;488.004;5856.048
+ambulant;Genf;GE;512.267;6147.204
+ambulant;Jura;JU;436.105;5233.26

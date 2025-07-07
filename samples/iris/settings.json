@@ -10,8 +10,8 @@
         "url": "../data/iris.json"
     },
     "assetURL": "$SERVER/run/vis/",
-    "gridcolor": "#DDDE00",
-    "bgcolor": "#FFFFFF",
+    "gridColor": "#DDDE00",
+    "bgColor": "#FFFFFF",
     "mark": "circle",
     "plot": "scatter",
     "encoding": {

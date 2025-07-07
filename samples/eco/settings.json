@@ -1,16 +1,16 @@
 {
     "description": "Economic situation of US, EU, and CN in 2000-2024.",
     "title": "USD Per Capita",
+        "data": {
+        "url": "data/perCapita.json"
+    },
     "stage": {
         "width": 0.7,
         "height": 0.55,
         "depth": 0.55
     },
-    "data": {
-        "url": "data/perCapita.json"
-    },
     "dimension": {
-        "value": {
+        "y": {
             "domain": [0.0, 125000.0]
         }
     },
@@ -23,8 +23,8 @@
     },
     "assetURL": "$SERVER/run/vis/",
     "output": "viz.json",
-    "gridcolor": "#66CCFF",
-    "bgcolor": "#111122CC",
+    "gridColor": "#66CCFF",
+    "bgColor": "#111122CC",
     "palette": {
         "metrical": "Blues",
         "temporal": "Greys",
@@ -56,9 +56,9 @@
         "XZ",
         "LC=_"
     ],
-    "auxreps": [
+    "auxReps": [
         {
-            "type": "US",
+            "type": "image",
             "x": -0.45,
             "y": 0.0,
             "z": -0.13640522883309394,
@@ -68,7 +68,7 @@
             "asset": "$SERVER/run/vis/USflag.png"
         },
         {
-            "type": "EU",
+            "type": "image",
             "x": -0.45,
             "y": 0.0,
             "z": 0.0,
@@ -78,7 +78,7 @@
             "asset": "$SERVER/run/vis/EUflag.png"
         },
         {
-            "type": "CN",
+            "type": "image",
             "x": -0.45,
             "y": 0.0,
             "z": 0.13640522883309394,
