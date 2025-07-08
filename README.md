@@ -1,49 +1,63 @@
 # SAXR: Situated Analytics in eXtended Reality
 
-![systemarchitecture](docu/images/systemarch.png)
+![systemarchitecture](docu/images/systemarch.jpg)
 
 ## Features
 
-* __2D and 3D Plots__: Mix of 2D and 3D data plots
+* __Situated Analytics in XR/AR/VR__: Immersive data exploration in eXtended Reality
+* __2D and 3D Plots__: Mix of 2D and 3D data plots in combined charts
 * __2D Plot → 3D Stage__: Spatial domain-range scaling aligned in 2D and 3D
-* __2D Panels__: panels for stage boundaries and legends
-* __DataReps__: list of simple DataRep elements for visual XR front-ends 
-* __Grammer of Graphics__: Generation of aligned 2D/3D plots controlled by JSON specification
-* __Python-based__: use of Pandas for data prep and of Matplotlib for 2D charts
-* __Data Exploration in AR__: Immersive exploration of data in XR
+* __Image Panels__: Panels for stage boundaries and legends
+* __Data Reps__: List of simple data representations for visual XR front-ends 
+* __Grammar of 3D Graphics__: Generation of aligned 2D/3D plots controlled by declarative JSON specification
+* __Data Prep__: Use of Python, Pandas and GeoPandas as most common tools  for data prep
+* __Python-based__: scripts for generation of data reps using Matplotlib for chart layouting
+* __Data Import__: Inline data specification or loading of json/xlsx/csv files 
 
 ## 3D Plot Layouts
 
 * 3D bar charts
 * 3D scatter plot
-* 3D cluster: minmax category cluster with median   
+* 3D cluster: min-max cluster per category with median   
+* 3D map: grouped bar charts on map 
 
 <img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
 
-## Situated Analytics in AR/XR front-end
+## Situated Analytics in AR/XR Front-end
 
-List of DataRep scenes are interpreted as time series, level of details, or sequence in narrative 3D data viz.
+List of DataRep scenes are interpreted as level of details, time series, or sequence in narrative 3D data viz. See screen recoding videos run within the [ARchi VR](https://archi.metason.net) app:  
 * Proximity controls level of detail (LOD): https://youtu.be/UL8XRe5luu8
 * Animation controls time series: https://youtube.com/shorts/PjelVMMz4Dk
 
 [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) 
 [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) 
-  
+
+## Installation
+
+- Prerequisite: Python 3.X
+- Install Pandas and Matplotlib (and optionally GeoPandas)
+- Download repository
+- In project folder run: ```python3 datarepgen.py samples/iris``` 
+  - the python script reads the ```samples/iris/settings.json``` file as input 
+- Find generated output in ```samples/iris``` folder: 
+  - several 2D images in png format
+  - encoding.json
+  - a list of data reps in viz.json (used as input for XR viewer)
+
 ## Data Viz Scenery
 
-- Data Viz *Stage* (stage : Bühne)
-- Data Viz *Scenes*: indexed sequence based on same data
-  - Data Viz *Scene*: own panels and own encodings
-    - Stage *Set*: with panels (stage set : Bühnenbild, Legenden)
-    - Data *Rep*: visual representation of data
-- Panels
-  - uppercase: on stage
-  - lowercase: in scene
-- auxreps
+In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
+- Data Viz *Stage*: with consistent dimension for all scenes
+- Data Viz *Scenes*: indexed sequence of:
+  - Data Viz *Scene*: with panels and own encodings
+    - Stage *Set*: with panels
+    - Data *Reps*: visual representations of data
 
-## Settings
+## Declarative Specification with Grammar of Graphics
 
-Grammer of graphics to define 2D and 3D plots.
+SAXR is supporting a high-level grammar of graphics to define 2D and 3D sceneries in a JSON settings file. It is heavily inspired by [Vega-Lite](https://github.com/vega/vega-lite) and [Optomancy](https://github.com/Wizualization/optomancy). The specifications in the JSON settings file serves as input to the ```datarepgen.py```script that generates data reps and images used in panels.
+
+Example of a settings.json file:
 
 ```json
 {
@@ -59,16 +73,10 @@ Grammer of graphics to define 2D and 3D plots.
     },
     "assetURL": "$SERVER/run/vis/",
     "output": "viz.json",
-    "gridcolor": "#DDDE00",
-    "bgcolor": "#FFFFFF",
-    "palette": {
-        "metrical": "Blues",
-        "temporal": "Greys",
-        "ordinal": "Oranges",
-        "nominal": "tab10"
-    },
-    "mark": "circle",
+    "background": "#FFFFFF",
+    "gridColor": "#DDDE00",
     "plot": "scatter",
+    "mark": "sphere",
     "encoding": {
         "x": {
             "field": "sepal width"
@@ -85,9 +93,6 @@ Grammer of graphics to define 2D and 3D plots.
         "color": {
             "field": "class",
             "title": "Iris Classes"
-        },
-        "opacity": {
-            "value": 0.8
         }
     },
     "panels": [
@@ -101,17 +106,29 @@ Grammer of graphics to define 2D and 3D plots.
 }
 ```
 
-### Color Palette
+### Data Reps
 
-- palette
-  - nominal: categorial color palette without ranking; default: 'tab10'
-  - ordinal: categorial and sortable color palette; default: 'Oranges'
-  - quantitative: numerical and interpolatable color palette; default: 'Blues'
-  - temporal: quantitative and interpolatable color palette; default: 'Greys'
+Data Reps are a collection of simple represenations of data elements that will be visualized in the XR front-end application. They are encoded as JSON file:
 
-### DataRep
+```json
+[
+  {
+    "type": "-XY",
+    "x": 0.0, "y": -0.014, "z": 0.319,
+    "w": 1.193, "d": 0, "h": 0.567,
+    "asset": "$SERVER/run/vis/-xy.png"
+  },
+  {
+    "type": "cylinder",
+    "x": 0.0707, "y": 0.0834, "z": -0.2028,
+    "w": 0.0151, "h": 0.1669, "d": 0.015,
+    "color": "blue"
+  },
+  ...
+]
+```
 
-- shape: visual shape / mark?
+- type: visual shape or panel type
   - shape of marker: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
     - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
     - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
@@ -121,16 +138,16 @@ Grammer of graphics to define 2D and 3D plots.
     - text: 
     - plane:
     - panel: see Panels
+    - image
+    - cylinder (for bar plots)
 - x,y,z: position
 - w,h,d: bbox size of shape
-- size: bbox size with equal w, h, and d
 - color: color of shape
-- [label: text label ]
-- [focus: content of focus panel, "tooltip" (text or rich text)]
-- [link: URL link ]
-- [rx,ry,rz: rotation --> not used due to not being view-independent for markers]
+- asset: URL to image
 
 ### Panels
+
+Panel types are encoded by their name. If panel name is uppercase it will be presented as stage element, if lowercase as scene element.
 
 - Data Stage Panels
   - xy: xy grid and axes
@@ -139,59 +156,52 @@ Grammer of graphics to define 2D and 3D plots.
   - -zy: opposite zy plane with inverse z axis
   - xz: floor grid and axes
 - Data Stage Panels + plotting
-  - +l: line plot
   - +s: scatter plot
-  - +b: bar blot
-  - +a: area plot
-  - +p: pie plot?
-  - +c: category cluster showing min-max-mean using color encoding
+- Examples of Data Stage Panels:
+  - ```"xy", "-xy", "xy+s", "XY", "ZY", ...```
+
+
+Legends are panels as well. The legend name also encodes its position.
 
 - Legend Panels
   - lc: color legend
   - lm: marker legend (shape categories)
   - ls: size legend (size categories)
+  - lg: group legend (color categories)
 - Legend Panels pose
   - = flat
   - | upright
   - ! upright billboarding
 - Legend Panels position
-  - x dir: <>
-  - y dir: v^
-  - z dir: _-
+  - x position: 
+    - < leftside
+    - > rightside
+    - default: mid
+  - y position: 
+    - v bottom
+    - ^ top
+    - default: mid
+  - z position:
+    -  _ front
+    -  - mid
+ -  Examples of Legend Panels: 
+    - ```"lc", "lc=_", "lc=_<", "LC", "LC=_", "lg=_>", ...```
 
-### Mark / Plot (Layout)
-- point / scatter
-- circle / scatter 
-- line / line
-- bar / bar
-- area
-- text
+### Color Palette
+
+Predefined Color Palettes
+- nominal: categorial color palette without ranking; default: 'tab10'
+- ordinal: categorial and sortable color palette; default: 'Oranges'
+- quantitative: numerical and interpolatable color palette; default: 'Blues'
+- temporal: quantitative and interpolatable color palette; default: 'Greys'
+
+
+## Screen Recording Videos
+- irisLOD: https://youtu.be/UL8XRe5luu8
+- ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
 
 ## References
 
 - https://github.com/vega/vega-lite
 - https://github.com/vega/vega-datasets
 - https://github.com/Wizualization/optomancy
-
-## Samples
-
-https://vega.github.io/vega-lite/examples/stacked_bar_weather.html 
-
-## DATA
-Economics
-https://data.worldbank.org/indicator/FS.AST.PRVT.GD.ZS?locations=EU
-https://www.macrotrends.net/global-metrics/countries/chn/china/gdp-per-capita
-
-Source: https://en.wikipedia.org/wiki/Economy_of_the_European_Union
-https://www.kaggle.com/
-CH: https://opendata.swiss/de
-
-https://stats.swiss/vis?lc=de&df[ds]=disseminate&df[id]=DF_COU_HEALTH_COSTS&df[ag]=CH1.COU&df[vs]=1.0.0&dq=_T._T.M_1%2BM_2._T._T._T.4%2B5%2B6%2B7%2B8%2B9%2B10%2B11%2B12%2B13%2B14%2B15%2B16%2B17%2B18%2B19%2B20%2B21%2B22%2B23%2B24%2B25%2B26%2B3%2B2%2B1.CHF_R_POP_R_MH.A&lom=LASTNPERIODS&lo=1&to[TIME_PERIOD]=false&vw=ov
-
-https://swiss-maps.interactivethings.io
-
-
-## VIDEOS
-irisLOD: https://youtu.be/UL8XRe5luu8
-
-ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk

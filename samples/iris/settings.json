@@ -12,8 +12,8 @@
     "assetURL": "$SERVER/run/vis/",
     "gridColor": "#DDDE00",
     "bgColor": "#FFFFFF",
-    "mark": "circle",
     "plot": "scatter",
+    "mark": "sphere",
     "encoding": {
         "x": {
             "field": "sepal width"

@@ -14,11 +14,12 @@ key = "canton"
 # group fields to export as data
 fields = ["ambulant", "stationary", "total"]
 colors = ["blue", "yellow", "black"]
+groupLegend = "Health Costs per Year in CHF"
+colorLegend = "Net Income per Year in CHF"
 exportfields = fields.copy()
+bgColor = [0.1,0.4,0.05,0.5]
 assetURL = "$SERVER/run/vis/"
 dpi=300
-colorLegend = "Mean Net Income per Year"
-groupLegend = "Health Costs per Year"
 
 # --- main ---
 map_df = geopandas.read_file(geofile)
@@ -45,7 +46,9 @@ ax.set_axis_off()
 ax.get_xaxis().set_visible(False)
 ax.get_yaxis().set_visible(False)
 gax = gdf.plot(ax=ax, column='Kaufkraft', cmap='OrRd_r', edgecolor="black", linewidth=0.5)
-#plt.show()
+fig = plt.gcf()
+fig.set_facecolor(bgColor)
+
 plt.savefig('map.png', bbox_inches='tight', pad_inches = 0, dpi=dpi)
 
 print("===================")
@@ -60,7 +63,22 @@ print(ymin, ymax)
 map_width = fig_width * (chartBox.x1 - chartBox.x0)
 map_depth = fig_height * (chartBox.y1 - chartBox.y0)
 depth = width * map_depth/map_width
-print(width, depth, width/depth)
+
+# --- create legend
+spec = {'label': colorLegend, 'orientation': 'horizontal', 'aspect': 20}
+gax2 = gdf.plot(ax=ax, column='Kaufkraft', cmap='OrRd_r', legend=True, legend_kwds=spec)
+bbox = gax2.get_window_extent()
+fig.set_facecolor("white")
+bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+bbox.x0 = 0.5
+bbox.x1 = 6.0
+bbox.y1 = bbox.y0 - 0.3
+bbox.y0 = 0.3
+plt.savefig('lc.png', dpi=dpi, bbox_inches=bbox)
+w = width * 0.6
+d = w * (bbox.y1 - bbox.y0) / (bbox.x1 - bbox.x0)
+(width - w)/2.0
+legend = {"type": "lc", "x":-(width - w)/2.0, "y":0, "z":depth/2 + d + 0.035, "w":w, "d": d, "h": 0, "asset": assetURL + "lc.png"}
 
 # --- save settings ---
 setting = {}
@@ -73,8 +91,9 @@ for field in exportfields:
 setting["data"] = data
 stage = {"width": width, "height": width/2.0, "depth": depth}
 setting['stage'] = stage
+setting['background'] = bgColor
 setting["plot"] = "bar"
-setting["mark"] = "box"
+setting["mark"] = "cylinder"
 xscale = {'domain': [xmin, xmax], 'range': [-width/2.0, width/2.0], 'type': 'quantitative'}
 zscale = {'domain': [ymin, ymax], 'range': [depth/2.0, -depth/2.0], 'type': 'quantitative', 'offset': -0.027}
 dim = {}
@@ -84,7 +103,7 @@ dim['z'] = zscale
 setting["dimension"] = dim
 if len(fields) > 1:
     setting["group"] = {'fields': fields, 'colors':colors} 
-    yenc = {'field': {'group': 'fields'}}
+    yenc = {'field': {'group': 'fields'}, 'title': groupLegend}
     colorenc = {'field': {'group': 'colors'}}
 else:
     yenc = {"field": fields[0]}
@@ -97,9 +116,9 @@ enc['color'] = colorenc
 enc['size'] = {"value": 0.015}
 setting["encoding"] = enc
 panel = {"type": "XZ", "x":0, "y":0, "z":0, "w":width, "d": depth, "h": 0, "asset": assetURL + "map.png"}
-panels = [panel]
+panels = [panel, legend]
 setting["auxReps"] = panels
-setting["panels"] = ["XY", "-XY", "ZY", "-ZY"]
+setting["panels"] = ["XY", "-XY", "ZY", "-ZY", "LG=_>"]
 
 if doSaveSettings:
     folder = os.path.split(os.path.realpath(sys.argv[0]))[0] # default folder is script location

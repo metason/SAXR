@@ -77,12 +77,19 @@ palette = {
 }
 mark = "sphere"
 plot = "scatter"
+group = None
 mpl.rcParams['figure.dpi'] = dpi # set the dpi resolution of panel images
 
 def key(field):
     if field in encoding:
         if 'field' in encoding[field]:
-            return encoding[field]['field']
+            if isinstance(encoding[field]['field'], str):
+                return encoding[field]['field']
+            else:
+                if 'group' in encoding[field]['field'] and group != None:
+                    grpKey = encoding[field]['field']['group']
+                    if grpKey in group:
+                        return group[grpKey][0]
     return field
 
 def indexOf(val, dim):
@@ -141,8 +148,8 @@ def getMarker():
                 idx = shapes.index(m)
                 if idx >= 0:
                     return markerSymbols[idx]
-        if 'marker' in encoding['shape']:
-            return encoding['shape']['marker']
+        if 'mark' in encoding['shape']:
+            return encoding['shape']['mark']
     return 'o'
 
 def getShape():
@@ -222,6 +229,10 @@ def execute(settings):
         print(df)
         print(df.dtypes)
         deduceDimensions()
+
+    if 'group' in settings:
+        global group
+        group = settings["group"]
 
     if 'auxReps' in settings:
         global visuals
@@ -406,7 +417,7 @@ def deduceEncoding():
         
     if 'color' in encoding:
         key = 'color'
-        if 'field' in encoding["color"]:
+        if 'field' in encoding["color"] and isinstance(encoding["color"]['field'], str):
             key = encoding["color"]['field']
             cat = []
             if key in dimension and 'type' in dimension[key]:
@@ -587,6 +598,10 @@ def createScatter():
             visuals.append(datavis)
 
 def createBar():
+    colors = None
+    if group != None and 'colors' in group:
+        colors = group['colors']
+
     for index, row in df.iterrows():
         x = 0
         y = 0
@@ -604,14 +619,22 @@ def createBar():
                 x = val
         else:
             x = row['x']
-        if 'y' in encoding:
-            if 'value' in encoding['y']:
-                y = encoding['y']['value']
-            else:
-                val = row[key('y')]
-                y = val
+        
+        if group != None:
+            yvalues= []
+            for field in group['fields']:
+                val = row[field]
+                yvalues.append(val)
         else:
-            y = row['y']
+            if 'y' in encoding:
+                if 'value' in encoding['y']:
+                    y = encoding['y']['value']
+                else:
+                    val = row[key('y')]
+                    y = val
+            else:
+                y = row['y']
+            yvalues = [y]
         if 'z' in encoding:
             if 'value' in encoding['z']:
                 z = encoding['z']['value']
@@ -631,14 +654,18 @@ def createBar():
             if 'value' in encoding['color']:
                 color = encoding['color']['value']
             else:
-                val = row[key('color')]
-                if 'scale' in encoding['color']:
-                    idx = encoding['color']['scale']['domain'].index(val)
-                    color = encoding['color']['scale']['range'][idx]
+                if isinstance(encoding["color"]['field'], str):
+                    val = row[key('color')]
+                    if 'scale' in encoding['color']:
+                        idx = encoding['color']['scale']['domain'].index(val)
+                        color = encoding['color']['scale']['range'][idx]
         else:
             color = row['color']
-        sh = scaleY(y)
-        if sh > 0.0:
+
+        i = 0
+        x0 = -(len(yvalues)-1)/2.0 * size
+        for y in yvalues:
+            sh = scaleY(y)
             if size > 0.0:
                 sw = size
             else:
@@ -666,8 +693,12 @@ def createBar():
                 posY = posY + dimension['y']['offset']
             if 'z' in dimension and 'offset' in dimension['z']:
                 posZ = posZ + dimension['z']['offset']
-            datavis = {"type": "box", "x":posX, "y":sh/2.0, "z":posZ, "w":sw, "h": sh, "d":sd, "color": color}
+            posX = posX + x0 + i*size
+            if colors != None:
+                color = colors[i]
+            datavis = {"type": mark, "x":posX, "y":sh/2.0, "z":posZ, "w":sw, "h": sh, "d":sd, "color": color}
             visuals.append(datavis)
+            i = i + 1
     
 def createLegend(spec, bbox, y0):
     leg = spec[:3]
@@ -1024,6 +1055,18 @@ def createPanels(spec):
         legend = fig.legend(handles, labels, loc='center', framealpha=0, frameon=True, title=encoding['color']['title'])
         bbox = exportLegend(legend, 'lc.png')
         legSpec = next((element for element in spec if str(element).startswith('lc')))
+        panel = createLegend(legSpec, bbox, panelY2)
+        visuals.append(panel)
+
+    if any(p.startswith('lg')for p in spec) and group != None:
+        fig, ax = plt.subplots(figsize=plt.figaspect(1.0), facecolor=(1, 1, 1, 0.0), layout="constrained")
+        colorRange = group['colors']
+        f = lambda m,c: plt.plot([],[],marker=m, color=c, ls="none")[0]
+        handles = [f("s", colorRange[i]) for i in range(len(colorRange))]
+        labels = group['fields']
+        legend = fig.legend(handles, labels, loc='center', framealpha=0, frameon=True, title=encoding['y']['title'])
+        bbox = exportLegend(legend, 'lg.png')
+        legSpec = next((element for element in spec if str(element).startswith('lg')))
         panel = createLegend(legSpec, bbox, panelY2)
         visuals.append(panel)
 
