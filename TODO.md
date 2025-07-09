@@ -2,10 +2,9 @@
 
 ## FIXES
 - mark/shape: global and/or encoding?
-- datarep: text, rich-text, say, play 
-- index of sequence?
+- datarep: rich-text panels, say, play 
+- ls=size
 - legend pos, billboard
-- multimodal: text, rich-text, say, play 
 
 ## TEST
 - size of legends
@@ -14,38 +13,24 @@
 ## IDEAS
 
 DataReps
-- [label: text label ]
-- [link: URL link ]
+- label: text label for tooltip
+- link: URL link as asset attribute?
 - [rx,ry,rz: rotation --> not used due to not being view-independent for markers]
-  
-- categories/ordinal, domain, range, , + for plotting on panels,
-- plot layouts: scatter, ...
-- HOW TO COMPARE 3D CHARTS????
+-Linking sceneries for comparing
 
-Mark / Plot (Layout)
-- point / scatter
-- circle / scatter 
-- line / line
-- bar / bar
-- area
-- text
+Plot (Layout)
+- line
+- area?
+- text?
 
 Data Stage Panels + plotting
 - +l: line plot
-- +s: scatter plot
 - +b: bar blot
 - +a: area plot
-- +p: pie plot?
 - +c: category cluster showing min-max-mean using color encoding
 
-## Samples
-
-https://vega.github.io/vega-lite/examples/stacked_bar_weather.html 
-
 ## CHECK
-- add title to x-axis in xz plane
 - rotation of top labels in xz plane (gave up)
-
 
 ## DATA SOURCES
 Economics
@@ -60,6 +45,3 @@ https://stats.swiss/vis?lc=de&df[ds]=disseminate&df[id]=DF_COU_HEALTH_COSTS&df[a
 
 https://swiss-maps.interactivethings.io
 
-## DOCU
-- marks/SHAPES: DOTS, LINES, AREA, BARS  COLORSCALE --> aling matplotlib & 3D
-- sequence: temporal or level of detail or storytelling step
