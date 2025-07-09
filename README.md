@@ -10,18 +10,19 @@
 * __Image Panels__: Panels for stage boundaries and legends
 * __Data Reps__: List of simple data representations for visual XR front-ends 
 * __Grammar of 3D Graphics__: Generation of aligned 2D/3D plots controlled by declarative JSON specification
-* __Data Prep__: Use of Python, Pandas and GeoPandas as most common tools  for data prep
-* __Python-based__: scripts for generation of data reps using Matplotlib for chart layouting
-* __Data Import__: Inline data specification or loading of json/xlsx/csv files 
+* __Data Prep__: Use of Numpy, Pandas and GeoPandas as most common tools  for data processing
+* __Python-based__: Scripts for generation of data reps using Matplotlib for chart layouting
+* __Data Import__: Inline data specification or loading of data files in json/xlsx/csv format
 
 ## 3D Plot Layouts
 
-* 3D bar charts
-* 3D scatter plot
-* 3D cluster: min-max cluster per category with median   
-* 3D map: grouped bar charts on map 
+* 3D __bar__ chart as in [samples/eco/settings.json](samples/eco/settings.json)
+* 3D __scatter__ plot as in [samples/iris/settings.json](samples/irs/settings.json)
+* 3D __cluster__: min-max cluster per category with median   
+* 3D __pie__ chart: mixed 2D/3D donut chart as in [samples/fruits/settings.json](samples/fruits/settings.json)
+* 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json)
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
+<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
 
 ## Situated Analytics in AR/XR Front-end
 
@@ -55,7 +56,7 @@ In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
 
 ## Declarative Specification with Grammar of Graphics
 
-SAXR is supporting a high-level grammar of graphics to define 2D and 3D sceneries in a JSON settings file. It is heavily inspired by [Vega-Lite](https://github.com/vega/vega-lite) and [Optomancy](https://github.com/Wizualization/optomancy). The specifications in the JSON settings file serves as input to the ```datarepgen.py```script that generates data reps and images used in panels.
+SAXR is supporting a high-level grammar of graphics to define 2D and 3D sceneries in a JSON settings file. It is heavily inspired by [Vega-Lite](https://github.com/vega/vega-lite) and [Optomancy](https://github.com/Wizualization/optomancy). The specifications in the JSON settings file serves as input to the ```datarepgen.py```script that generates data reps and corresponding images used as assets for panels.
 
 Example of a settings.json file:
 
@@ -133,17 +134,23 @@ Data Reps are a collection of simple represenations of data elements that will b
     - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
     - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
     - plt: o, s, ^, v, D, P, X (Matplotlib symbols for 2D marks)
-    - [star, dodecahedron, *]
   - shape of chart element
-    - text: 
-    - plane:
-    - panel: see Panels
-    - image
-    - cylinder (for bar plots)
+    - cylinder: for bar plots (instead of box)
+    - plane: for flat overlays on panels
+    - image: for placing any icon or image
+    - text: for labels
+  - panel type (see next chapter)
 - x,y,z: position
 - w,h,d: bbox size of shape
+  - if h == 0 and d > 0 then shape is flat
+  - if d == 0 and h > 0 then shape is upright
 - color: color of shape
-- asset: URL to image
+  - hex-coded colors (e.g., "#FF0000"), also with transparency (e.g.,"#FF0000AA")
+  - color names (e..g., "blue")
+- asset 
+  - URL to remote file (e.g., to image file)
+  - text
+  - attributes
 
 ### Panels
 
@@ -157,25 +164,26 @@ Panel types are encoded by their name. If panel name is uppercase it will be pre
   - xz: floor grid and axes
 - Data Stage Panels + plotting
   - +s: scatter plot
+  - +p: pie/donut chart
 - Examples of Data Stage Panels:
-  - ```"xy", "-xy", "xy+s", "XY", "ZY", ...```
+  - ```"xy", "-xy", "xy+s", "XY", "ZY", "XZ+p"...```
 
 
-Legends are panels as well. The legend name also encodes its position.
+Legends are panels as well. The legend name additionally encodes its position.
 
 - Legend Panels
   - lc: color legend
   - lm: marker legend (shape categories)
   - ls: size legend (size categories)
-  - lg: group legend (color categories)
+  - lg: group legend (group fields mapped to colors)
 - Legend Panels pose
   - = flat
   - | upright
-  - ! upright billboarding
+  - ! upright and billboarding
 - Legend Panels position
   - x position: 
-    - < leftside
-    - > rightside
+    - \< leftside
+    - \> rightside
     - default: mid
   - y position: 
     - v bottom
@@ -187,14 +195,25 @@ Legends are panels as well. The legend name also encodes its position.
  -  Examples of Legend Panels: 
     - ```"lc", "lc=_", "lc=_<", "LC", "LC=_", "lg=_>", ...```
 
-### Color Palette
+### Color Palettes
 
-Predefined Color Palettes
-- nominal: categorial color palette without ranking; default: 'tab10'
-- ordinal: categorial and sortable color palette; default: 'Oranges'
-- quantitative: numerical and interpolatable color palette; default: 'Blues'
-- temporal: quantitative and interpolatable color palette; default: 'Greys'
+Predefined Color Palettes:
+- __nominal__: categorial color palette without ranking; default: 'tab10'
+- __ordinal__: categorial and sortable color palette; default: 'Oranges'
+- __quantitative__: quantitative and interpolatable color palette; default: 'Blues'
+- __temporal__: quantitative and interpolatable color palette; default: 'Greys'
 
+The color palettes may be overwritten in the settings.json file. 
+All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined in Matplotlib can be used.
+
+```json
+    "palette": {
+        "nominal": "tab10",
+        "ordinal": "Oranges",
+        "quantitative": "Blues",
+        "temporal": "Greys"
+    },
+```
 
 ## Screen Recording Videos
 - irisLOD: https://youtu.be/UL8XRe5luu8
@@ -205,3 +224,4 @@ Predefined Color Palettes
 - https://github.com/vega/vega-lite
 - https://github.com/vega/vega-datasets
 - https://github.com/Wizualization/optomancy
+- https://matplotlib.org/stable/gallery/color/colormap_reference.html

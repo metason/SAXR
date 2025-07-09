@@ -1,0 +1,46 @@
+{
+    "description": "Fruits analysis with weekly turnover and mean weight in gramms.",
+    "title": "Sales Volume of Fruits",
+    "stage": {
+        "width": 1,
+        "height": 0.25,
+        "depth": 1
+    },
+    "data": {
+        "values": [
+            {"category": "apples", "sales": 431, "weight": 112},
+            {"category": "apricots", "sales": 612, "weight": 39},
+            {"category": "pears", "sales": 1100, "weight": 150},
+            {"category": "mandarins", "sales": 388, "weight": 100},
+            {"category": "oranges", "sales": 740, "weight": 160},
+            {"category": "peaches", "sales": 562, "weight": 110},
+            {"category": "plums", "sales": 892, "weight": 55}
+        ]
+    },
+    "dimension": {
+        "y": {
+            "domain": [0, 160],
+            "title": "weight in g"
+        }
+    },
+    "assetURL": "$SERVER/run/vis/",
+    "titleColor": "#FFFFFF",
+    "labelColor": "#DDDE00",
+    "bgColor": "#FFFFFFAA",
+    "plot": "pie",
+    "mark": "arc",
+    "encoding": {
+        "theta": {
+            "field": "sales"
+        },
+        "y": {
+            "field": "weight"
+        },
+        "color": {
+            "field": "category"
+        }
+    },
+    "panels": [
+        "xz+p"
+    ]
+}

@@ -70,7 +70,7 @@ markers = ['circle', 'square', 'triangle_up', 'triangle_down', 'diamond', 'plus,
 markerSymbols = ["o", "s", "^", "v", "D", "P", "X"]
 # color palettes as defined in Matplotlib
 palette = {
-    "metrical": "Blues",
+    "quantitative": "Blues",
     "temporal": "Greys",
     "ordinal": "Oranges",
     "nominal": "tab10"
