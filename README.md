@@ -96,7 +96,7 @@ Example of a settings.json file:
 
 ## Data Reps
 
-Data Reps are a collection of simple represenations of data elements that will be visualized in the XR front-end application. They are encoded as JSON file:
+Data Reps are a collection of simple representations of data elements that will be visualized in the XR front-end application. They are encoded as JSON file, such as:
 
 ```json
 [
@@ -131,10 +131,10 @@ Data Reps are a collection of simple represenations of data elements that will b
   - if h == 0 and d > 0 then shape is flat
   - if d == 0 and h > 0 then shape is upright
 - color: color of shape
-  - hex-coded colors (e.g., "#FF0000"), also with transparency (e.g.,"#FF0000AA")
-  - color names (e..g., "blue")
+  - hex-encoded RGB color (e.g., "#FF0000"), with support for transparency (e.g.,"#FF0000AA")
+  - color name (e..g., "blue")
 - asset: type-specific resources 
-  - URL to remote file (e.g., to image file)
+  - URL to file (e.g., to image file)
   - text (for labels)
   - attributes (e.g, `"angle:45;start:90"` for arc)
 
@@ -189,8 +189,8 @@ Predefined Color Palettes:
 - __quantitative__: quantitative and interpolatable color palette; default: 'Blues'
 - __temporal__: quantitative and interpolatable color palette; default: 'Greys'
 
-The color palettes may be overwritten in the settings.json file. 
-All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined in Matplotlib can be used.
+The color palettes may be overwritten in the `settings.json` file. 
+All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined by Matplotlib can be used.
 
 ```json
     "palette": {
@@ -220,6 +220,6 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 ## References
 
 - https://github.com/vega/vega-lite
-- https://github.com/vega/vega-datasets
 - https://github.com/Wizualization/optomancy
+- https://github.com/vega/vega-datasets
 - https://matplotlib.org/stable/gallery/color/colormap_reference.html
