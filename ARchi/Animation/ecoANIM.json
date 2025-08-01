@@ -2,9 +2,9 @@
   "$schema": "https://service.metason.net/ar/schemas/action.json",
   "items" : [
     {
+      "id" : "dataviz.anim",
       "type" : "Data",
       "subtype" : "Viz",
-      "id" : "dataviz.anim",
       "asset" : "https://service.metason.net/ar/content/viz/ecoANIM/viz.json",
       "attributes" : "value:0"
     },
@@ -27,7 +27,7 @@
     {
       "do" : "add",
       "id" : "dataviz.anim",
-      "ahead" : "0 0.02 -1.25"
+      "ahead" : "0 0.76 -1.25"
     },
     {
       "do" : "add",

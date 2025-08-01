@@ -1,5 +1,7 @@
 # ecoANIM.json
 
+[<img src="../../docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk)
+
 ## Items 
 
 __1 'dataviz.anim'__  🔓

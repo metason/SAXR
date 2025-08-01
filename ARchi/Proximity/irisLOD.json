@@ -2,9 +2,9 @@
   "$schema": "https://service.metason.net/ar/schemas/action.json",
   "items" : [
     {
+      "id" : "net.metason.dataviz.lod",
       "type" : "Data",
       "subtype" : "Viz",
-      "id" : "net.metason.dataviz.lod",
       "asset" : "https://service.metason.net/ar/content/viz/irisLOD/viz.json",
       "attributes" : "value:0"
     }
@@ -13,7 +13,7 @@
     {
       "do" : "add",
       "id" : "net.metason.dataviz.lod",
-      "ahead" : "0 0.02 -2.5"
+      "ahead" : "0 0.76 -2.0"
     },
     {
       "as": "always",

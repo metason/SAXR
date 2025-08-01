@@ -2,9 +2,9 @@
   "$schema": "https://service.metason.net/ar/schemas/action.json",
   "items" : [
     {
+      "id" : "dataviz.story",
       "type" : "Data",
       "subtype" : "Viz",
-      "id" : "dataviz.story",
       "asset" : "https://service.metason.net/ar/content/viz/salesSTORY/viz.json",
       "attributes" : "value:0"
     },
