@@ -1,0 +1,37 @@
+{
+  "$schema": "https://service.metason.net/ar/schemas/action.json",
+  "items" : [
+    {
+      "type" : "Data",
+      "subtype" : "Viz",
+      "id" : "net.metason.dataviz.lod",
+      "asset" : "https://service.metason.net/ar/content/viz/irisLOD/viz.json",
+      "attributes" : "value:0"
+    }
+  ],
+  "tasks" : [
+    {
+      "do" : "add",
+      "id" : "net.metason.dataviz.lod",
+      "ahead" : "0 0.02 -2.5"
+    },
+    {
+      "as": "always",
+      "if": "proximity('net.metason.dataviz.lod') <= 1.8 ",
+      "do": "execute",
+      "op": "setVal('net.metason.dataviz.lod', 2)"
+    },
+    {
+      "as": "always",
+      "if": "proximity('net.metason.dataviz.lod') > 1.8 AND proximity('net.metason.dataviz.lod') < 3.2",
+      "do": "execute",
+      "op": "setVal('net.metason.dataviz.lod', 1)"
+    },
+    {
+      "as": "always",
+      "if": "proximity('net.metason.dataviz.lod') >= 3.2 ",
+      "do": "execute",
+      "op": "setVal('net.metason.dataviz.lod', 0)"
+    }
+  ]
+}

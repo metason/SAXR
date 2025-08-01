@@ -1,0 +1,60 @@
+{
+  "$schema": "https://service.metason.net/ar/schemas/action.json",
+  "items" : [
+    {
+      "type" : "Data",
+      "subtype" : "Viz",
+      "id" : "dataviz.anim",
+      "asset" : "https://service.metason.net/ar/content/viz/ecoANIM/viz.json",
+      "attributes" : "value:0"
+    },
+    {
+      "type" : "Data",
+      "subtype" : "Label",
+      "name" : "2000",
+      "id" : "dataviz.label",
+      "attributes" : "wxdxh:0.20x0.0x0.07;color:#BBCCFF;bgcolor:#FFFFFF00;font:Courier",
+      "vertices" : [
+        [
+          0,
+          0.5,
+          0
+        ]
+      ]
+    }
+  ],
+  "tasks" : [
+    {
+      "do" : "add",
+      "id" : "dataviz.anim",
+      "ahead" : "0 0.02 -1.25"
+    },
+    {
+      "do" : "add",
+      "id" : "dataviz.label",
+      "to" : "dataviz.anim"
+    },
+    {
+      "do" : "billboard",
+      "id" : "dataviz.label"
+    },
+    {
+        "do": "assign",
+        "value": "0",
+        "data": "idx"
+    },
+    {
+      "as" : "repeated",
+      "each" : "1",
+      "do": "eval", 
+      "data": "idx",
+      "expression": "modulus:by:(data.idx + 1,25)"
+    },
+    {
+      "as" : "repeated",
+      "do" : "execute",
+      "each" : "1",
+      "op" : "setVal('dataviz.label', data.idx + 2000); setVal('dataviz.anim', data.idx)"
+    }
+  ]
+}

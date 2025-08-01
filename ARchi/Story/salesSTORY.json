@@ -1,0 +1,97 @@
+{
+  "$schema": "https://service.metason.net/ar/schemas/action.json",
+  "items" : [
+    {
+      "type" : "Data",
+      "subtype" : "Viz",
+      "id" : "dataviz.story",
+      "asset" : "https://service.metason.net/ar/content/viz/salesSTORY/viz.json",
+      "attributes" : "value:0"
+    },
+    {
+    	"id": "data.hint",
+    	"type": "Spot",
+    	"subtype": "Panel",
+    	"asset": "<b>Apples:</b><br>Large display area,<br>but <i>low profit</i>.<br>",
+    	"attributes": "color:#000000; bgcolor:#EEEEEECC; scale:0.4; billboard:1",
+    	"vertices" : [
+        [
+          -0.027,
+          0.2,
+          -0.08
+        ]
+      ],
+    	"isLocked": true
+	 },
+    {
+      "id": "step.1",
+      "type": "Spot",
+      "subtype": "Panel",
+      "asset": "https://service.metason.net/ar/extension/images/1.png",
+      "attributes": "wxdxh:0.065x0.065x0.0",
+      "content": "on:tap=setVal('dataviz.story', 0)",
+      "vertices" : [
+        [
+          0.1,
+          0.02,
+          0.24
+        ]
+      ],
+      "isLocked": true
+    },
+    {
+      "id": "step.2",
+      "type": "Spot",
+      "subtype": "Panel",
+      "asset": "https://service.metason.net/ar/extension/images/2.png",
+      "attributes": "wxdxh:0.065x0.065x0.0",
+      "content": "on:tap=setVal('dataviz.story', 1)",
+      "vertices" : [
+        [
+          0.185,
+          0.03,
+          0.24
+        ]
+      ],
+      "isLocked": true
+    },
+    {
+      "id": "step.3",
+      "type": "Spot",
+      "subtype": "Panel",
+      "asset": "https://service.metason.net/ar/extension/images/3.png",
+      "attributes": "wxdxh:0.065x0.065x0.0",
+      "content": "on:tap=setVal('dataviz.story', 2);addto('data.hint', 'dataviz.story')",
+      "vertices" : [
+        [
+          0.27,
+          0.04,
+          0.24
+        ]
+      ],
+      "isLocked": true
+    }
+  ],
+  "tasks" : [
+    {
+      "do" : "add",
+      "id" : "dataviz.story",
+      "ahead" : "0 0.76 -1.25"
+    },
+    {
+      "do" : "add",
+      "id" : "step.1",
+      "to" : "dataviz.story"
+    },
+    {
+      "do" : "add",
+      "id" : "step.2",
+      "to" : "dataviz.story"
+    },
+    {
+      "do" : "add",
+      "id" : "step.3",
+      "to" : "dataviz.story"
+    }
+  ]
+}

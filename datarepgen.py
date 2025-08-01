@@ -70,7 +70,7 @@ markers = ['circle', 'square', 'triangle_up', 'triangle_down', 'diamond', 'plus,
 markerSymbols = ["o", "s", "^", "v", "D", "P", "X"]
 # color palettes as defined in Matplotlib
 palette = {
-    "quantitative": "Blues",
+    "metrical": "Blues",
     "temporal": "Greys",
     "ordinal": "Oranges",
     "nominal": "tab10"
@@ -196,6 +196,7 @@ def execute(settings):
     global gridColor
     global labelColor
     global titleColor
+    global palette
     if 'title' in settings:
         global title
         title = settings["title"]
@@ -218,7 +219,7 @@ def execute(settings):
                 if isinstance(values, dict):
                     df = pd.DataFrame(values)
                 else:
-                    df = pd.from_records(values)
+                    df = pd.DataFrame.from_dict(values)
         # try to convert datatime strings 
         for col in df.columns:
             if df[col].dtype == 'object':
@@ -280,6 +281,9 @@ def execute(settings):
     else:
         titleColor = gridColor
 
+    if 'palette' in settings:
+        palette.update(settings["palette"])
+
     if 'output' in settings:
         global outputFile
         outputFile = settings["output"] 
@@ -304,7 +308,7 @@ def deduceDimensions():
             spec['type'] = 'nominal'
             if calcDomain:
                 cat = df[col].unique()
-                if cat.size <  df[col].size:
+                if cat.size <  df[col].size or len(cat) <= 10:
                     spec['domain'] = cat.tolist()
         elif df[col].dtype == 'datetime64[ns]':
             spec['type'] = 'temporal'
@@ -327,7 +331,10 @@ def deduceEncoding():
         key = 'x'
         scale = None
         if key in dimension and 'domain' in dimension[key]:
-            scale = {'domain': dimension[key]['domain']}
+            if 'x' in encoding and 'scale' in encoding['x'] and 'domain' in encoding['x']['scale']:
+                scale = {'domain': encoding['x']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
             if 'range' in dimension[key]:
                 scale['range'] = dimension[key]['range']
             encoding['x']['scale'] = scale
@@ -358,14 +365,20 @@ def deduceEncoding():
         key = 'y'
         scale = None
         if key in dimension and 'domain' in dimension[key]:
-            scale = {'domain': dimension[key]['domain']}
+            if 'y' in encoding and 'scale' in encoding['y'] and 'domain' in encoding['y']['scale']:
+                scale = {'domain': encoding['y']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
             if 'range' in dimension[key]:
                 scale['range'] = dimension[key]['range']
+            else:
+                scale['range'] = [0.0, chartHeight]
             encoding['y']['scale'] = scale
         if 'field' in encoding["y"] and isinstance(encoding["y"]['field'], str):
             ykey = encoding["y"]['field']
             if ykey != key:
-                dimension[ykey] = dimension[key]
+                if key in dimension:
+                    dimension[ykey] = dimension[key]
                 key = ykey
             if 'title' not in encoding['y']:
                 encoding['y']['title'] = key
@@ -387,7 +400,10 @@ def deduceEncoding():
         key = 'z'
         scale = None
         if key in dimension and 'domain' in dimension[key]:
-            scale = {'domain': dimension[key]['domain']}
+            if 'z' in encoding and 'scale' in encoding['z'] and 'domain' in encoding['z']['scale']:
+                scale = {'domain': encoding['z']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
             if 'range' in dimension[key]:
                 scale['range'] = dimension[key]['range']
             encoding['z']['scale'] = scale
@@ -424,11 +440,24 @@ def deduceEncoding():
                 type = dimension[key]['type']
                 encoding['color']['type'] = type
             if key in dimension and 'domain' in dimension[key]:
-                cat = dimension[key]['domain']
-                if len(cat) <= 10:
-                    encoding['color']['labels'] = cat
+                if 'color' in encoding and 'scale' in encoding['color'] and 'domain' in encoding['color']['scale']:
+                    cat = encoding['color']['scale']['domain']
+                else:
+                    cat = dimension[key]['domain']
+                encoding['color']['labels'] = cat
+                if type != 'quantitative' and len(cat) <= 10:
                     rgb_values = plt.get_cmap(palette['nominal']).colors
                     color_list = [rgb2hex(r, g, b) for r, g, b in rgb_values[:len(cat)]]
+                    scale = {'domain': cat, 'range': color_list}
+                    encoding['color']['scale'] = scale
+                else:
+                    cmap = plt.get_cmap(palette['metrical'])
+                    rgb0 = cmap(cat[0])
+                    rgb1 = cmap(cat[1])
+                    rgb_values = [rgb0, rgb1]
+                    print("rgb_values")
+                    print(rgb_values)
+                    color_list = [rgb2hex(r, g, b) for r, g, b, a in rgb_values[:len(cat)]]
                     scale = {'domain': cat, 'range': color_list}
                     encoding['color']['scale'] = scale
 
@@ -465,6 +494,7 @@ def deduceEncoding():
             df['size'] = encoding["size"]["values"]
     print(df)
     print(df.dtypes)
+    print(encoding)
 
 def loadData(dataFile):
     if dataFile:
@@ -699,6 +729,69 @@ def createBar():
             datavis = {"type": mark, "x":posX, "y":sh/2.0, "z":posZ, "w":sw, "h": sh, "d":sd, "color": color}
             visuals.append(datavis)
             i = i + 1
+
+def createPie():
+    global lowerY
+    global upperY
+    global factorY
+    lowerY = encoding['y']['scale']['domain'][0]
+    upperY = encoding['y']['scale']['domain'][1]
+    factorY = chartHeight / (upperY - lowerY)
+    start = 90.0
+    sum = 0.0
+    color = "white"
+    if 'theta' in encoding:
+        sum = df[key('theta')].sum()
+    for index, row in df.iterrows():
+        if 'theta' in encoding:
+            if 'value' in encoding['theta']:
+                theta = encoding['theta']['value']
+            else:
+                val = row[key('theta')]
+                theta = val
+        else:
+            theta = row['theta']
+        if 'y' in encoding:
+            if 'value' in encoding['y']:
+                y = encoding['y']['value']
+            else:
+                val = row[key('y')]
+                y = val
+        else:
+            y = row['y']
+        if 'color' in encoding:
+            if 'value' in encoding['color']:
+                color = encoding['color']['value']
+            else:
+                if isinstance(encoding["color"]['field'], str):
+                    val = row[key('color')]
+                    if encoding['color']['type'] == 'quantitative':
+                        cmap = plt.get_cmap(palette['metrical'])
+                        rgb = cmap(val / (encoding['color']['scale']['domain'][1] )) 
+                        color = rgb2hex(rgb[0], rgb[1], rgb[2])          
+                    else:
+                        if 'scale' in encoding['color']:
+                            idx = encoding['color']['scale']['domain'].index(val)
+                            color = encoding['color']['scale']['range'][idx]
+        else:
+            color = row['color']
+        posX = placeX(0.0)
+        posZ = placeZ(0.0)
+        w = 0.8 * chartWidth * 0.6
+        val = 360.0*theta/sum
+        attr = "angle:" + str(val) + ";start:" + str(start) + ";ratio:0.5"
+        radians = np.pi*(start + val/2.0)/180.0
+        start = start + val
+        datavis = {"type": "arc", "x":posX, "y":scaleY(y)/2.0, "z":posZ, "w":w, "h": scaleY(y), "d": w, "color": color, "asset": attr}
+        visuals.append(datavis)
+        x = 0.8 * chartWidth * 0.475 / 2.0
+        z = 0.0
+        txtx = x * np.cos(radians) - z * np.sin(radians)
+        txtz = x * np.sin(radians) + z * np.cos(radians)
+        datavis = {"type": "text", "x":posX+txtx, "y":scaleY(y)+0.015, "z":posZ-txtz+0.01, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset":str(y)}
+        visuals.append(datavis)
+    datavis = {"type": "text", "x":posX, "y":0.02, "z":posZ, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset": encoding['y']['title']}
+    visuals.append(datavis)
     
 def createLegend(spec, bbox, y0):
     leg = spec[:3]
@@ -990,45 +1083,59 @@ def createPanels(spec):
     
     if any(p.startswith('xz')for p in spec):
         fig, ax = plt.subplots(figsize=plt.figaspect(1.0), facecolor=(1, 1, 1, 0.0), layout="constrained")
-        fig.set_size_inches(4.8*stage['width']/stage['height'], 4.8*stage['depth']/stage['height'])
         ax.set_facecolor(bgColor)
-        plt.yticks(rotation=-90)
-        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=True, right=False, labelright=False, color=gridColor, labelcolor=labelColor) # labelbottom=False, bottom=True, 
-        ax2 = ax.twinx()
-        ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=labelColor) # labelrotation=90, 
-        if dimension[key('x')]['type'] == 'quantitative':
-            ax.set_xlim(lowerX, upperX)
-            ax2.set_xlim(lowerX, upperX)
-        if dimension[key('z')]['type'] == 'quantitative':
-            ax.set_ylim(lowerZ, upperZ)
-            ax2.set_ylim(lowerZ, upperZ)
-            ax.set_yticklabels(ax.get_yticklabels(), rotation=-90)
-            ax2.set_yticklabels(ax2.get_yticklabels(), rotation=90)
+        if 'xz+p' in spec:
+            aspectratio = stage['depth']/stage['width']
+            fig.set_size_inches(4.8*aspectratio, 4.8)
+            ax.set_title(title, color=titleColor, fontdict={'fontsize': 16})
+            patches, texts, autotexts = ax.pie(df[key('theta')], colors=plt.get_cmap(palette['nominal']).colors, labels=df[key('category')], 
+                                               autopct='%1.1f%%', pctdistance=0.8, radius=1.0, startangle=90, textprops={'fontsize': 12})
+            [ _.set_color(labelColor) for _ in texts ]
+            [ _.set_color(labelColor) for _ in autotexts ]
+            centre_circle = plt.Circle((0, 0), 0.60, fc=bgColor)
+            #fig = plt.gcf()
+            fig.gca().add_artist(centre_circle)
+            plt.savefig(os.path.join(folder, 'xz+p.png'))
         else:
-            ax.set_ylim(upperZ, lowerZ)
-            ax2.set_ylim(upperZ, lowerZ)
-        ax.grid(color = gridColor, linewidth = 1.25)
-        ax.yaxis.set_inverted(True)
-        ax2.yaxis.set_inverted(True)           
+            fig.set_size_inches(4.8*stage['width']/stage['height'], 4.8*stage['depth']/stage['height'])
+            plt.yticks(rotation=-90)
+            ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=True, right=False, labelright=False, color=gridColor, labelcolor=labelColor) # labelbottom=False, bottom=True, 
+            ax2 = ax.twinx()
+            ax2.tick_params(right=True, labelright=True, color=gridColor, labelcolor=labelColor) # labelrotation=90, 
+            if dimension[key('x')]['type'] == 'quantitative':
+                ax.set_xlim(lowerX, upperX)
+                ax2.set_xlim(lowerX, upperX)
+            if dimension[key('z')]['type'] == 'quantitative':
+                ax.set_ylim(lowerZ, upperZ)
+                ax2.set_ylim(lowerZ, upperZ)
+                ax.set_yticklabels(ax.get_yticklabels(), rotation=-90)
+                ax2.set_yticklabels(ax2.get_yticklabels(), rotation=90)
+            else:
+                ax.set_ylim(upperZ, lowerZ)
+                ax2.set_ylim(upperZ, lowerZ)
+            ax.grid(color = gridColor, linewidth = 1.25)
+            ax.yaxis.set_inverted(True)
+            ax2.yaxis.set_inverted(True)           
 
-        if dimension[key('x')]['type'] == 'quantitative' and dimension[key('z')]['type'] == 'quantitative':
-            ax.scatter(df[key('x')], df[key('z')], alpha=0)
-        else:
-            ax.bar(df[key('x')], df[key('z')], alpha=0)
-            ax2.set_yticks(ax.get_yticks())
-            ax2.set_yticklabels(ax.get_yticklabels(), rotation=--90)
-        ax2.spines['top'].set_visible(False)   
-        if 'title' in encoding['x']:
-            ax.set_xlabel(encoding['x']['title'], color=labelColor)
-            ax2.set_xlabel(encoding['x']['title'], color=labelColor)
-        if 'title' in encoding['y']:
-            ax.set_ylabel(encoding['z']['title'], color=labelColor, rotation=-90, labelpad=12)
-            ax2.set_ylabel(encoding['z']['title'], color=labelColor, )
-        if 'xz' in spec:     
-            plt.savefig(os.path.join(folder, 'xz.png'))
-        if 'xz+s' in spec:
-            ax.scatter(df[key('x')], df[key('z')], c=getColor(), s=getSize2D() , marker=getMarker())
-            plt.savefig(os.path.join(folder, 'xz+s.png'))
+            if dimension[key('x')]['type'] == 'quantitative' and dimension[key('z')]['type'] == 'quantitative':
+                ax.scatter(df[key('x')], df[key('z')], alpha=0)
+            else:
+                ax.bar(df[key('x')], df[key('z')], alpha=0)
+                ax2.set_yticks(ax.get_yticks())
+                ax2.set_yticklabels(ax.get_yticklabels(), rotation=--90)
+            ax2.spines['top'].set_visible(False)   
+            if 'title' in encoding['x']:
+                ax.set_xlabel(encoding['x']['title'], color=labelColor)
+                ax2.set_xlabel(encoding['x']['title'], color=labelColor)
+            if 'title' in encoding['y']:
+                ax.set_ylabel(encoding['z']['title'], color=labelColor, rotation=-90, labelpad=12)
+                ax2.set_ylabel(encoding['z']['title'], color=labelColor, )
+            if 'xz' in spec:     
+                plt.savefig(os.path.join(folder, 'xz.png'))
+            if 'xz+s' in spec:
+                ax.scatter(df[key('x')], df[key('z')], c=getColor(), s=getSize2D() , marker=getMarker())
+                plt.savefig(os.path.join(folder, 'xz+s.png'))
+            
         fig_width, fig_height = plt.gcf().get_size_inches()
         chartBox = ax.get_position()
         plotDepth3 = chartBox.y1 - chartBox.y0
@@ -1044,16 +1151,29 @@ def createPanels(spec):
         if 'xz+s' in spec: 
             panel = {"type": maptype["xz+s"][:2], "x":0.0-shiftX, "y":0.0, "z":shiftZ, "w":float(panelWidth3), "d": float(panelDepth3), "h":0.0, "asset": assetURL + "xz+s.png"}
             visuals.append(panel)
+        if 'xz+p' in spec: 
+            panel = {"type": maptype["xz+p"][:2], "x":0.0-shiftX, "y":0.0, "z":shiftZ, "w":float(panelWidth3), "d": float(panelDepth3), "h":0.0, "asset": assetURL + "xz+p.png"}
+            visuals.append(panel)
 
     # legend panels
     if any(p.startswith('lc')for p in spec):
         fig, ax = plt.subplots(figsize=plt.figaspect(1.0), facecolor=(1, 1, 1, 0.0), layout="constrained")
         colorRange = encoding['color']['scale']['range']
-        f = lambda m,c: plt.plot([],[],marker=m, color=c, ls="none")[0]
-        handles = [f("s", colorRange[i]) for i in range(len(colorRange))]
-        labels = encoding['color']['labels']
-        legend = fig.legend(handles, labels, loc='center', framealpha=0, frameon=True, title=encoding['color']['title'])
-        bbox = exportLegend(legend, 'lc.png')
+        if encoding['color']['type'] == 'quantitative':
+            fig, ax = plt.subplots(figsize=(6, 1), layout='constrained')
+            cmap = plt.get_cmap(palette['metrical'])
+            norm = mpl.colors.Normalize(vmin = encoding['color']['scale']['domain'][0], vmax = encoding['color']['scale']['domain'][1])
+            fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
+                         cax=ax, orientation='horizontal', label = encoding['color']['title'])
+            bbox = fig.get_window_extent()
+            bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(os.path.join(folder, 'lc.png'), dpi=dpi, bbox_inches=bbox)
+        else:
+            f = lambda m,c: plt.plot([],[],marker=m, color=c, ls="none")[0]
+            labels = encoding['color']['labels']
+            handles = [f("s", colorRange[i]) for i in range(len(colorRange))]
+            legend = fig.legend(handles, labels, loc='center', framealpha=0, frameon=True, title=encoding['color']['title'])
+            bbox = exportLegend(legend, 'lc.png')
         legSpec = next((element for element in spec if str(element).startswith('lc')))
         panel = createLegend(legSpec, bbox, panelY2)
         visuals.append(panel)
@@ -1120,6 +1240,8 @@ def createPlots():
         createBar()
     elif plot == 'cluster':
         createCluster()
+    elif plot == 'pie':
+        createPie()
 
 def saveEncoding():
     path = str(outputFile)

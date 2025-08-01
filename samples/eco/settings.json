@@ -9,11 +9,6 @@
         "height": 0.55,
         "depth": 0.55
     },
-    "dimension": {
-        "y": {
-            "domain": [0.0, 125000.0]
-        }
-    },
     "sequence": {
         "field": "year",
         "domain": [
@@ -38,7 +33,10 @@
             "field": "category"
         },
         "y": {
-            "field": "value"
+            "field": "value",
+            "scale": {
+                "domain": [0.0, 125000.0]
+            }
         },
         "z": {
             "field": "region"

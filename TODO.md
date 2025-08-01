@@ -10,6 +10,57 @@
 - size of legends
 - legends: ls=size, lc=color, lm=marker
 
+## DOCU
+
+Encodings
+```json
+    "encoding": {
+        "x": {
+            "field": "sepal length",
+            "title": "my X axis"
+        },
+        "y": {
+            "field": "sepal width",
+            "title": "my Y axis"
+        },
+        "z": {
+            "field": "petal length",
+            "title": "my Z axis"
+        },
+        "w": {
+            "value": 0.03
+        },
+        "h": {
+            "value": 0.03
+        },
+        "d": {
+            "value": 0.03
+        },
+        "size": {
+            "value": 0.05,
+            "field_": "size"
+        },
+        "color": {
+            "field": "class",
+            "title": "Category1",
+            "labels": [],
+            "range": [],
+            "opacity": 0.5
+        },
+        "shape_": {
+            "field": "shape",
+            "title": "Category2",
+            "labels": [],
+            "range": [],
+            "marker": "o",
+            "opacity": 0.5
+        },
+        "opacity": {
+            "value": 0.5
+        }
+    },
+```
+
 ## IDEAS
 
 DataReps
@@ -28,6 +79,42 @@ Data Stage Panels + plotting
 - +b: bar blot
 - +a: area plot
 - +c: category cluster showing min-max-mean using color encoding
+
+Scenes
+```json
+    "scenes": [
+        {
+            "plot": "scatter",
+            "encoding": {
+                "shape": "row0",
+                "x": "row1",
+                "y": "row2",
+                "z": "row3",
+                "w": 0.02,
+                "h": 0.02,
+                "d": 0.02,
+                "size": 0.2,
+                "color": "row4",
+                "opacity": 0.5
+            },
+            "panels": [
+                "xy+s",
+                "zy+s",
+                "-xy",
+                "-zy",
+                "xz+s",
+                "lc",
+                "lm"
+            ],
+            "annotations": []
+        }
+    ]
+```
+
+datareps2glb
+- generate glb from datareps
+- In Python using trimesh? https://trimesh.org
+- Python scripting of Blender?
 
 ## CHECK
 - rotation of top labels in xz plane (gave up)

@@ -17,12 +17,6 @@
             {"category": "plums", "sales": 892, "weight": 55}
         ]
     },
-    "dimension": {
-        "y": {
-            "domain": [0, 160],
-            "title": "weight in g"
-        }
-    },
     "assetURL": "$SERVER/run/vis/",
     "titleColor": "#FFFFFF",
     "labelColor": "#DDDE00",
@@ -34,7 +28,11 @@
             "field": "sales"
         },
         "y": {
-            "field": "weight"
+            "field": "weight",
+            "scale": {
+                "domain": [0, 160]
+            },
+            "title": "weight in g"
         },
         "color": {
             "field": "category"

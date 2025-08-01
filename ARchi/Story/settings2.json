@@ -1,0 +1,54 @@
+{
+    "description": "Fruits analysis with weekly turnover, proft, and display area in m2.",
+    "title": "Sales Volume of Fruits",
+    "stage": {
+        "width": 0.5,
+        "height": 0.25,
+        "depth": 0.5
+    },
+    "data": {
+        "values": [
+            {"category": "apples", "sales": 431, "profit": 17, "area": 0.7},
+            {"category": "apricots", "sales": 612, "profit": 31, "area": 0.5},
+            {"category": "pears", "sales": 1100, "profit": 41, "area": 0.6},
+            {"category": "mandarins", "sales": 388, "profit": 25, "area": 0.4},
+            {"category": "oranges", "sales": 740, "profit": 22, "area": 0.9},
+            {"category": "peaches", "sales": 562, "profit": 45, "area": 0.6},
+            {"category": "plums", "sales": 892, "profit": 33, "area": 0.3}
+        ]
+    },
+    "assetURL": "$SERVER/run/vis/",
+    "titleColor": "#FFFFFF",
+    "labelColor": "#DDDE00",
+    "bgColor": "#FFFFFFAA",
+    "palette": {
+        "metrical": "Greys_r",
+        "temporal": "Greys",
+        "ordinal": "Oranges",
+        "nominal": "tab10"
+    },
+    "plot": "pie",
+    "mark": "arc",
+    "encoding": {
+        "theta": {
+            "field": "sales"
+        },
+        "y": {
+            "field": "profit",
+            "scale": {
+                "domain": [0, 10000]
+            },
+            "title": "profit in $"
+        },
+        "color": {
+            "field": "profit",
+            "title": "profit in $",
+            "scale": {
+                "domain": [0, 45]
+            }
+        }
+    },
+    "panels": [
+        "lc=_"
+    ]
+}
