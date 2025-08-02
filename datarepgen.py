@@ -341,7 +341,8 @@ def deduceEncoding():
         if 'field' in encoding["x"] and isinstance(encoding["x"]['field'], str):
             xkey = encoding["x"]['field']
             if xkey != key:
-                dimension[xkey] = dimension[key]
+                if key in dimension:
+                    dimension[xkey] = dimension[key]
                 key = xkey
             if 'title' not in encoding['x']:
                 encoding['x']['title'] = key
@@ -410,7 +411,8 @@ def deduceEncoding():
         if 'field' in encoding["z"] and isinstance(encoding["z"]['field'], str):
             zkey = encoding["z"]['field']
             if zkey != key:
-                dimension[zkey] = dimension[key]
+                if key in dimension:
+                    dimension[zkey] = dimension[key]
                 key = zkey
             if 'title' not in encoding['z']:
                 encoding['z']['title'] = key
@@ -503,7 +505,7 @@ def loadData(dataFile):
         if dataFile.startswith("http") == False and dataFile.startswith("file:") == False and dataFile.startswith("/") == False:
             path = os.path.join(folder, dataFile)
         if path.endswith("json"):
-             df = pd.read_json(path)
+            df = pd.read_json(path)
         elif path.endswith("xlsx"):
             df = pd.read_excel(path)
         elif path.endswith("csv"):

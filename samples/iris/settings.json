@@ -7,7 +7,7 @@
         "depth": 0.8
     },
     "data": {
-        "url": "../data/iris.json"
+        "url": "iris.json"
     },
     "assetURL": "$SERVER/run/vis/",
     "gridColor": "#DDDE00",
