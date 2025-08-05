@@ -216,10 +216,14 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
   - encoding.json
   - a list of data reps in viz.json (used as input for XR viewer)
 
-## Screen Recording Videos
-- irisLOD: https://youtu.be/UL8XRe5luu8
-- ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
-- salesSTORY: https://youtube.com/shorts/85cTH27r540
+## SAXR Front-ends
+
+Presentation of SAXR is supported by:
+
+- [ARchi VR App](ARchi): iOS AR application
+- [ARchi Composer](ARchi): macOS AR editor
+  - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)
+  - glTF 3D samples: [iris.glb](samples/iris/result3D/iris.glb), [eco.glb](samples/eco/result3D/eco.glb), [fruits.glb](samples/fruits/result3D/fruits.glb), [geo.glb](samples/geo/result3D/health.glb)
 
 ## Hints
 
@@ -234,6 +238,10 @@ How to fix transparency in USDZ/glTF export:
 - Delete Camera and Light from Scene
 - Export to usdz and glb format (does embed textures)
 
+## Screen Recording Videos
+- irisLOD: https://youtu.be/UL8XRe5luu8
+- ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
+- salesSTORY: https://youtube.com/shorts/85cTH27r540
 ## References
 
 - https://github.com/vega/vega-lite

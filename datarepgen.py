@@ -298,12 +298,9 @@ def deduceDimensions():
     for col in df.columns:
         calcDomain = True
         spec = {}
-        if col in dimension and 'domain' in dimension[col]:
-            spec['domain'] = dimension[col]['domain']
-            if 'range' in dimension[col]:
-                spec['range'] = dimension[col]['range']
+        if col in encoding and 'scale' in encoding[col] and 'domain' in encoding[col]['scale']:
+            spec['domain'] = encoding[col]['scale']['domain']
             calcDomain = False
-
         if df[col].dtype == 'object' or df[col].dtype == 'category':
             spec['type'] = 'nominal'
             if calcDomain:
@@ -323,6 +320,7 @@ def deduceDimensions():
             if calcDomain:
                 spec['domain'] = [float(df[col].min()), float(df[col].max())]
         dimension[col] = spec
+    print("dimension:")
     print(dimension)
 
 def deduceEncoding():
@@ -331,12 +329,13 @@ def deduceEncoding():
         key = 'x'
         scale = None
         if key in dimension and 'domain' in dimension[key]:
-            if 'x' in encoding and 'scale' in encoding['x'] and 'domain' in encoding['x']['scale']:
-                scale = {'domain': encoding['x']['scale']['domain']}
+            if 'x' in encoding and 'scale' in encoding['x']:
+                if 'domain' in encoding['x']['scale']:
+                    scale = {'domain': encoding['x']['scale']['domain']}
+                if 'range' in encoding['x']['scale']:
+                    scale['range'] = encoding['x']['scale']['range']
             else:
-                scale = {'domain': dimension[key]['domain']}
-            if 'range' in dimension[key]:
-                scale['range'] = dimension[key]['range']
+                scale = {'domain': dimension[key]['domain'], 'range': [-chartWidth/2.0, chartWidth/2.0]}
             encoding['x']['scale'] = scale
         if 'field' in encoding["x"] and isinstance(encoding["x"]['field'], str):
             xkey = encoding["x"]['field']
@@ -349,19 +348,19 @@ def deduceEncoding():
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
             encoding['x']['type'] = type
-            if type == 'quantitative' and 'domain' in dimension[key]:
-                min = dimension[key]["domain"][0]
-                max = dimension[key]["domain"][1]
+            if type == 'quantitative':
+                min = encoding['x']['scale']['domain'][0]
+                max = encoding['x']['scale']['domain'][1]
                 global lowerX
                 global upperX
                 delta = 0.0
-                if plot == 'scatter' and 'range' not in dimension[key]:
+                if plot == 'scatter' and 'range' not in encoding['x']['scale']:
                     delta = (max - min) * 0.05
                 lowerX = min - delta
                 upperX = max + delta
-            if type == 'quantitative' and 'range' in dimension[key]:     
-                global factorX
-                factorX = (dimension[key]['range'][1] - dimension[key]['range'][0]) / (upperX - lowerX)   
+                if 'range' in encoding['x']['scale']:     
+                    global factorX
+                    factorX = (encoding['x']['scale']['range'][1] - encoding['x']['scale']['range'][0]) / (upperX - lowerX)   
     if 'y' in encoding:
         key = 'y'
         scale = None
@@ -383,19 +382,22 @@ def deduceEncoding():
                 key = ykey
             if 'title' not in encoding['y']:
                 encoding['y']['title'] = key
-        if key in dimension  and 'type' in dimension[key]:
-            type = dimension[key]['type']
-            encoding['y']['type'] = type
-            if type == 'quantitative' and 'domain' in dimension[key]:
-                min = dimension[key]["domain"][0]
-                max = dimension[key]["domain"][1]
-                global lowerY
-                global upperY
-                delta = 0.0
-                if plot == 'scatter' and 'range' not in dimension[key]:
-                    delta = (max - min) * 0.05
-                lowerY = min - delta
-                upperY = max + delta
+            if 'type' in dimension[key]:
+                type = dimension[key]['type']
+                encoding['y']['type'] = type
+        if encoding['y']['type'] == 'quantitative':
+            min = encoding['y']['scale']['domain'][0]
+            max = encoding['y']['scale']['domain'][1]
+            global lowerY
+            global upperY
+            delta = 0.0
+            if plot == 'scatter' and 'range' not in encoding['y']['scale']:
+                delta = (max - min) * 0.05
+            lowerY = min - delta
+            upperY = max + delta
+            if 'range' in encoding['y']['scale']:     
+                global factorY
+                factorY = (encoding['y']['scale']['range'][1] - encoding['y']['scale']['range'][0]) / (upperY - lowerY)  
         
     if 'z' in encoding:
         key = 'z'
@@ -419,19 +421,19 @@ def deduceEncoding():
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
             encoding['z']['type'] = type
-            if type == 'quantitative' and 'domain' in dimension[key]:
-                min = dimension[key]["domain"][0]
-                max = dimension[key]["domain"][1]
+            if type == 'quantitative':
+                min = encoding['z']['scale']['domain'][0]
+                max = encoding['z']['scale']['domain'][1]
                 global lowerZ
                 global upperZ
                 delta = 0.0
-                if plot == 'scatter' and 'range' not in dimension[key]:
+                if plot == 'scatter' and 'range' not in encoding['x']['scale']:
                     delta = (max - min) * 0.05
                 lowerZ = min - delta
                 upperZ = max + delta
-            if type == 'quantitative' and 'range' in dimension[key]:     
-                global factorZ
-                factorZ = (dimension[key]['range'][1] - dimension[key]['range'][0]) / (upperZ - lowerZ)  
+                if 'range' in encoding['z']['scale']:     
+                    global factorZ
+                    factorZ = (encoding['z']['scale']['range'][1] - encoding['z']['scale']['range'][0]) / (upperZ - lowerZ)  
         
     if 'color' in encoding:
         key = 'color'
@@ -496,6 +498,7 @@ def deduceEncoding():
             df['size'] = encoding["size"]["values"]
     print(df)
     print(df.dtypes)
+    print("encoding:")
     print(encoding)
 
 def loadData(dataFile):
@@ -633,7 +636,7 @@ def createBar():
     colors = None
     if group != None and 'colors' in group:
         colors = group['colors']
-
+    print(lowerX, upperX, lowerY, upperY, lowerZ, upperZ)
     for index, row in df.iterrows():
         x = 0
         y = 0
@@ -719,12 +722,12 @@ def createBar():
             else:
                 idx = indexOf(z, 'z')
                 posZ = encoding['z']['scale']['range'][idx]
-            if 'x' in dimension and 'offset' in dimension['x']:
-                posX = posX + dimension['x']['offset']
-            if 'y' in dimension and 'offset' in dimension['y']:
-                posY = posY + dimension['y']['offset']
-            if 'z' in dimension and 'offset' in dimension['z']:
-                posZ = posZ + dimension['z']['offset']
+            if 'offset' in encoding['x']['scale']:
+                posX = posX + encoding['x']['scale']['offset']
+            if 'offset' in encoding['y']['scale']:
+                posY = posY + encoding['y']['scale']['offset']
+            if 'offset' in encoding['z']['scale']:
+                posZ = posZ + encoding['z']['scale']['offset']
             posX = posX + x0 + i*size
             if colors != None:
                 color = colors[i]
