@@ -123,7 +123,7 @@ Data Reps are a collection of simple representations of data elements that will 
   - shape of marker: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
     - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
     - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
-    - plt: o, s, ^, v, D, P, X (Matplotlib symbols for 2D marks)
+    - plt: `o, s, ^, v, D, P, X` (Matplotlib symbols for 2D marks)
   - shape of chart element
     - cylinder: for bar plots (instead of box)
     - plane: for flat overlays on panels
@@ -147,40 +147,40 @@ Data Reps are a collection of simple representations of data elements that will 
 Panel types are encoded by their name. If panel name is uppercase it will be presented as stage element, if lowercase as scene element.
 
 - Data Stage Panels
-  - xy: xy grid and axes
-  - -xy: opposite xy plane with inverse x axis
-  - zy: zy grid and axes
-  - -zy: opposite zy plane with inverse z axis
-  - xz: floor grid and axes
+  - `xy`: xy grid and axes
+  - `-xy`: opposite xy plane with inverse x axis
+  - `zy`: zy grid and axes
+  - `-zy`: opposite zy plane with inverse z axis
+  - `xz`: floor grid and axes
 - Data Stage Panels + plotting
-  - +s: scatter plot
-  - +p: pie/donut chart
+  - `+s`: scatter plot
+  - `+p`: pie/donut chart
 - Examples of Data Stage Panels:
   - ```"xy", "-xy", "xy+s", "XY", "ZY", "XZ+p"...```
 
 Legends are panels as well. The legend name additionally encodes its position.
 
 - Legend Panels
-  - lc: color legend
-  - lm: marker legend (shape categories)
-  - ls: size legend (size categories)
-  - lg: group legend (group fields mapped to colors)
+  - `lc`: color legend
+  - `lm`: marker legend (shape categories)
+  - `ls`: size legend (size categories)
+  - `lg`: group legend (group fields mapped to colors)
 - Legend Panels pose
-  - = flat
-  - | upright
-  - ! upright and billboarding
+  - `=` flat
+  - `|` upright
+  - `!` upright and billboarding
 - Legend Panels position
   - x position: 
-    - \< leftside
-    - \> rightside
+    - `<` leftside
+    - `>` rightside
     - default: mid
   - y position: 
-    - v bottom
-    - ^ top
+    - `v` bottom
+    - `^` top
     - default: mid
   - z position:
-    -  _ front
-    -  - mid
+    - `_` front
+    - `-` mid
  -  Examples of Legend Panels: 
     - ```"lc", "lc=_", "lc=_<", "LC", "LC=_", "lg=_>", ...```
 

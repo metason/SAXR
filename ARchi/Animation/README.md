@@ -2,6 +2,9 @@
 
 [<img src="../../docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk)
 
+## Description 
+
+
 ## Items 
 
 __1 'dataviz.anim'__  🔓
@@ -9,7 +12,7 @@ __1 'dataviz.anim'__  🔓
 - https://service.metason.net/ar/content/viz/ecoANIM/viz.json
 - value:0
 
-__2 'dataviz.label'__ - 2000  🔓
+__2 'dataviz.label'__ 2000  🔓
 - Data.Label
 - wxdxh:0.20x0.0x0.07;color:#BBCCFF;bgcolor:#FFFFFF00;font:Courier
 

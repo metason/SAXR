@@ -2,6 +2,8 @@
 
 [<img src="../../docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
 
+## Description 
+
 ## Items 
 
 __1 'dataviz.story'__  🔓
