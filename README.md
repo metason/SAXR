@@ -20,14 +20,14 @@ Data visualization generated with `datarepgen.py`:
 * 3D __bar__ chart as in [samples/eco/settings.json](samples/eco/settings.json)
 * 3D __scatter__ plot as in [samples/iris/settings.json](samples/irs/settings.json)
 * 3D __cluster__: min-max cluster per category with median   
-* 3D __pie__ chart: mixed 2D/3D donut chart as in [samples/fruits/settings.json](samples/fruits/settings.json)
-* 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json) using `georepgen.py` and `datarepgen.py`
+* 3D __pie__ chart: mixed 2D/3D pie/donut chart as in [samples/fruits/settings.json](samples/fruits/settings.json)
+* 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json) using `georepgen.py`
 
 <img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
 
 ## Data Viz Scenery
 
-In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
+In SAXR 2D and 3D elements are arranged in a Data Viz _Scenery_ consisting of:
 - Data Viz *Stage* with consistent dimensions in 2D and 3D
   - Stage *Set* with global panels and spatial encodings
 - Data Viz *Scenes* as indexed sequence of:
@@ -37,13 +37,15 @@ In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
 ## Behavior of Situated Analytics in AR/XR Front-end
 List of scenes (containing DataReps) are interpreted as level of details, time series, or sequence in narrative 3D data viz. They become interactive by embedding SAXR data visualization into dynamic AR experiences controlled by declarative scripts. 
 
-See screen recoding videos run within the [ARchi VR](https://archi.metason.net) app:  
+See declarations of behavior and screen recoding videos run within the [ARchi VR](https://archi.metason.net) app. The behavior of SAXR data viz in the ARchi VR App is documented as Event-Condition-Action (ECA) diagrams:  
 * [__Auto-Placing__](ARchi/Placing/) of geo chart using _Spatial Reasoning_: https://youtube.com/shorts/6w4DJwMHewY
 * [__Level of Detail__](ARchi/Proximity/) (LOD) controlled by _Proximity_: https://youtu.be/UL8XRe5luu8
 * [__Time Series__](ARchi/Animation/) controlled by _Animation_: https://youtube.com/shorts/PjelVMMz4Dk
 * [__Narrative Data Storytelling__](ARchi/Storytelling/) using _Interaction_: https://youtube.com/shorts/85cTH27r540
  
 [<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY) [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
+
+
 
 ## Declarative Specification with Grammar of Graphics
 
@@ -119,7 +121,8 @@ Data Reps are a collection of simple representations of data elements that will 
 ]
 ```
 
-- type: visual shape or panel type
+The data fields of Data Reps are:
+- __type__: visual shape or panel type
   - shape of marker: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
     - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
     - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
@@ -130,14 +133,14 @@ Data Reps are a collection of simple representations of data elements that will 
     - image: for placing any icon or image
     - text: for labels
   - panel type (see next chapter)
-- x,y,z: position
-- w,h,d: bbox size of shape
+- __x,y,z__: position
+- __w,h,d__: bbox size of shape
   - if h == 0 and d > 0 then shape is flat
   - if d == 0 and h > 0 then shape is upright
-- color: color of shape
+- __color__: color of shape
   - hex-encoded RGB color (e.g., "#FF0000"), with support for transparency (e.g.,"#FF0000AA")
   - color name (e..g., "blue")
-- asset: type-specific resources 
+- __asset__: type-specific resources 
   - URL to file (e.g., to image file)
   - text (for labels)
   - attributes (e.g, `"angle:45;start:90"` for arc)
@@ -155,10 +158,12 @@ Panel types are encoded by their name. If panel name is uppercase it will be pre
 - Data Stage Panels + plotting
   - `+s`: scatter plot
   - `+p`: pie/donut chart
-- Examples of Data Stage Panels:
+- Examples of Data Stage Panel specifications:
   - ```"xy", "-xy", "xy+s", "XY", "ZY", "XZ+p"...```
+- Samples of generated image plots (from the [samples/iris](samples/iris/) project):
+  - [xz+s](https://service.metason.net/ar/content/viz/irisLOD/xz+s.png), [xy.png](https://service.metason.net/ar/content/viz/irisLOD/xy.png), [-xy.png](https://service.metason.net/ar/content/viz/irisLOD/-xy.png), [zy.png](https://service.metason.net/ar/content/viz/irisLOD/zy.png), [-zy.png](https://service.metason.net/ar/content/viz/irisLOD/-zy.png)
 
-Legends are panels as well. The legend name additionally encodes its position.
+Legends are panels as well. The legend name additionally encodes its pose and position.
 
 - Legend Panels
   - `lc`: color legend
@@ -181,8 +186,11 @@ Legends are panels as well. The legend name additionally encodes its position.
   - z position:
     - `_` front
     - `-` mid
- -  Examples of Legend Panels: 
+-  Examples of Legend Panel specifications: 
     - ```"lc", "lc=_", "lc=_<", "LC", "LC=_", "lg=_>", ...```
+- Samples of generated legend images:
+  - discrete [lc.png](https://service.metason.net/ar/content/viz/irisLOD/lc.png), continuous [lc.png](https://service.metason.net/ar/content/viz/salesSTORY/lc.png), [lg.png](https://service.metason.net/ar/content/viz/geoSPATIAL/lg.png), [lm.png](docu/images/lm.png)
+
 
 ## Color Palettes
 
@@ -193,7 +201,7 @@ Predefined Color Palettes:
 - __temporal__: quantitative and interpolatable color palette; default: 'Greys'
 
 The color palettes may be overwritten in the `settings.json` file. 
-All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined by Matplotlib can be used.
+All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined by Matplotlib can be used in SAXR settings.
 
 ```json
     "palette": {
@@ -218,7 +226,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 
 ## SAXR Front-ends
 
-Presentation of SAXR is supported by:
+The presentation of SAXR data reps is supported by:
 
 - [ARchi VR App](ARchi): iOS AR application
 - [ARchi Composer](ARchi): macOS AR editor
@@ -239,13 +247,15 @@ How to fix transparency in USDZ/glTF export:
 - Export to usdz and glb format (does embed textures)
 
 ## Screen Recording Videos
+- geoSPATIAL: https://youtube.com/shorts/6w4DJwMHewY
 - irisLOD: https://youtu.be/UL8XRe5luu8
 - ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
 - salesSTORY: https://youtube.com/shorts/85cTH27r540
+
 ## References
 
-- https://github.com/vega/vega-lite
-- https://github.com/Wizualization/optomancy
-- https://github.com/vega/vega-datasets
-- https://matplotlib.org/stable/gallery/color/colormap_reference.html
-- https://archi.metason.net
+- Optomancy: https://github.com/Wizualization/optomancy
+- Vega-lite: https://github.com/vega/vega-lite
+- Datasets: https://github.com/vega/vega-datasets
+- Matplotlb colormaps: https://matplotlib.org/stable/gallery/color/colormap_reference.html
+- ARchi VR App: https://archi.metason.net

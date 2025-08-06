@@ -60,7 +60,8 @@ __5 'step.3'__  🔐
 
 __Code Refs__
 
-- salesSTORY.json
+- _SAXR spec_: [settings0.json](./settings0.json), [settings1.json](./settings1.json), [settings2.json](./settings2.json)
+- _ARchi script_: [salesSTORY.json](salesSTORY.json)
 
 __Asset Refs__
 

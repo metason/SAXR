@@ -2,7 +2,7 @@
 
 ## ARchi VR App
 
-The mobile ARchi VR application is an AR browser for iOS devices and supports the interactive presentation of SAXR data reps.
+The mobile ARchi VR application is an AR browser for iOS devices and supports the interactive presentation of SAXR data reps. 
 
 Samples of dynamic behavior:
 

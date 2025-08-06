@@ -41,11 +41,18 @@ __1 'net.metason.dataviz.lod'__  🔓
 
 __Code Refs__
 
-- irisLOD.json
+- _SAXR spec_: [settings.json](../../samples/iris/settings.json)
+- _ARchi script_: [irisLOD.json](irisLOD.json)
 
 __Asset Refs__
 
 - _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/xz+s.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/xy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/-xy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/zy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/-zy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/lc.png
 
 __Technology Refs__
 

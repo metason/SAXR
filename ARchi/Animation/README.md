@@ -4,6 +4,22 @@
 
 ## Description 
 
+The definition of a `sequence` in [`settings.json`](../../samples/eco/settings.json) does specify seperate data _scenes_ with anual data reps corresponding to the year of the time series stored in [`perCapita.json`](../../samples/eco/perCapita.json). `datarepgen.py`generates all anual scenes with their data reps and stores the result in [`viz.json`](https://service.metason.net/ar/content/viz/ecoANIM/viz.json).
+
+```json
+    "sequence": {
+        "field": "year",
+        "domain": [
+            2000,
+            2024
+        ]
+    },
+```
+
+In the ARchi app the [`ecoANIM.json`](ecoANIM.json) script does increase the `data.idx`counter each second between 0 and 23.
+With the `setVal()`command the counter is applied to select the current data scene of the data visualization item.
+In parallel the year is shown in a label that is billboarding.
+
 
 ## Items 
 
@@ -50,11 +66,22 @@ __2 'dataviz.label'__ 2000  🔓
 
 __Code Refs__
 
-- ecoANIM.json
+- _SAXR spec_: [settings.json](../../samples/eco/settings.json)
+- _ARchi script_: [ecoANIM.json](ecoANIM.json)
 
 __Asset Refs__
 
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/xz.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/xy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/-xy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/zy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/-zy.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/lc.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/USflag.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/EUflag.png
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/CNflag.png
+
 
 __Technology Refs__
 
