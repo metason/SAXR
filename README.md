@@ -35,16 +35,15 @@ In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
   - Data *Reps* as visual representations of data
   
 ## Behavior of Situated Analytics in AR/XR Front-end
-List of scenes (containing DataReps) are interpreted as level of details, time series, or sequence in narrative 3D data viz. See screen recoding videos run within the [ARchi VR](https://archi.metason.net) app:  
-* __Auto-Placing__ of geo chart using _Spatial Reasoning_: https://youtube.com/shorts/6w4DJwMHewY
-* __Level of Detail__ (LOD) controlled by _Proximity_: https://youtu.be/UL8XRe5luu8
-* __Time Series__ controlled by _Animation_: https://youtube.com/shorts/PjelVMMz4Dk
-* __Narrative Data Storytelling__ using _Interaction_: https://youtube.com/shorts/85cTH27r540
+List of scenes (containing DataReps) are interpreted as level of details, time series, or sequence in narrative 3D data viz. They become interactive by embedding SAXR data visualization into dynamic AR experiences controlled by declarative scripts. 
+
+See screen recoding videos run within the [ARchi VR](https://archi.metason.net) app:  
+* [__Auto-Placing__](ARchi/Placing/) of geo chart using _Spatial Reasoning_: https://youtube.com/shorts/6w4DJwMHewY
+* [__Level of Detail__](ARchi/Proximity/) (LOD) controlled by _Proximity_: https://youtu.be/UL8XRe5luu8
+* [__Time Series__](ARchi/Animation/) controlled by _Animation_: https://youtube.com/shorts/PjelVMMz4Dk
+* [__Narrative Data Storytelling__](ARchi/Storytelling/) using _Interaction_: https://youtube.com/shorts/85cTH27r540
  
-[<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY)  
-[<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) 
-[<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) 
-[<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
+[<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY) [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
 
 ## Declarative Specification with Grammar of Graphics
 
