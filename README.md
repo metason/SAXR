@@ -36,11 +36,12 @@ In SAXR 2D and 3D elements are arranged in a Data Viz Scenery consisting of:
   
 ## Behavior of Situated Analytics in AR/XR Front-end
 List of scenes (containing DataReps) are interpreted as level of details, time series, or sequence in narrative 3D data viz. See screen recoding videos run within the [ARchi VR](https://archi.metason.net) app:  
-* __Auto-Placing__ of 3D chart using _Spatial Reasoning_: TODO
+* __Auto-Placing__ of geo chart using _Spatial Reasoning_: https://youtube.com/shorts/6w4DJwMHewY
 * __Level of Detail__ (LOD) controlled by _Proximity_: https://youtu.be/UL8XRe5luu8
 * __Time Series__ controlled by _Animation_: https://youtube.com/shorts/PjelVMMz4Dk
 * __Narrative Data Storytelling__ using _Interaction_: https://youtube.com/shorts/85cTH27r540
  
+[<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY)  
 [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) 
 [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) 
 [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 

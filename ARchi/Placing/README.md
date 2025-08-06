@@ -1,51 +1,44 @@
 # geoSPATIAL.json
 
-[<img src="../../docu/images/geospatial.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8)
+[<img src="../../docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY)
 
 ## Description 
 
 ## Items 
 
-__1 'net.metason.dataviz.lod'__  🔓
+__1 'dataviz.placing'__  🔓
 - Data.Viz
 - https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json
-- value:0
 
 
 
 ## Tasks 
 
- | on:command |  &rarr; | do:add ahead 0 0 -2.5 |
+ | on:command |  &rarr; | do:detect spatial|
  |---|---|---|
-> 'net.metason.dataviz.lod' ➕
- 
- | as:always | if:`proximity('net.metason.dataviz.lod') <= 1.8 `| do:execute |
- |---|---|---|
->  `setVal('net.metason.dataviz.lod', 2)`  
+ > `adjust(sector fixed 0.01) | filter(type == 'table' AND footprint > 1.2) | produce(o)`
 > 
-
- 
- | as:always | if:`proximity('net.metason.dataviz.lod') > 1.8 AND proximity('net.metason.dataviz.lod') < 3.2`| do:execute |
- |---|---|---|
->  `setVal('net.metason.dataviz.lod', 1)`  
+> | _on:detect_ | &rarr; | _do:add to AR anchor_ |
+> |---|---|---|
 > 
-
- 
- | as:always | if:`proximity('net.metason.dataviz.lod') >= 3.2 `| do:execute |
- |---|---|---|
->  `setVal('net.metason.dataviz.lod', 0)`  
+>> 'dataviz.placing' ➕
 > 
+> | _as:stated_ | _if:`visible('dataviz.placing') == false`_ | _do:remove_ |
+> |---|---|---|
+> 
+>> 'dataviz.placing' ❌
+ 
 
 
 ## References 
 
 __Code Refs__
 
-- irisLOD.json
+- actions/geoSPATIAL.json
 
 __Asset Refs__
 
-- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json
 
 __Technology Refs__
 
