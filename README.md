@@ -195,10 +195,10 @@ Legends are panels as well. The legend name additionally encodes its pose and po
 ## Color Palettes
 
 Predefined Color Palettes:
-- __nominal__: categorial color palette without ranking; default: 'tab10'
-- __ordinal__: categorial and sortable color palette; default: 'Oranges'
-- __quantitative__: quantitative and interpolatable color palette; default: 'Blues'
-- __temporal__: quantitative and interpolatable color palette; default: 'Greys'
+- __nominal__: categorial color palette without ranking; default: `tab10`
+- __ordinal__: categorial and sortable color palette; default: `Oranges`
+- __quantitative__: quantitative and interpolatable color palette; default: `Blues`
+- __temporal__: quantitative and interpolatable color palette; default: `Greys`
 
 The color palettes may be overwritten in the `settings.json` file. 
 All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html) defined by Matplotlib can be used in SAXR settings.
