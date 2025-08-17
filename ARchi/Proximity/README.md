@@ -4,6 +4,16 @@
 
 ## Description 
 
+By changing the definition of [`settings.json`](../../samples/iris/settings.json) three different representations of the [`iris.json`](../../samples/iris/iris.json) dataset has been generated:
+
+0. a non-transparent cluster plot
+1. a transparent cluster plot combined with a scatter plot
+2. a scatter plot
+
+The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`viz.json`](https://service.metason.net/ar/content/viz/irisLOD/viz.json).
+
+In the ARchi app the [`irisLOD.json`](irisLOD.json) script does constantly evaluating the proximity of the user to the data vizualisation. Depending on the distance the active data representation is selected by setting the index of the data visualization with the `setVal()` function.
+
 ## Items 
 
 __1 'net.metason.dataviz.lod'__  🔓

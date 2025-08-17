@@ -4,6 +4,16 @@
 
 ## Description 
 
+By using the same inline data three different representations have been generated:
+
+1. a flat pie chart with [`settings0.json`](./settings0.json)
+2. a 3D pie/donut plot with [`settings1.json`](./settings1.json)
+3. a flat donut plot with [`settings2.json`](./settings2.json)
+
+The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`viz.json`](https://service.metason.net/ar/content/viz/salesSTORY/viz.json).
+
+In the ARchi app the [`salesSTORY.json`](salesSTORY.json) script adds three interactive buttons (1-3) near the data vizualisation. By tapping the buttons  the corresponding index of the data visualization is selected with the `setVal()` function. In step 3 additionally a billboarding text panel is placed as hint.
+
 ## Items 
 
 __1 'dataviz.story'__  🔓

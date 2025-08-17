@@ -5,7 +5,7 @@
 ## Description 
 
 The [`settings.json`](../../samples/geo/settings.json) file for this geo data viz has been generated with [`georepgen.py`](georepgen.py). It uses the GeoPandas python library to generate a [map](https://service.metason.net/ar/content/viz/geoSPATIAL/map.png) of Switzerland from [`swissmap.json`](swissmap.json) with borders of the Swiss cantons.
-The specification in [`settings.json`](../../samples/geo/settings.json) does 
+The generated specification in [`settings.json`](../../samples/geo/settings.json) does 
 includes inline data on costs of the swiss healthcare system per capita.
 `datarepgen.py`generates all data reps and stores the result in [`viz.json`](https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json).
 
@@ -52,7 +52,7 @@ Grouped bar chart spec:
 ```
 
 In the ARchi app the [`geoSPATIAL.json`](ecoANIM.json) script does run a
-spatial reasoning pipeline (according to the [Spatial Reasoner](https://github.com/metason/SpatialReasoner) framework) in order to find a table of size larger then 1.2 m2. A thin table top will be produced over the found table (by `produce(o)`) which serves as reference to place the SAXR data visualization.
+spatial reasoning pipeline (according to the [Spatial Reasoner](https://github.com/metason/SpatialReasoner) framework) in order to find a table of size larger then 1.2 m<sup>2</sup>. By defining a fixed size of 0.01 m (=1 cm) to extrude bbox sectors, a thin table top will be produced over the found table (by `produce(o)`) which serves as reference to place the SAXR data visualization.
 ```
 adjust(sector fixed 0.01) | filter(type == 'table' AND footprint > 1.2) | produce(o)
 ```

@@ -257,5 +257,5 @@ How to fix transparency in USDZ/glTF export:
 - Optomancy: https://github.com/Wizualization/optomancy
 - Vega-lite: https://github.com/vega/vega-lite
 - Datasets: https://github.com/vega/vega-datasets
-- Matplotlb colormaps: https://matplotlib.org/stable/gallery/color/colormap_reference.html
+- Colormaps: https://matplotlib.org/stable/gallery/color/colormap_reference.html
 - ARchi VR App: https://archi.metason.net
