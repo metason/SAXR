@@ -129,6 +129,7 @@ The data fields of Data Reps are:
     - plt: `o, s, ^, v, D, P, X` (Matplotlib symbols for 2D marks)
   - shape of chart element
     - cylinder: for bar plots (instead of box)
+    - arc: arc bow for pie charts
     - plane: for flat overlays on panels
     - image: for placing any icon or image
     - text: for labels
@@ -212,17 +213,25 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
     },
 ```
 
-## Installation
+## Basic Installation
 
 - Prerequisite: Python 3.X
 - Install Pandas and Matplotlib (and optionally GeoPandas)
 - Download repository
-- In project folder run: ```python3 datarepgen.py samples/iris``` 
+- In project folder run: ```python datarepgen.py samples/iris``` 
   - the python script reads the ```samples/iris/settings.json``` file as input 
 - Find generated output in ```samples/iris``` folder: 
   - several 2D images in png format (used for panels)
   - encoding.json
   - a list of data reps in viz.json (used as input for XR viewer)
+
+## Setup for export3D.py
+
+- Install Blender: [blender.org](https://www.blender.org)
+- Install Blender as a Python module: https://docs.blender.org/api/current/info_advanced_blender_as_bpy.html
+- In project folder run: ```python export3D.py samples/iris``` 
+  - the python script reads the ```samples/iris/viz.json``` file as input 
+  - output ...
 
 ## SAXR Front-ends
 

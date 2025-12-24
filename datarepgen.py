@@ -11,13 +11,19 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib import colormaps
 
+# ---- PROCESS FLOW ----
+# 1. loadData
+# 2. deduceDimensions: deduce type and domain from data 
+# 3. deduceEncoding: deduce scale, set range from stage size
+# 4. createPanels: render plot images, adapt domain from layout of plots
+# 5. createDataViz: generate visuals from data elements
+# 6. saveVizRep
+
 # ---- SETTINGS ----
 # can be overwritten in settings.json
-#folder = os.path.split(os.path.realpath(sys.argv[0]))[0] # default folder is script location
 folder = os.getcwd()
 if len(sys.argv) > 1:
     folder_name = sys.argv[1]
-    print(folder_name)
     if folder_name.startswith('/'):
         folder = folder_name
     else:
@@ -192,6 +198,9 @@ def execute(settings):
     global df
     global stage
     global dimension
+    global chartWidth
+    global chartHeight
+    global chartDepth
     global bgColor
     global gridColor
     global labelColor
@@ -208,6 +217,10 @@ def execute(settings):
         stage["depth"]  = settings["depth"]
     if 'stage' in settings:
         stage = settings['stage']
+    chartWidth = stage['width']
+    chartHeight = stage['height']
+    chartDepth = stage['depth']
+
     if 'dimension' in settings:
         dimension = settings['dimension']
     if 'data' in settings:
@@ -320,7 +333,7 @@ def deduceDimensions():
             if calcDomain:
                 spec['domain'] = [float(df[col].min()), float(df[col].max())]
         dimension[col] = spec
-    print("dimension:")
+    print("Dimensions:")
     print(dimension)
 
 def deduceEncoding():
@@ -328,15 +341,6 @@ def deduceEncoding():
     if 'x' in encoding:
         key = 'x'
         scale = None
-        if key in dimension and 'domain' in dimension[key]:
-            if 'x' in encoding and 'scale' in encoding['x']:
-                if 'domain' in encoding['x']['scale']:
-                    scale = {'domain': encoding['x']['scale']['domain']}
-                if 'range' in encoding['x']['scale']:
-                    scale['range'] = encoding['x']['scale']['range']
-            else:
-                scale = {'domain': dimension[key]['domain'], 'range': [-chartWidth/2.0, chartWidth/2.0]}
-            encoding['x']['scale'] = scale
         if 'field' in encoding["x"] and isinstance(encoding["x"]['field'], str):
             xkey = encoding["x"]['field']
             if xkey != key:
@@ -345,6 +349,16 @@ def deduceEncoding():
                 key = xkey
             if 'title' not in encoding['x']:
                 encoding['x']['title'] = key
+        if key in dimension and 'domain' in dimension[key]:
+            if 'x' in encoding and 'scale' in encoding['x'] and 'domain' in encoding['x']['scale']:
+                scale = {'domain': encoding['x']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            else:
+                scale = {'domain': dimension[key]['domain'], 'range': [-chartWidth/2.0, chartWidth/2.0]}
+            encoding['x']['scale'] = scale
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
             encoding['x']['type'] = type
@@ -354,7 +368,7 @@ def deduceEncoding():
                 global lowerX
                 global upperX
                 delta = 0.0
-                if plot == 'scatter' and 'range' not in encoding['x']['scale']:
+                if plot == 'scatter': # and 'range' not in encoding['x']['scale']:
                     delta = (max - min) * 0.05
                 lowerX = min - delta
                 upperX = max + delta
@@ -364,16 +378,6 @@ def deduceEncoding():
     if 'y' in encoding:
         key = 'y'
         scale = None
-        if key in dimension and 'domain' in dimension[key]:
-            if 'y' in encoding and 'scale' in encoding['y'] and 'domain' in encoding['y']['scale']:
-                scale = {'domain': encoding['y']['scale']['domain']}
-            else:
-                scale = {'domain': dimension[key]['domain']}
-            if 'range' in dimension[key]:
-                scale['range'] = dimension[key]['range']
-            else:
-                scale['range'] = [0.0, chartHeight]
-            encoding['y']['scale'] = scale
         if 'field' in encoding["y"] and isinstance(encoding["y"]['field'], str):
             ykey = encoding["y"]['field']
             if ykey != key:
@@ -385,13 +389,23 @@ def deduceEncoding():
             if 'type' in dimension[key]:
                 type = dimension[key]['type']
                 encoding['y']['type'] = type
+        if key in dimension and 'domain' in dimension[key]:
+            if 'y' in encoding and 'scale' in encoding['y'] and 'domain' in encoding['y']['scale']:
+                scale = {'domain': encoding['y']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            else:
+                scale['range'] = [0.0, chartHeight]
+            encoding['y']['scale'] = scale
         if encoding['y']['type'] == 'quantitative':
             min = encoding['y']['scale']['domain'][0]
             max = encoding['y']['scale']['domain'][1]
             global lowerY
             global upperY
             delta = 0.0
-            if plot == 'scatter' and 'range' not in encoding['y']['scale']:
+            if plot == 'scatter': # and 'range' not in encoding['y']['scale']:
                 delta = (max - min) * 0.05
             lowerY = min - delta
             upperY = max + delta
@@ -402,14 +416,6 @@ def deduceEncoding():
     if 'z' in encoding:
         key = 'z'
         scale = None
-        if key in dimension and 'domain' in dimension[key]:
-            if 'z' in encoding and 'scale' in encoding['z'] and 'domain' in encoding['z']['scale']:
-                scale = {'domain': encoding['z']['scale']['domain']}
-            else:
-                scale = {'domain': dimension[key]['domain']}
-            if 'range' in dimension[key]:
-                scale['range'] = dimension[key]['range']
-            encoding['z']['scale'] = scale
         if 'field' in encoding["z"] and isinstance(encoding["z"]['field'], str):
             zkey = encoding["z"]['field']
             if zkey != key:
@@ -418,6 +424,16 @@ def deduceEncoding():
                 key = zkey
             if 'title' not in encoding['z']:
                 encoding['z']['title'] = key
+        if key in dimension and 'domain' in dimension[key]:
+            if 'z' in encoding and 'scale' in encoding['z'] and 'domain' in encoding['z']['scale']:
+                scale = {'domain': encoding['z']['scale']['domain']}
+            else:
+                scale = {'domain': dimension[key]['domain']}
+            if 'range' in dimension[key]:
+                scale['range'] = dimension[key]['range']
+            else:
+                scale = {'domain': dimension[key]['domain'], 'range': [-chartDepth/2.0, chartDepth/2.0]}
+            encoding['z']['scale'] = scale
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
             encoding['z']['type'] = type
@@ -427,7 +443,7 @@ def deduceEncoding():
                 global lowerZ
                 global upperZ
                 delta = 0.0
-                if plot == 'scatter' and 'range' not in encoding['x']['scale']:
+                if plot == 'scatter': # and 'range' not in encoding['x']['scale']:
                     delta = (max - min) * 0.05
                 lowerZ = min - delta
                 upperZ = max + delta
@@ -496,10 +512,9 @@ def deduceEncoding():
                 encoding['size']['scale'] = scale
         if 'values' in encoding["size"]:
             df['size'] = encoding["size"]["values"]
-    print(df)
-    print(df.dtypes)
-    print("encoding:")
+    print("Encoding:")
     print(encoding)
+    #print("Boundaries: ", lowerX, upperX, lowerY, upperY, lowerZ, upperZ)
 
 def loadData(dataFile):
     if dataFile:
@@ -793,7 +808,7 @@ def createPie():
         z = 0.0
         txtx = x * np.cos(radians) - z * np.sin(radians)
         txtz = x * np.sin(radians) + z * np.cos(radians)
-        datavis = {"type": "text", "x":posX+txtx, "y":scaleY(y)+0.015, "z":posZ-txtz+0.01, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset":str(y)}
+        datavis = {"type": "text", "x":posX+txtx, "y":scaleY(y)+0.005, "z":posZ-txtz+0.01, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset":str(y)}
         visuals.append(datavis)
     datavis = {"type": "text", "x":posX, "y":0.02, "z":posZ, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset": encoding['y']['title']}
     visuals.append(datavis)
@@ -856,14 +871,11 @@ def createPanels(spec):
     global factorZ
 
     adjustBaseSize = False
-    chartWidth = stage['width']
     plotWidth = chartWidth
     panelWidth = chartWidth
-    chartHeight = stage['height']
     plotHeight = chartHeight
     panelHeight = chartHeight
     panelY = 0.0
-    chartDepth = stage['depth']
     plotDepth2 = chartDepth
     plotHeight2 = chartHeight
     panelDepth2 = chartDepth
@@ -1213,6 +1225,7 @@ def createPanels(spec):
     if doSaveEncoding:
         panel = {"type": "encoding", "x":0, "y":0, "z":0, "w":float(chartWidth), "d": float(chartDepth), "h":float(chartHeight), "asset": assetURL + "encoding.json"}
         visuals.insert(0, panel)
+    #print("Factors: ", factorX, factorY, factorZ)
         
 def testScale():
     ref = {"type": "box", "x":0.0, "y":placeY(2.25), "z":placeZ(upperZ), "w":0.5, "d": 0.1, "h":0.01, "color": "green"}
