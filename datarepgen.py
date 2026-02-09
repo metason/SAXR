@@ -72,8 +72,8 @@ factorZ = 1.0
 # 3D shapes for visual data representations
 shapes = ["sphere", "box", "pyramid", "pyramid_down", "octahedron", "plus", "cross"]
 # 2D markers used in Matplotlib as equivalents of 3D shapes
-markers = ['circle', 'square', 'triangle_up', 'triangle_down', 'diamond', 'plus, cross']
-markerSymbols = ["o", "s", "^", "v", "D", "P", "X"]
+markers = ['circle', 'square', 'triangle_up', 'triangle_down', 'diamond', 'plus', 'cross']
+markerSymbols = ['o', 's', '^', 'v', 'D', 'P', 'X']
 # color palettes as defined in Matplotlib
 palette = {
     "metrical": "Blues",
@@ -146,6 +146,9 @@ def getSize():
 
 def getMarker():
     if 'shape' in encoding:
+        if 'marks' in encoding['shape']:
+            return df[key("shape")].map(lambda x: encoding['shape']['marks'][encoding['shape']['scale']['domain'].index(x)])
+
         if 'value' in encoding['shape']:
             m = encoding['shape']['value']
             if m in markers or m in markerSymbols:
@@ -153,10 +156,14 @@ def getMarker():
             if m in shapes:
                 idx = shapes.index(m)
                 if idx >= 0:
-                    return markerSymbols[idx]
-        if 'mark' in encoding['shape']:
-            return encoding['shape']['mark']
+                    return markerSymbols[idx]   
     return 'o'
+
+def getMarkers():
+    m = getMarker()
+    if isinstance(m, str):
+        return [m]
+    return m
 
 def getShape():
     if 'shape' in encoding:
@@ -177,7 +184,7 @@ def getShape():
 def getColor():
     if 'color' in encoding:
         if 'value' in encoding['color']:
-            return encoding['shape']['value']
+            return encoding['color']['value']
         if key("color") in df and 'scale' in encoding['color']:
             return df[key("color")].map(lambda x: encoding['color']['scale']['range'][encoding['color']['scale']['domain'].index(x)])
     return 'orange'
@@ -483,18 +490,22 @@ def deduceEncoding():
 
     if 'shape' in encoding:
         key = 'shape'
-        if 'field' in encoding['shape']:
+        if 'field' in encoding['shape'] and isinstance(encoding["shape"]['field'], str):
             key = encoding['shape']['field']
         cat = []
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
             encoding['shape']['type'] = type
         if key in dimension and 'domain' in dimension[key]:
-            cat = dimension[key]['domain']
-            if len(cat) <= 7:
-                encoding['shape']['labels'] = cat
-                scale = {'domain': cat, 'range': shapes[:len(cat)]}
-                encoding['shape']['scale'] = scale
+            if 'shape' in encoding and 'scale' in encoding['shape'] and 'domain' in encoding['shape']['scale']:
+                cat = encoding['shape']['scale']['domain']
+            else:
+                cat = dimension[key]['domain']
+        if len(cat) <= 7:
+            encoding['shape']['labels'] = cat
+            encoding['shape']['marks'] = markerSymbols[:len(cat)]
+            scale = {'domain': cat, 'range': shapes[:len(cat)]}
+            encoding['shape']['scale'] = scale
 
     if 'size' in encoding:
         key = 'size'
@@ -514,7 +525,7 @@ def deduceEncoding():
             df['size'] = encoding["size"]["values"]
     print("Encoding:")
     print(encoding)
-    #print("Boundaries: ", lowerX, upperX, lowerY, upperY, lowerZ, upperZ)
+    print("Boundaries: ", lowerX, upperX, lowerY, upperY, lowerZ, upperZ)
 
 def loadData(dataFile):
     if dataFile:
@@ -595,6 +606,7 @@ def createScatter():
         d = 0.05
         size = 0
         color = 'orange'
+        shape = 'sphere'
         if 'x' in encoding:
             if 'value' in encoding['x']:
                 x = encoding['x']['value']
@@ -637,6 +649,16 @@ def createScatter():
                     color = encoding['color']['scale']['range'][idx]
         else:
             color = row['color']
+        if 'shape' in encoding:
+            if 'value' in encoding['shape']:
+                shape = encoding['shape']['value']
+            else:
+                val = row[key('shape')]
+                if 'scale' in encoding['color']:
+                    idx = encoding['shape']['scale']['domain'].index(val)
+                    shape = encoding['shape']['scale']['range'][idx]
+        else:
+            shape = row['shape']
         sw = scaleX(w)
         sh = scaleY(h)
         sd = scaleZ(d)
@@ -644,7 +666,7 @@ def createScatter():
             sw = size
             sh = size
             sd = size
-            datavis = {"type": "sphere", "x":placeX(x), "y":placeY(y), "z":placeZ(z), "w":sw, "h": sh, "d":sd, "color": color}
+            datavis = {"type": shape, "x":placeX(x), "y":placeY(y), "z":placeZ(z), "w":sw, "h": sh, "d":sd, "color": color}
             visuals.append(datavis)
 
 def createBar():
@@ -808,9 +830,9 @@ def createPie():
         z = 0.0
         txtx = x * np.cos(radians) - z * np.sin(radians)
         txtz = x * np.sin(radians) + z * np.cos(radians)
-        datavis = {"type": "text", "x":posX+txtx, "y":scaleY(y)+0.005, "z":posZ-txtz+0.01, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset":str(y)}
+        datavis = {"type": "text", "x":posX+txtx, "y":scaleY(y)+0.005, "z":posZ-txtz+0.01, "w":0.05, "h": 0.0, "d":0.025, "color": "#000000", "asset":str(y)}
         visuals.append(datavis)
-    datavis = {"type": "text", "x":posX, "y":0.02, "z":posZ, "w":0.05, "h": 0.0, "d": 0.016, "color": "#000000", "asset": encoding['y']['title']}
+    datavis = {"type": "text", "x":posX, "y":0.02, "z":posZ, "w":0.05, "h":0.0, "d":0.035, "color": "#000000", "asset": encoding['y']['title']}
     visuals.append(datavis)
     
 def createLegend(spec, bbox, y0):
@@ -870,7 +892,6 @@ def createPanels(spec):
     global factorY
     global factorZ
 
-    adjustBaseSize = False
     plotWidth = chartWidth
     panelWidth = chartWidth
     plotHeight = chartHeight
@@ -881,14 +902,16 @@ def createPanels(spec):
     panelDepth2 = chartDepth
     panelHeight2 = chartHeight
     panelY2 = 0.0
+    adjustBaseSize = False # do we still need this?
 
     # handle upper/lowercase coding of type
     speclc = list(map(str.lower,spec))
     maptype = dict(zip(speclc, spec))
     spec = speclc
 
-    if any(p.startswith('xz') for p in spec):
-        adjustBaseSize = True
+    # TODO: do we need this?
+    #if any(p.startswith('xz') for p in spec):
+    #    adjustBaseSize = True
 
     # generate xy and -xy panels
     if any(p.startswith('xy') or p.startswith('-xy') for p in spec):
@@ -929,14 +952,17 @@ def createPanels(spec):
             visuals.append(panel)
         ax.xaxis.set_inverted(False)
         if 'xy+s' in spec:
-            #ax.scatter(df['x'], df['y'], c=df['color'].map(encoding['color']['map']), s=getSize2D() , marker=getMarker())
-            ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            #ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            for xp, yp, c, m in zip(df[key('x')], df[key('y')], getColor(), getMarkers()):
+                ax.scatter(xp, yp, s=getSize2D() , c=c, marker=m)
             plt.savefig(os.path.join(folder, 'xy+s.png'))
             panel = {"type": maptype["xy+s"][:2], "x":0.0, "y":float(panelY), "z":-float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "xy+s.png"}
             visuals.append(panel)
         ax.xaxis.set_inverted(True)
         if '-xy+s' in spec:
-            ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            #ax.scatter(df[key('x')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            for xp, yp, c, m in zip(df[key('x')], df[key('y')], getColor(), getMarkers()):
+                ax.scatter(xp, yp, s=getSize2D() , c=c, marker=m)
             plt.savefig(os.path.join(folder, '-xy+s.png'))
             panel = {"type": maptype["-xy+s"][:3], "x":0.0, "y":float(panelY), "z":float(chartDepth/2.0), "w":float(panelWidth), "d": 0, "h":float(panelHeight), "asset": assetURL + "-xy+s.png"}            
             visuals.append(panel)
@@ -1031,13 +1057,17 @@ def createPanels(spec):
             visuals.append(panel)
         ax.xaxis.set_inverted(False)
         if 'zy+s' in spec:
-            ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            #ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            for zp, yp, c, m in zip(df[key('z')], df[key('y')], getColor(), getMarkers()):
+                ax.scatter(zp, yp, s=getSize2D() , c=c, marker=m)
             plt.savefig(os.path.join(folder, 'zy+s.png'))
             panel = {"type": maptype["zy+s"][:2], "x":float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "zy+s.png"}
             visuals.append(panel)
         ax.xaxis.set_inverted(True)
         if '-zy+s' in spec:
-            ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            #ax.scatter(df[key('z')], df[key('y')], c=getColor(), s=getSize2D() , marker=getMarker())
+            for zp, yp, c, m in zip(df[key('z')], df[key('y')], getColor(), getMarkers()):
+                ax.scatter(zp, yp, s=getSize2D() , c=c, marker=m)
             plt.savefig(os.path.join(folder, '-zy+s.png'))
             panel = {"type": maptype["-zy+s"][:3], "x":-float(chartWidth/2.0), "y":float(panelY2), "z":0.0, "w":float(panelDepth2), "d": 0, "h":float(panelHeight2), "asset": assetURL + "-zy+s.png"}
             visuals.append(panel)
@@ -1063,7 +1093,6 @@ def createPanels(spec):
                 factorZ = (encoding['z']['scale']['range'][1] - encoding['z']['scale']['range'][0]) / (upperZ - lowerZ)
         else:
             min, max = ax.get_xlim()
-            print(min, max)
             if min > max: # from inverse panel
                 lowerZ = max; upperZ = min;
             else:
@@ -1150,7 +1179,9 @@ def createPanels(spec):
             if 'xz' in spec:     
                 plt.savefig(os.path.join(folder, 'xz.png'))
             if 'xz+s' in spec:
-                ax.scatter(df[key('x')], df[key('z')], c=getColor(), s=getSize2D() , marker=getMarker())
+                #ax.scatter(df[key('x')], df[key('z')], c=getColor(), s=getSize2D() , marker=getMarker())
+                for xp, zp, c, m in zip(df[key('x')], df[key('z')], getColor(), getMarkers()):
+                    ax.scatter(xp, zp, s=getSize2D() , c=c, marker=m)
                 plt.savefig(os.path.join(folder, 'xz+s.png'))
             
         fig_width, fig_height = plt.gcf().get_size_inches()
@@ -1225,7 +1256,7 @@ def createPanels(spec):
     if doSaveEncoding:
         panel = {"type": "encoding", "x":0, "y":0, "z":0, "w":float(chartWidth), "d": float(chartDepth), "h":float(chartHeight), "asset": assetURL + "encoding.json"}
         visuals.insert(0, panel)
-    #print("Factors: ", factorX, factorY, factorZ)
+    print("Factors: ", factorX, factorY, factorZ)
         
 def testScale():
     ref = {"type": "box", "x":0.0, "y":placeY(2.25), "z":placeZ(upperZ), "w":0.5, "d": 0.1, "h":0.01, "color": "green"}

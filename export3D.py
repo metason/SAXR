@@ -249,11 +249,11 @@ def createDataRep(rep):
         roty = 0.0
         rotz = 0.0
         if rep['h'] > rep['d']:
-            factor = 1.7 * rep['h'] / h
+            factor = 1.0 * rep['h'] / h
             rotx = math.pi / 2.0
             pos= (rep['x'] - w*factor/2.0, -rep['z'], rep['y'])
         else:
-            factor = 1.7 * rep['d'] / h
+            factor = 1.0 * rep['d'] / h
             rotx = 0.0
             pos= (rep['x'] - w*factor/2.0, -rep['z'] - h*factor/2.0, rep['y'])
         obj.rotation_euler = (rotx, roty, rotz)

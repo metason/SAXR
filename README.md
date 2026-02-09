@@ -13,6 +13,7 @@
 * __Data Prep__: Use of Numpy, Pandas and GeoPandas as most common tools  for data processing
 * __Python-based__: Scripts for generation of data reps using Matplotlib for chart layouting
 * __Data Import__: Inline data specification or loading of data files in json/xlsx/csv format
+* __3D Export__: Generation of 3D files of data viz in usdz/gltf/glb/fbx format
 
 ## 3D Plot Layouts
 

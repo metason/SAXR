@@ -1,6 +1,7 @@
 # TODO
 
 ## FIXES
+- scaling!!!!
 - mark/shape: global and/or encoding?
 - datarep: rich-text panels, say, play 
 - ls=size
