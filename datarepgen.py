@@ -128,12 +128,13 @@ def inch2m(inch):
 
 def getSize2D():
     # marker size from m in points of dpi 
+    factor = 0.6 # reduce to fit?
     if 'size' in encoding:
         if 'value' in encoding['size']:
-            return encoding['size']['value'] * 100 * 100.0 * 72.0 / dpi / 2.54
+            return encoding['size']['value'] * 100.0 * factor * dpi / 2.54 
     if key("size") in df and df.dtypes[key("size")] == float:
-        return df[key("size")].map(lambda x: x * 100.0 * 100.0 * 72.0 / dpi / 2.54)
-    return dpi / 5.0
+        return df[key("size")].map(lambda x: x * 100.0 * factor * dpi / 2.54)
+    return factor * dpi / 2.54
 
 def getSize():
     # marker size in m

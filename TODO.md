@@ -1,11 +1,12 @@
 # TODO
 
 ## FIXES
-- scaling!!!!
 - mark/shape: global and/or encoding?
 - datarep: rich-text panels, say, play 
 - ls=size
 - legend pos, billboard
+- Docu for export3D
+  - output formats
 
 ## TEST
 - size of legends
