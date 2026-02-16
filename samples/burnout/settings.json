@@ -1,0 +1,51 @@
+{
+    "description": "3D data viz of burnout data set.",
+    "title": "Workplace Experiences",
+    "stage": {
+        "width": 2.2,
+        "height": 2.2,
+        "depth": 2.2
+    },
+    "data": {
+        "url": "burnout.csv"
+    },
+    "gridColor": "#000000",
+    "bgColor": "#33333355",
+    "plot": "scatter",
+    "mark": "sphere",
+    "encoding": {
+        "x": {
+            "field": "Work_overload",
+            "title": "Work Overload"
+        },
+        "y": {
+            "field": "Burnout_eff_MEAN",
+            "title": "Burnout"
+
+        },
+        "z": {
+            "field": "Relation_supervisor_MEAN",
+            "title": "Relation supervisors"
+        },
+        "size": {
+            "value": 0.05
+        },
+        "color": {
+            "field": "Age"
+        },
+        "shape": {
+            "field": "Sex",
+            "scale": {
+                "domain": ["Female", "Male"], 
+                "range": ["sphere", "box"]
+            }
+        }
+    },
+    "panels": [
+        "xy",
+        "zy",
+        "xz",
+        "lm=_<",
+        "lc=_>"
+    ]
+}

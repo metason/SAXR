@@ -21,9 +21,8 @@
     "gridColor": "#66CCFF",
     "bgColor": "#111122CC",
     "palette": {
-        "metrical": "Blues",
+        "metrical": "Oranges",
         "temporal": "Greys",
-        "ordinal": "Oranges",
         "nominal": "tab10"
     },
     "mark": "box",

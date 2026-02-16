@@ -23,8 +23,7 @@
     "bgColor": "#FFFFFFAA",
     "palette": {
         "metrical": "Greys_r",
-        "temporal": "Greys",
-        "ordinal": "Oranges",
+        "temporal": "Oranges",
         "nominal": "tab10"
     },
     "plot": "pie",

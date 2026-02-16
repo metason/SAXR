@@ -76,9 +76,8 @@ markers = ['circle', 'square', 'triangle_up', 'triangle_down', 'diamond', 'plus'
 markerSymbols = ['o', 's', '^', 'v', 'D', 'P', 'X']
 # color palettes as defined in Matplotlib
 palette = {
-    "metrical": "Blues",
+    "metrical": "Oranges",
     "temporal": "Greys",
-    "ordinal": "Oranges",
     "nominal": "tab10"
 }
 mark = "sphere"
@@ -198,6 +197,8 @@ def exportLegend(legend, filename="legend.png"):
     fig.canvas.draw()
     bbox  = legend.get_window_extent()
     bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+    print("EXPORT LEGEND")
+    print(os.path.join(folder, filename))
     fig.savefig(os.path.join(folder, filename), dpi=dpi, bbox_inches=bbox)
     return bbox
 
@@ -463,6 +464,8 @@ def deduceEncoding():
         key = 'color'
         if 'field' in encoding["color"] and isinstance(encoding["color"]['field'], str):
             key = encoding["color"]['field']
+            if 'title' not in encoding['color']:
+                encoding['color']['title'] = key
             cat = []
             if key in dimension and 'type' in dimension[key]:
                 type = dimension[key]['type']
@@ -493,6 +496,8 @@ def deduceEncoding():
         key = 'shape'
         if 'field' in encoding['shape'] and isinstance(encoding["shape"]['field'], str):
             key = encoding['shape']['field']
+        if 'title' not in encoding['shape']:
+            encoding['shape']['title'] = key
         cat = []
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
@@ -646,8 +651,14 @@ def createScatter():
             else:
                 val = row[key('color')]
                 if 'scale' in encoding['color']:
-                    idx = encoding['color']['scale']['domain'].index(val)
-                    color = encoding['color']['scale']['range'][idx]
+                    if encoding['color']['type'] == 'quantitative':
+                        cmap = mpl.colormaps.get_cmap(palette['metrical'])
+                        cval = (val - encoding['color']['scale']['domain'][0]) / (encoding['color']['scale']['domain'][1] -encoding['color']['scale']['domain'][0])
+                        rgb = cmap(cval)
+                        color = rgb2hex(rgb[0], rgb[1], rgb[2])
+                    else:
+                        idx = encoding['color']['scale']['domain'].index(val)
+                        color = encoding['color']['scale']['range'][idx]
         else:
             color = row['color']
         if 'shape' in encoding:

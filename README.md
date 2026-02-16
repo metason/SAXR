@@ -198,8 +198,7 @@ Legends are panels as well. The legend name additionally encodes its pose and po
 
 Predefined Color Palettes:
 - __nominal__: categorial color palette without ranking; default: `tab10`
-- __ordinal__: categorial and sortable color palette; default: `Oranges`
-- __quantitative__: quantitative and interpolatable color palette; default: `Blues`
+- __quantitative__: quantitative and interpolatable color palette; default: `Oranges`
 - __temporal__: quantitative and interpolatable color palette; default: `Greys`
 
 The color palettes may be overwritten in the `settings.json` file. 
@@ -208,8 +207,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 ```json
     "palette": {
         "nominal": "tab10",
-        "ordinal": "Oranges",
-        "quantitative": "Blues",
+        "quantitative": "Oranges",
         "temporal": "Greys"
     },
 ```
