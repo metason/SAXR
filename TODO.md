@@ -10,7 +10,7 @@
 
 ## TEST
 - size of legends
-- legends: ls=size, lc=color, lm=marker
+- legends: ls=size, lc=color, lm=marker/shape
 
 ## DOCU
 
