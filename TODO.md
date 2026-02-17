@@ -5,8 +5,6 @@
 - datarep: rich-text panels, say, play 
 - ls=size
 - legend pos, billboard
-- Docu for export3D
-  - output formats
 
 ## TEST
 - size of legends
@@ -80,7 +78,6 @@ Data Stage Panels + plotting
 - +l: line plot
 - +b: bar blot
 - +a: area plot
-- +c: category cluster showing min-max-mean using color encoding
 
 Scenes
 ```json
