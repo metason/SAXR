@@ -1,0 +1,206 @@
+[
+    {
+        "day": "Sun",
+        "hour": 1,
+        "kWh": 1.6,
+        "temp": -7.5
+    },
+    {
+        "day": "Sun",
+        "hour": 3,
+        "kWh": 1.9,
+        "temp": -8.3
+    },
+    {
+        "day": "Sun",
+        "hour": 5,
+        "kWh": 2.1,
+        "temp": -11.1
+    },
+    {
+        "day": "Sun",
+        "hour": 7,
+        "kWh": 2.2,
+        "temp": -11.9
+    },
+    {
+        "day": "Sun",
+        "hour": 9,
+        "kWh": 1.9,
+        "temp": -9.3
+    },
+    {
+        "day": "Sun",
+        "hour": 11,
+        "kWh": 1.2,
+        "temp": -5.2
+    },
+    {
+        "day": "Sun",
+        "hour": 13,
+        "kWh": 1.4,
+        "temp": -3.9
+    },
+    {
+        "day": "Sun",
+        "hour": 15,
+        "kWh": 1.5,
+        "temp": -2.8
+    },
+    {
+        "day": "Sun",
+        "hour": 17,
+        "kWh": 1.7,
+        "temp": -5.3
+    },
+    {
+        "day": "Sun",
+        "hour": 19,
+        "kWh": 1.8,
+        "temp": -6.5
+    },
+    {
+        "day": "Sat",
+        "hour": 1,
+        "kWh": 0.9,
+        "temp": -3.3
+    },
+    {
+        "day": "Sat",
+        "hour": 3,
+        "kWh": 1.1,
+        "temp": -4.6
+    },
+    {
+        "day": "Sat",
+        "hour": 5,
+        "kWh": 1.3,
+        "temp": -7.2
+    },
+    {
+        "day": "Sat",
+        "hour": 7,
+        "kWh": 1.5,
+        "temp": -6.1
+    },
+    {
+        "day": "Sat",
+        "hour": 9,
+        "kWh": 1.1,
+        "temp": -4.3
+    },
+    {
+        "day": "Sat",
+        "hour": 11,
+        "kWh": 1.0,
+        "temp": -3.2
+    },
+    {
+        "day": "Sat",
+        "hour": 13,
+        "kWh": 0.4,
+        "temp": 1.9
+    },
+    {
+        "day": "Sat",
+        "hour": 15,
+        "kWh": 0.3,
+        "temp": 5.2
+    },
+    {
+        "day": "Sat",
+        "hour": 17,
+        "kWh": 0.5,
+        "temp": 1.3
+    },
+    {
+        "day": "Sat",
+        "hour": 19,
+        "kWh": 1.2,
+        "temp": -3.5
+    },
+    {
+        "day": "Sat",
+        "hour": 21,
+        "kWh": 1.5,
+        "temp": -6.3
+    },
+    {
+        "day": "Sat",
+        "hour": 23,
+        "kWh": 1.6,
+        "temp": -7.1
+    },
+    {
+        "day": "Fri",
+        "hour": 1,
+        "kWh": 1.5,
+        "temp": -5.9
+    },
+    {
+        "day": "Fri",
+        "hour": 3,
+        "kWh": 1.5,
+        "temp": -4.3
+    },
+    {
+        "day": "Fri",
+        "hour": 5,
+        "kWh": 1.4,
+        "temp": -2.2
+    },
+    {
+        "day": "Fri",
+        "hour": 7,
+        "kWh": 1.2,
+        "temp": 1.6
+    },
+    {
+        "day": "Fri",
+        "hour": 9,
+        "kWh": 0.8,
+        "temp": 3.3
+    },
+    {
+        "day": "Fri",
+        "hour": 11,
+        "kWh": 0.5,
+        "temp": 8.3
+    },
+    {
+        "day": "Fri",
+        "hour": 13,
+        "kWh": 0.1,
+        "temp": 10.1
+    },
+    {
+        "day": "Fri",
+        "hour": 15,
+        "kWh": 0.1,
+        "temp": 8.8
+    },
+    {
+        "day": "Fri",
+        "hour": 17,
+        "kWh": 0.2,
+        "temp": 5.3
+    },
+    {
+        "day": "Fri",
+        "hour": 19,
+        "kWh": 0.4,
+        "temp": 1.5
+    },
+    {
+        "day": "Fri",
+        "hour": 21,
+        "kWh": 0.6,
+        "temp": -1.1
+    },
+    {
+        "day": "Fri",
+        "hour": 23,
+        "kWh": 0.8,
+        "temp": -3.2
+    }
+]

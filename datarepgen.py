@@ -366,7 +366,7 @@ def deduceEncoding():
             if 'range' in dimension[key]:
                 scale['range'] = dimension[key]['range']
             else:
-                scale = {'domain': dimension[key]['domain'], 'range': [-chartWidth/2.0, chartWidth/2.0]}
+                scale['range'] = [-chartWidth/2.0, chartWidth/2.0]
             encoding['x']['scale'] = scale
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
@@ -441,7 +441,7 @@ def deduceEncoding():
             if 'range' in dimension[key]:
                 scale['range'] = dimension[key]['range']
             else:
-                scale = {'domain': dimension[key]['domain'], 'range': [-chartDepth/2.0, chartDepth/2.0]}
+                scale['range'] = [-chartDepth/2.0, chartDepth/2.0]
             encoding['z']['scale'] = scale
         if key in dimension and 'type' in dimension[key]:
             type = dimension[key]['type']
@@ -670,7 +670,10 @@ def createScatter():
                     idx = encoding['shape']['scale']['domain'].index(val)
                     shape = encoding['shape']['scale']['range'][idx]
         else:
-            shape = row['shape']
+            if 'shape' in row:
+                shape = row['shape']
+            else:
+                shape = 'sphere'
         sw = scaleX(w)
         sh = scaleY(h)
         sd = scaleZ(d)
@@ -741,15 +744,21 @@ def createBar():
                 if isinstance(encoding["color"]['field'], str):
                     val = row[key('color')]
                     if 'scale' in encoding['color']:
-                        idx = encoding['color']['scale']['domain'].index(val)
-                        color = encoding['color']['scale']['range'][idx]
+                        if encoding['color']['type'] == 'quantitative':
+                            cmap = mpl.colormaps.get_cmap(palette['metrical'])
+                            cval = (val - encoding['color']['scale']['domain'][0]) / (encoding['color']['scale']['domain'][1] -encoding['color']['scale']['domain'][0])
+                            rgb = cmap(cval)
+                            color = rgb2hex(rgb[0], rgb[1], rgb[2])
+                        else:
+                            idx = encoding['color']['scale']['domain'].index(val)
+                            color = encoding['color']['scale']['range'][idx]
         else:
             color = row['color']
 
         i = 0
         x0 = -(len(yvalues)-1)/2.0 * size
         for y in yvalues:
-            sh = scaleY(y)
+            sh = scaleY(y - lowerY)
             if size > 0.0:
                 sw = size
             else:

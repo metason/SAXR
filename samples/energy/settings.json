@@ -1,0 +1,54 @@
+{
+    "description": "Energy usage of radiator",
+    "title": "Heating energy",
+    "data": {
+        "url": "heating.json"
+    },
+    "stage": {
+        "width": 0.6,
+        "height": 0.3,
+        "depth": 0.35
+    },
+    "output": "viz.json",
+    "gridColor": "#BB7711",
+    "bgColor": "#225500CC",
+    "palette": {
+        "metrical": "seismic"
+    },
+    "mark": "box",
+    "plot": "bar",
+    "encoding": {
+        "x": {
+            "field": "hour",
+            "scale": {
+                "domain": [0, 24]
+            }
+        },
+        "y": {
+            "field": "kWh",
+            "scale": {
+                "domain": [0.0, 2.5]
+            }
+        },
+        "z": {
+            "field": "day"
+        },
+        "size": {
+            "value": 0.0475
+        },
+        "color": {
+            "field": "temp",
+            "title": "Outdoor temperature",
+            "scale": {
+                "domain": [-12, 12]
+            }
+        }
+    },
+    "panels": [
+        "XY",
+        "ZY",
+        "-ZY",
+        "XZ",
+        "LC=_"
+    ]
+}
