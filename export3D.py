@@ -59,7 +59,6 @@ def getMaterial(color):
         if mat.name == color:
             return mat
     material = bpy.data.materials.new(name=color)
-    material.use_nodes = True
     principled_bsdf_node = material.node_tree.nodes["Principled BSDF"]
     rgba = mcolors.to_rgba(color)
     principled_bsdf_node.inputs["Base Color"].default_value = rgba
@@ -79,7 +78,7 @@ def saveFile():
     if format_name == "blend":
         bpy.ops.wm.save_as_mainfile(filepath=output_path, check_existing=False)
     elif format_name == "usdc" or format_name == "usdz":
-        bpy.ops.wm.usd_export(filepath=output_path, check_existing=False)
+        bpy.ops.wm.usd_export(filepath=output_path, check_existing=False, convert_orientation=True, export_global_forward_selection='NEGATIVE_Z', export_global_up_selection='Y')
     elif format_name == "fbx":
         bpy.ops.export_scene.fbx(filepath=output_path, check_existing=False)
     elif format_name == "gltf":
@@ -130,7 +129,6 @@ def createPanel(rep):
     imgFile = os.path.join(folder, os.path.basename(rep['asset']))
     img = bpy.data.images.load(imgFile)
     mat = bpy.data.materials.new(ptype)
-    mat.use_nodes = True
     mat.use_backface_culling = True
     mat.blend_method = 'CLIP'
     node_tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
@@ -214,7 +212,7 @@ def createDataRep(rep):
         plane = bpy.context.active_object
         plane.dimensions = dim
         pivot = (0.0, 0.0, 0.0)
-        rot_start = -float(kvs['start']) * math.pi / 180.0
+        rot_start = float(kvs['start']) * math.pi / 180.0
         bpy.ops.transform.rotate(value=rot_start, center_override=pivot)
         bpy.ops.object.mode_set(mode = 'EDIT')
         rot_angle = -float(kvs['angle']) * math.pi / 180.0

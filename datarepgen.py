@@ -323,7 +323,7 @@ def deduceDimensions():
         if col in encoding and 'scale' in encoding[col] and 'domain' in encoding[col]['scale']:
             spec['domain'] = encoding[col]['scale']['domain']
             calcDomain = False
-        if df[col].dtype == 'object' or df[col].dtype == 'category':
+        if df[col].dtype == 'object' or df[col].dtype == 'str' or df[col].dtype == 'category':
             spec['type'] = 'nominal'
             if calcDomain:
                 cat = df[col].unique()

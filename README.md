@@ -214,29 +214,34 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 
 ## Basic Installation
 
-- Prerequisite: Python 3.X
-- Install Pandas and Matplotlib (and optionally GeoPandas)
 - Download repository
+- Prerequisite: Python 3.11
+  - Hint: Check available precompiled bpy version for Blender and setup pyenv with corresponding version 
+- Install Numpy, Pandas and Matplotlib (and optionally GeoPandas)
 - In project folder run: ```python datarepgen.py samples/iris``` 
   - the python script reads the ```samples/iris/settings.json``` file as input 
 - Find generated output in ```samples/iris``` folder: 
   - several 2D images in png format (used for panels)
   - encoding.json
   - a list of data reps in viz.json (used as input for XR viewer)
+- Sample to data viz with geo maps:
+  - In  ```samples/geo``` folder run: ```python georepgen.py``` 
+  - This will generate the map panel and the ```settings.json``` file
+  - Go up two directories and run ```python datarepgen.py samples/geo```
 
 ## Setup for export3D.py
 
-- Install Blender: [blender.org](https://www.blender.org)
+- Install Blender 5.X: [blender.org](https://www.blender.org)
 - Install Blender as a Python module: https://docs.blender.org/api/current/info_advanced_blender_as_bpy.html
 - In project folder run: ```python export3D.py samples/iris``` 
   - the python script reads the ```samples/iris/viz.json``` file as input 
   - generates a blender file as output (with .blend file ending)
 - Export standard 3D file formats by adding corresponding file ending
-  - ```python export3D.py samples/iris usdz```
-  - ```python export3D.py samples/iris usdc```
-  - ```python export3D.py samples/iris glb```
-  - ```python export3D.py samples/iris gltf```
-  - ```python export3D.py samples/iris fbx```
+  - USDZ: ```python export3D.py samples/iris usdz```
+  - USDC: ```python export3D.py samples/iris usdc```
+  - GLB: ```python export3D.py samples/iris glb```
+  - GLTF: ```python export3D.py samples/iris gltf```
+  - FBX: ```python export3D.py samples/iris fbx```
 
 ## SAXR Front-ends
 
@@ -247,18 +252,6 @@ The presentation of SAXR data reps is supported by:
   - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)
   - glTF 3D samples: [iris.glb](samples/iris/result3D/iris.glb), [eco.glb](samples/eco/result3D/eco.glb), [fruits.glb](samples/fruits/result3D/fruits.glb), [geo.glb](samples/geo/result3D/health.glb)
 
-## Hints
-
-How to fix transparency in USDZ/glTF export:
-- Export USD from ARchi Composer
-- Import file into Blender
-  - Select planes with texture images using opacity/transparency
-    - In Shading editor connect alpha from image to Principled BSDF
-    - In Material tab
-      - set Settings->Blend Mode to "Alpha Clip"
-      - set Backface Culling on
-- Delete Camera and Light from Scene
-- Export to usdz and glb format (does embed textures)
 
 ## Screen Recording Videos
 - geoSPATIAL: https://youtube.com/shorts/6w4DJwMHewY
