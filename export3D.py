@@ -63,7 +63,7 @@ def getMaterial(color):
     rgba = mcolors.to_rgba(color)
     principled_bsdf_node.inputs["Base Color"].default_value = rgba
     principled_bsdf_node.inputs["Metallic"].default_value = 0.2
-    principled_bsdf_node.inputs["Roughness"].default_value = 1.0
+    principled_bsdf_node.inputs["Roughness"].default_value = 0.5
     return material
 
 def cleanScene():
@@ -178,11 +178,11 @@ def createDataRep(rep):
         bpy.ops.object.join()
         setupDataRepItem(rep)
     elif rep['type'] == 'plus':
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w'], rep['d']*0.2, rep['h']*0.2))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w'], rep['d']*0.33, rep['h']*0.33))
         obj1 = bpy.context.active_object
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.2, rep['d'], rep['h']*0.2))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.33, rep['d'], rep['h']*0.33))
         obj2 = bpy.context.active_object
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.2, rep['d']*0.2, rep['h']))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.33, rep['d']*0.33, rep['h']))
         obj3 = bpy.context.active_object
         obj1.select_set(True)
         obj2.select_set(True)
@@ -190,11 +190,11 @@ def createDataRep(rep):
         bpy.ops.object.join()
         setupDataRepItem(rep)
     elif rep['type'] == 'cross':
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w'], rep['d']*0.15, rep['h']*0.15))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w'], rep['d']*0.33, rep['h']*0.33))
         obj1 = bpy.context.active_object
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.15, rep['d'], rep['h']*0.15))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.33, rep['d'], rep['h']*0.33))
         obj2 = bpy.context.active_object
-        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.15, rep['d']*0.15, rep['h']))
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(rep['x'], -rep['z'], rep['y']), scale=(rep['w']*0.33, rep['d']*0.33, rep['h']))
         obj3 = bpy.context.active_object
         obj1.select_set(True)
         obj2.select_set(True)

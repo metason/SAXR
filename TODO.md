@@ -1,5 +1,179 @@
 # TODO
 
+## Settings Schema Extensions
+
+Topics:
+- Spatio-temporal arrangement of data scene sequences
+- Behavior
+  - placing
+  - navigation
+  - interaction: selection? pick/gaze/...
+
+### Temporal Sequence
+Datarep sequence automatically generated from data (as in samples/eco)
+Interval of animation in seconds.
+
+```json
+    "sequence": {
+        "field": "year",
+        "domain": [
+            2000,
+            2024
+        ],
+        "arrangement": "animated",
+        "interval": 1.5
+    }
+```
+
+### Comparative Sequence
+Datarep sequence automatically generated from data (as in samples/eco)
+Gap between side-by-side arrangement in meters.
+
+```json
+    "sequence": {
+        "field": "year",
+        "domain": [
+            2000,
+            2020
+        ],
+        "arrangement": "comparative",
+        "gap": [0.25 0 0]
+    }
+```
+
+### LOD Sequence
+Datarep sequence manually composed (as in samples/iris)
+Distance in meters (of user's proximity) when LOD elements are switched.
+
+```json
+    "sequence": {
+        "arrangement": "LOD",
+        "steps": [4.5, 2.0]
+    }
+```
+
+### Narrative Sequence
+Datarep sequence manually composed (as in samples/fruits)
+Control as interaction buttons or defined in behavior as interaction?
+
+```json
+    "sequence": {
+        "arrangement": "narrative",
+        "control": "selection" // selection, next, prev-next, touch, ...?
+    }
+```
+
+### Behavior
+
+```json
+    "behavior": {
+        "placing": {
+            ...
+        },
+        "interaction": {
+            ...
+        },
+        "navigation": {
+            ...
+        }
+    },
+```
+
+## Frontend Specs 
+Formerly named "encoding.json", new "specs.json"
+- pass behavior definitions from settings.json
+- encoding are generated as is, used for remapping visuals to data 
+
+
+```json
+{
+    "behavior": {
+        "placing": {
+            ...
+        },
+        "interaction": {
+            ...
+        },
+        "navigation": {
+            ...
+        }
+    },
+    "encoding": {
+        "x": {
+            "field": "category",
+            "title": "category",
+            "scale": {
+                "domain": [
+                    "GDP",
+                    "gov debt",
+                    "priv debt"
+                ],
+                "range": [
+                    -0.22727272727272727,
+                    -5.04646829375071e-17,
+                    0.22727272727272715
+                ]
+            },
+            "type": "nominal"
+        },
+        "y": {
+            "field": "value",
+            "scale": {
+                "domain": [
+                    0.0,
+                    125000.0
+                ],
+                "range": [
+                    0.0,
+                    0.55
+                ]
+            },
+            "title": "value",
+            "type": "quantitative"
+        },
+        "z": {
+            "field": "region",
+            "title": "region",
+            "scale": {
+                "domain": [
+                    "US",
+                    "EU",
+                    "CN"
+                ],
+                "range": [
+                    -0.17857142857142858,
+                    -3.96508223080413e-17,
+                    0.17857142857142852
+                ]
+            },
+            "type": "nominal"
+        },
+        "color": {
+            "field": "category",
+            "title": "per capita in USD",
+            "type": "nominal",
+            "labels": [
+                "GDP",
+                "gov debt",
+                "priv debt"
+            ],
+            "scale": {
+                "domain": [
+                    "GDP",
+                    "gov debt",
+                    "priv debt"
+                ],
+                "range": [
+                    "#1f77b4",
+                    "#ff7f0e",
+                    "#2ca02c"
+                ]
+            }
+        }
+    }
+}
+```
+
 ## FIXES
 - mark/shape: global and/or encoding?
 - datarep: rich-text panels, say, play 
@@ -67,12 +241,14 @@ DataReps
 - label: text label for tooltip
 - link: URL link as asset attribute?
 - [rx,ry,rz: rotation --> not used due to not being view-independent for markers]
--Linking sceneries for comparing
+-Linking sceneries for comparing --> comparative sequence
 
 Plot (Layout)
 - line
 - area?
 - text?
+- surface
+- stack
 
 Data Stage Panels + plotting
 - +l: line plot
@@ -109,11 +285,6 @@ Scenes
         }
     ]
 ```
-
-datareps2glb
-- generate glb from datareps
-- In Python using trimesh? https://trimesh.org
-- Python scripting of Blender?
 
 ## CHECK
 - rotation of top labels in xz plane (gave up)
