@@ -247,8 +247,11 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 
 The presentation of SAXR data reps is supported by:
 
-- [ARchi VR App](ARchi): iOS AR application
-- [ARchi Composer](ARchi): macOS AR editor
+- [Blender](export3D.py): Python programm using Blender in head-less mode to create 3D files
+- [Unity](frontends/Unity/): comming soon 
+- [Web3D](frontends/Web3D/): comming soon 
+- [ARchi VR App](frontends/ARchi): iOS AR application
+- [ARchi Composer](frontends/ARchi): macOS AR editor
   - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)
   - glTF 3D samples: [iris.glb](samples/iris/result3D/iris.glb), [eco.glb](samples/eco/result3D/eco.glb), [fruits.glb](samples/fruits/result3D/fruits.glb), [geo.glb](samples/geo/result3D/health.glb)
 
@@ -266,3 +269,16 @@ The presentation of SAXR data reps is supported by:
 - Datasets: https://github.com/vega/vega-datasets
 - Colormaps: https://matplotlib.org/stable/gallery/color/colormap_reference.html
 - ARchi VR App: https://archi.metason.net
+
+## Contact
+
+Philipp Ackermann, philipp@metason.net
+
+## Acknowledgments
+
+- [Alexander Frank](https://github.com/Palmaco) and Emilio Lilie de Leon for refactoring the Python code and for the development of Unity and Web3D frontends
+- [Peter Butcher](https://github.com/PButcher) for the discussions on situated analytics
+
+## License
+
+Released under the [Creative Commons CC0 License](LICENSE).
