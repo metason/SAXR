@@ -1,4 +1,5 @@
 {
+    "$schema": "../../schemas/settings.json",
     "description": "Economic situation of US, EU, and CN in 2000-2024.",
     "title": "USD Per Capita",
     "data": {

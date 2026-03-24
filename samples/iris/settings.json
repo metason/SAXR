@@ -1,4 +1,5 @@
 {
+    "$schema": "../../schemas/settings.json",
     "description": "3D data viz of Iris data set.",
     "title": "Iris",
     "stage": {

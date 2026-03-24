@@ -1,4 +1,5 @@
 {
+    "$schema": "../../schemas/settings.json",
     "description": "Fruits analysis with weekly turnover and mean weight in gramms.",
     "title": "Sales Volume of Fruits",
     "stage": {
