@@ -1,7 +1,7 @@
 """Blender 3D export sub-package for the SAXR pipeline.
 
 Provides:
-- :class:`Exporter3D` — orchestrator that reads viz.json and builds a Blender scene.
+- :class:`Exporter3D` — orchestrator that reads datareps.json and builds a Blender scene.
 - :func:`main` — CLI entry point.
 - :class:`MaterialCache` — colour-keyed PBR material cache.
 - :data:`SHAPE_REGISTRY` — type→handler mapping for DataRep shapes.

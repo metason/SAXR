@@ -10,7 +10,7 @@ By changing the definition of [`settings.json`](../../samples/iris/settings.json
 1. a transparent cluster plot combined with a scatter plot
 2. a scatter plot
 
-The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`viz.json`](https://service.metason.net/ar/content/viz/irisLOD/viz.json).
+The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`datareps.json`](https://service.metason.net/ar/content/viz/irisLOD/datareps.json).
 
 In the ARchi app the [`irisLOD.json`](irisLOD.json) script does constantly evaluating the proximity of the user to the data vizualisation. Depending on the distance the active data representation is selected by setting the index of the data visualization with the `setVal()` function.
 
@@ -18,7 +18,7 @@ In the ARchi app the [`irisLOD.json`](irisLOD.json) script does constantly evalu
 
 __1 'net.metason.dataviz.lod'__  🔓
 - Data.Viz
-- https://service.metason.net/ar/content/viz/irisLOD/viz.json
+- https://service.metason.net/ar/content/viz/irisLOD/datareps.json
 - value:0
 
 
@@ -56,7 +56,7 @@ __Code Refs__
 
 __Asset Refs__
 
-- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/datareps.json
 - _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/xz+s.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/xy.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/irisLOD/-xy.png

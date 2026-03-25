@@ -5,7 +5,7 @@
       "id" : "net.metason.dataviz.lod",
       "type" : "Data",
       "subtype" : "Viz",
-      "asset" : "https://service.metason.net/ar/content/viz/irisLOD/viz.json",
+      "asset" : "https://service.metason.net/ar/content/viz/irisLOD/datareps.json",
       "attributes" : "value:0"
     }
   ],

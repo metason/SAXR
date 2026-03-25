@@ -18,7 +18,7 @@
         ]
     },
     "assetURL": "$SERVER/run/vis/",
-    "output": "viz.json",
+    "output": "datareps.json",
     "gridColor": "#66CCFF",
     "bgColor": "#111122CC",
     "palette": {

@@ -1,0 +1,48 @@
+{
+    "description": "3D data viz generated with SAXR.",
+    "data": {
+        "values": [
+            {"category": "a", "x": 1.25, "y": 1.15, "z": 1},
+            {"category": "b", "x": 1.75, "y": 1.15, "z": 1},
+            {"category": "c", "x": 2.25, "y": 1.15, "z": 1},
+            {"category": "d", "x": 2.75, "y": 1.15, "z": 1},
+            {"category": "e", "x": 3.25, "y": 1.15, "z": 1},
+            {"category": "f", "x": 3.75, "y": 1.15, "z": 1},
+            {"category": "g", "x": 4.25, "y": 1.15, "z": 1}
+        ]
+    },
+    "plot": "scatter",
+    "encoding": {
+        "x": {
+            "field": "x"
+        },
+        "y": {
+            "field": "y",
+            "scale": {
+                "domain": [1.0,1.5]
+            }
+        },
+        "z": {
+            "field": "z",
+            "scale": {
+                "domain": [0.5,1.75]
+            }
+        },
+        "size": {
+            "value": 0.05
+        },
+        "shape": {
+            "field": "category"
+        },
+        "color": {
+            "field": "category"
+        }
+    },
+    "panels": [
+        "zy",
+        "xy+s",
+        "-zy",
+        "-xy+s",
+        "xz+s"
+    ]
+}

@@ -5,7 +5,7 @@
       "id" : "dataviz.anim",
       "type" : "Data",
       "subtype" : "Viz",
-      "asset" : "https://service.metason.net/ar/content/viz/ecoANIM/viz.json",
+      "asset" : "https://service.metason.net/ar/content/viz/ecoANIM/datareps.json",
       "attributes" : "value:0"
     },
     {

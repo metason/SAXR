@@ -1,7 +1,7 @@
 """
 Regression tests for datarepgen.py
 
-These tests run datarepgen.py on each sample and compare the generated viz.json
+These tests run datarepgen.py on each sample and compare the generated datareps.json
 and encoding.json against golden reference files captured before refactoring.
 Panel PNGs are also validated for existence and basic integrity.
 
@@ -81,16 +81,16 @@ def run_datarepgen(sample_name: str):
 @pytest.mark.parametrize("sample", SAMPLES, ids=SAMPLES)
 def test_viz_json_matches_golden(sample, tmp_path):
     """
-    Run datarepgen.py on a sample and verify viz.json matches the golden file.
+    Run datarepgen.py on a sample and verify datareps.json matches the golden file.
 
     The test:
-    1. Backs up the current viz.json
-    2. Runs datarepgen.py to regenerate viz.json
+    1. Backs up the current datareps.json
+    2. Runs datarepgen.py to regenerate datareps.json
     3. Compares generated output with golden reference
-    4. Restores the original viz.json (regardless of pass/fail)
+    4. Restores the original datareps.json (regardless of pass/fail)
     """
     sample_dir = os.path.join(SAMPLES_DIR, sample)
-    viz_json_path = os.path.join(sample_dir, "viz.json")
+    viz_json_path = os.path.join(sample_dir, "datareps.json")
     golden_path = os.path.join(GOLDEN_DIR, f"{sample}_viz.json")
 
     # Back up current viz.json
@@ -136,7 +136,7 @@ def test_viz_json_matches_golden(sample, tmp_path):
             )
 
     finally:
-        # Restore original viz.json
+        # Restore original datareps.json
         if os.path.exists(backup_path):
             shutil.copy2(backup_path, viz_json_path)
 

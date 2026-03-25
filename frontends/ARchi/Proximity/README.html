@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>irisLOD&period;json</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="irislodjson">irisLOD.json</h1>
+<p><a href="https://youtu.be/UL8XRe5luu8"><img src="../../docu/images/irislod.jpg" height="256"/></a></p>
+<h2 id="description">Description</h2>
+<p>By changing the definition of <a href="../../samples/iris/settings.json"><code>settings.json</code></a> three different representations of the <a href="../../samples/iris/iris.json"><code>iris.json</code></a> dataset has been generated:</p>
+<ol start="0">
+<li>a non-transparent cluster plot</li>
+<li>a transparent cluster plot combined with a scatter plot</li>
+<li>a scatter plot</li>
+</ol>
+<p>The three generated data viz representations including all generated panels have been manually merged into a list and stored in <a href="https://service.metason.net/ar/content/viz/irisLOD/datareps.json"><code>datareps.json</code></a>.</p>
+<p>In the ARchi app the <a href="irisLOD.json"><code>irisLOD.json</code></a> script does constantly evaluating the proximity of the user to the data vizualisation. Depending on the distance the active data representation is selected by setting the index of the data visualization with the <code>setVal()</code> function.</p>
+<h2 id="items">Items</h2>
+<p><strong>1 'net.metason.dataviz.lod'</strong>  🔓</p>
+<ul>
+<li>Data.Viz</li>
+<li><a href="https://service.metason.net/ar/content/viz/irisLOD/datareps.json">https://service.metason.net/ar/content/viz/irisLOD/datareps.json</a></li>
+<li>value:0</li>
+</ul>
+<h2 id="tasks">Tasks</h2>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add ahead 0 0 -2.5</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'net.metason.dataviz.lod' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>as:always</th>
+<th>if:<code>proximity('net.metason.dataviz.lod') &lt;= 1.8 </code></th>
+<th>do:execute</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>setVal('net.metason.dataviz.lod', 2)</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>as:always</th>
+<th>if:<code>proximity('net.metason.dataviz.lod') &gt; 1.8 AND proximity('net.metason.dataviz.lod') &lt; 3.2</code></th>
+<th>do:execute</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>setVal('net.metason.dataviz.lod', 1)</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>as:always</th>
+<th>if:<code>proximity('net.metason.dataviz.lod') &gt;= 3.2 </code></th>
+<th>do:execute</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>setVal('net.metason.dataviz.lod', 0)</code></p>
+</blockquote>
+<h2 id="references">References</h2>
+<p><strong>Code Refs</strong></p>
+<ul>
+<li><em>SAXR spec</em>: <a href="../../samples/iris/settings.json">settings.json</a></li>
+<li><em>ARchi script</em>: <a href="irisLOD.json">irisLOD.json</a></li>
+</ul>
+<p><strong>Asset Refs</strong></p>
+<ul>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/datareps.json">https://service.metason.net/ar/content/viz/irisLOD/datareps.json</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/xz+s.png">https://service.metason.net/ar/content/viz/irisLOD/xz+s.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/xy.png">https://service.metason.net/ar/content/viz/irisLOD/xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/-xy.png">https://service.metason.net/ar/content/viz/irisLOD/-xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/zy.png">https://service.metason.net/ar/content/viz/irisLOD/zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/-zy.png">https://service.metason.net/ar/content/viz/irisLOD/-zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/irisLOD/lc.png">https://service.metason.net/ar/content/viz/irisLOD/lc.png</a></li>
+</ul>
+<p><strong>Technology Refs</strong></p>
+<ul>
+<li><em>Technical Documentation :</em> <a href="https://service.metason.net/ar/docu/">https://service.metason.net/ar/docu/</a></li>
+<li><em>AR Pattern Diagram :</em> <a href="https://github.com/ARpatterns/diagram">https://github.com/ARpatterns/diagram</a></li>
+<li><em>ARchi VR App :</em> <a href="https://archi.metason.net">https://archi.metason.net</a></li>
+</ul>
+
+            
+            
+        </body>
+        </html>

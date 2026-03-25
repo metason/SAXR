@@ -10,7 +10,7 @@
         "height": 0.3,
         "depth": 0.35
     },
-    "output": "viz.json",
+    "output": "datareps.json",
     "gridColor": "#BB7711",
     "bgColor": "#225500CC",
     "palette": {

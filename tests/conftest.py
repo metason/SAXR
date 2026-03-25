@@ -19,7 +19,7 @@ def make_gen() -> DataRepGenerator:
     """Return a DataRepGenerator with sensible defaults, bypassing __init__."""
     g = object.__new__(DataRepGenerator)
     g.folder         = "/tmp"
-    g.outputFile     = "viz.json"
+    g.outputFile     = "datareps.json"
     g.assetURL       = ""
     g.doSaveEncoding = False
     g.title          = ""

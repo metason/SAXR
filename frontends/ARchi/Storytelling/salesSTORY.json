@@ -5,7 +5,7 @@
       "id" : "dataviz.story",
       "type" : "Data",
       "subtype" : "Viz",
-      "asset" : "https://service.metason.net/ar/content/viz/salesSTORY/viz.json",
+      "asset" : "https://service.metason.net/ar/content/viz/salesSTORY/datareps.json",
       "attributes" : "value:0"
     },
     {

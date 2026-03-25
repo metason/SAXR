@@ -4,7 +4,7 @@
 
 ## Description 
 
-The definition of a `sequence` in [`settings.json`](../../samples/eco/settings.json) does specify seperate data _scenes_ with anual data reps corresponding to the year of the time series stored in [`perCapita.json`](../../samples/eco/perCapita.json). `datarepgen.py`generates all anual scenes with their data reps and stores the result in [`viz.json`](https://service.metason.net/ar/content/viz/ecoANIM/viz.json).
+The definition of a `sequence` in [`settings.json`](../../samples/eco/settings.json) does specify seperate data _scenes_ with anual data reps corresponding to the year of the time series stored in [`perCapita.json`](../../samples/eco/perCapita.json). `datarepgen.py`generates all anual scenes with their data reps and stores the result in [`datareps.json`](https://service.metason.net/ar/content/viz/ecoANIM/datareps.json).
 
 ```json
     "sequence": {
@@ -25,7 +25,7 @@ In parallel the year is shown in a label that is billboarding.
 
 __1 'dataviz.anim'__  🔓
 - Data.Viz
-- https://service.metason.net/ar/content/viz/ecoANIM/viz.json
+- https://service.metason.net/ar/content/viz/ecoANIM/datareps.json
 - value:0
 
 __2 'dataviz.label'__ 2000  🔓
@@ -71,7 +71,7 @@ __Code Refs__
 
 __Asset Refs__
 
-- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/datareps.json
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/xz.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/xy.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/-xy.png

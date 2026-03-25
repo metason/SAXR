@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>salesSTORY&period;json</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="salesstoryjson">salesSTORY.json</h1>
+<p><a href="https://youtube.com/shorts/85cTH27r540"><img src="../../docu/images/salesstory.jpg" height="256"/></a></p>
+<h2 id="description">Description</h2>
+<p>By using the same inline data three different representations have been generated:</p>
+<ol>
+<li>a flat pie chart with <a href="./settings0.json"><code>settings0.json</code></a></li>
+<li>a 3D pie/donut plot with <a href="./settings1.json"><code>settings1.json</code></a></li>
+<li>a flat donut plot with <a href="./settings2.json"><code>settings2.json</code></a></li>
+</ol>
+<p>The three generated data viz representations including all generated panels have been manually merged into a list and stored in <a href="https://service.metason.net/ar/content/viz/salesSTORY/datareps.json"><code>datareps.json</code></a>.</p>
+<p>In the ARchi app the <a href="salesSTORY.json"><code>salesSTORY.json</code></a> script adds three interactive buttons (1-3) near the data vizualisation. By tapping the buttons  the corresponding index of the data visualization is selected with the <code>setVal()</code> function. In step 3 additionally a billboarding text panel is placed as hint.</p>
+<h2 id="items">Items</h2>
+<p><strong>1 'dataviz.story'</strong>  🔓</p>
+<ul>
+<li>Data.Viz</li>
+<li><a href="https://service.metason.net/ar/content/viz/salesSTORY/datareps.json">https://service.metason.net/ar/content/viz/salesSTORY/datareps.json</a></li>
+<li>value:0</li>
+</ul>
+<p><strong>2 'data.hint'</strong>  🔐</p>
+<ul>
+<li>Spot.Panel</li>
+<li><b>Apples:</b><br>Large display area,<br>but <i>low profit</i>.<br></li>
+<li>color:#000000; bgcolor:#EEEEEECC; scale:0.4; billboard:1</li>
+</ul>
+<p><strong>3 'step.1'</strong>  🔐</p>
+<ul>
+<li>Spot.Panel</li>
+<li><a href="https://service.metason.net/ar/extension/images/1.png">https://service.metason.net/ar/extension/images/1.png</a></li>
+<li>wxdxh:0.065x0.065x0.0</li>
+<li>on:tap=setVal('dataviz.story', 0)</li>
+</ul>
+<p><strong>4 'step.2'</strong>  🔐</p>
+<ul>
+<li>Spot.Panel</li>
+<li><a href="https://service.metason.net/ar/extension/images/2.png">https://service.metason.net/ar/extension/images/2.png</a></li>
+<li>wxdxh:0.065x0.065x0.0</li>
+<li>on:tap=setVal('dataviz.story', 1)</li>
+</ul>
+<p><strong>5 'step.3'</strong>  🔐</p>
+<ul>
+<li>Spot.Panel</li>
+<li><a href="https://service.metason.net/ar/extension/images/3.png">https://service.metason.net/ar/extension/images/3.png</a></li>
+<li>wxdxh:0.065x0.065x0.0</li>
+<li>on:tap=setVal('dataviz.story', 2);addto('data.hint', 'dataviz.story')</li>
+</ul>
+<h2 id="tasks">Tasks</h2>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add ahead 0 0.76 -1.25</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'dataviz.story' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add to 'dataviz.story'</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'step.1' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add to 'dataviz.story'</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'step.2' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add to 'dataviz.story'</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'step.3' ➕</p>
+</blockquote>
+<h2 id="references">References</h2>
+<p><strong>Code Refs</strong></p>
+<ul>
+<li><em>SAXR spec</em>: <a href="./settings0.json">settings0.json</a>, <a href="./settings1.json">settings1.json</a>, <a href="./settings2.json">settings2.json</a></li>
+<li><em>ARchi script</em>: <a href="salesSTORY.json">salesSTORY.json</a></li>
+</ul>
+<p><strong>Asset Refs</strong></p>
+<ul>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/salesSTORY/datareps.json">https://service.metason.net/ar/content/viz/salesSTORY/datareps.json</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/salesSTORY/xz+p.png">https://service.metason.net/ar/content/viz/salesSTORY/xz+p.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/salesSTORY/lc.png">https://service.metason.net/ar/content/viz/salesSTORY/lc.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/extension/images/1.png">https://service.metason.net/ar/extension/images/1.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/extension/images/2.png">https://service.metason.net/ar/extension/images/2.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/extension/images/3.png">https://service.metason.net/ar/extension/images/3.png</a></li>
+</ul>
+<p><strong>Technology Refs</strong></p>
+<ul>
+<li><em>Technical Documentation :</em> <a href="https://service.metason.net/ar/docu/">https://service.metason.net/ar/docu/</a></li>
+<li><em>AR Pattern Diagram :</em> <a href="https://github.com/ARpatterns/diagram">https://github.com/ARpatterns/diagram</a></li>
+<li><em>ARchi VR App :</em> <a href="https://archi.metason.net">https://archi.metason.net</a></li>
+</ul>
+
+            
+            
+        </body>
+        </html>

@@ -10,7 +10,7 @@ By using the same inline data three different representations have been generate
 2. a 3D pie/donut plot with [`settings1.json`](./settings1.json)
 3. a flat donut plot with [`settings2.json`](./settings2.json)
 
-The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`viz.json`](https://service.metason.net/ar/content/viz/salesSTORY/viz.json).
+The three generated data viz representations including all generated panels have been manually merged into a list and stored in [`datareps.json`](https://service.metason.net/ar/content/viz/salesSTORY/datareps.json).
 
 In the ARchi app the [`salesSTORY.json`](salesSTORY.json) script adds three interactive buttons (1-3) near the data vizualisation. By tapping the buttons  the corresponding index of the data visualization is selected with the `setVal()` function. In step 3 additionally a billboarding text panel is placed as hint.
 
@@ -18,7 +18,7 @@ In the ARchi app the [`salesSTORY.json`](salesSTORY.json) script adds three inte
 
 __1 'dataviz.story'__  🔓
 - Data.Viz
-- https://service.metason.net/ar/content/viz/salesSTORY/viz.json
+- https://service.metason.net/ar/content/viz/salesSTORY/datareps.json
 - value:0
 
 __2 'data.hint'__  🔐
@@ -75,7 +75,7 @@ __Code Refs__
 
 __Asset Refs__
 
-- _Item asset:_ https://service.metason.net/ar/content/viz/salesSTORY/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/salesSTORY/datareps.json
 - _Item asset:_ https://service.metason.net/ar/content/viz/salesSTORY/xz+p.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/salesSTORY/lc.png
 - _Item asset:_ https://service.metason.net/ar/extension/images/1.png

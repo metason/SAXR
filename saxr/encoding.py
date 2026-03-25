@@ -41,6 +41,7 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
              and whose ``dimension`` dict is populated in-place.
     """
     print(gen.df.columns)
+    print(gen.encoding)
     for col in gen.df.columns:
         calcDomain = True
         spec = {}

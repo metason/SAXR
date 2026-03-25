@@ -9,7 +9,7 @@ the pipeline needs (data, encoding, scale factors, visuals list, …) and
 Typical usage::
 
     gen = DataRepGenerator("samples/iris")
-    gen.run()  # reads settings.json, creates panels & plots, writes viz.json
+    gen.run()  # reads settings.json, creates panels & plots, writes datareps.json
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .panels import render_panels
 
 
 class DataRepGenerator:
-    """Generates DataRep ``viz.json`` and panel images from a ``settings.json``.
+    """Generates DataRep ``datareps.json`` and panel images from a ``settings.json``.
 
     The class owns all shared pipeline state as instance attributes and
     provides thin delegate methods that forward to the pure-function
@@ -44,7 +44,7 @@ class DataRepGenerator:
         self.folder = folder
 
         # ---- SETTINGS (overwritten by values read from settings.json) ----
-        self.outputFile = "viz.json"
+        self.outputFile = "datareps.json"
         self.assetURL = ""
         self.doSaveEncoding = True
         self.title = ""
@@ -310,6 +310,10 @@ class DataRepGenerator:
         self.chartDepth = self.stage['depth']
 
         # --- Dimension inference -------------------------------------------
+        if 'encoding' in settings:
+            # consider user-defined domains in deducing dimensions
+            enc = settings["encoding"]
+            self.encoding = enc
         if 'dimension' in settings:
             self.dimension = settings['dimension']
         if 'data' in settings:
@@ -358,10 +362,7 @@ class DataRepGenerator:
                 self.df = self.srcdf[self.srcdf[self.sequence['field']] == self.sequence['domain'][0]]
 
         # --- Encoding (must come after data + dimensions) -----------------
-        if 'encoding' in settings:
-            enc = settings["encoding"]
-            self.encoding = enc
-            self.deduceEncoding()
+        self.deduceEncoding()
 
         # --- Appearance (colours, palette, output path) -------------------
         if 'background' in settings:
@@ -467,7 +468,7 @@ class DataRepGenerator:
             jsonout.close()
 
     def saveVizRep(self) -> None:
-        """Write the final viz.json (list of scenes) to disk."""
+        """Write the final datareps.json (list of scenes) to disk."""
         path = str(self.outputFile)
         outputURL = path
         if path.startswith("http") == False and path.startswith("file") == False and path.startswith("/") == False:

@@ -88,7 +88,7 @@ class TestExporter3DInit:
         assert exp.folder == "/some/folder"
         assert exp.format_name == "blend"
         assert exp.output_file == "viz.blend"
-        assert exp.input_file == "viz.json"
+        assert exp.input_file == "datareps.json"
 
     @pytest.mark.parametrize("fmt, expected_file", [
         ("blend", "viz.blend"),
@@ -146,7 +146,7 @@ class TestExecute:
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestRunFileNotFound:
-    """run() should sys.exit(1) when viz.json is missing."""
+    """run() should sys.exit(1) when datareps.json is missing."""
 
     def test_missing_viz_json_exits(self):
         with tempfile.TemporaryDirectory() as td:
@@ -167,7 +167,7 @@ class TestRunHappyPath:
         with tempfile.TemporaryDirectory() as td:
             viz = [[{"type": "encoding", "x": 0, "y": 0, "z": 0,
                       "w": 1, "d": 1, "h": 1, "asset": "e.json"}]]
-            with open(os.path.join(td, "viz.json"), "w") as f:
+            with open(os.path.join(td, "datareps.json"), "w") as f:
                 json.dump(viz, f)
 
             exp = Exporter3D(td)

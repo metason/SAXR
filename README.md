@@ -8,7 +8,7 @@
 * __2D and 3D Plots__: Mix of 2D and 3D data plots in combined charts
 * __2D Plot → 3D Stage__: Spatial domain-range scaling aligned in 2D and 3D
 * __Image Panels__: Panels for stage boundaries and legends
-* __Data Reps__: List of simple data representations for visual XR front-ends 
+* __Data Reps__: List of simple data representations for visual XR frontends 
 * __Grammar of 3D Graphics__: Generation of aligned 2D/3D plots controlled by declarative JSON specification
 * __Data Prep__: Use of Numpy, Pandas and GeoPandas as most common tools  for data processing
 * __Python-based__: Scripts for generation of data reps using Matplotlib for chart layouting
@@ -26,16 +26,16 @@ Data visualization generated with `datarepgen.py`:
 
 <img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
 
-## Data Viz Scenery
+## Data Scenery
 
-In SAXR 2D and 3D elements are arranged in a Data Viz _Scenery_ consisting of:
-- Data Viz *Stage* with consistent dimensions in 2D and 3D
+In SAXR 2D and 3D elements are arranged in a Data _Scenery_ consisting of:
+- Data *Stage* with consistent dimensions in 2D and 3D
   - Stage *Set* with global panels and spatial encodings
-- Data Viz *Scenes* as indexed sequence of:
-  - Data Viz *Scene* with local panels and encodings
+- Data *Scenes* as indexed sequence of:
+  - Data *Scene* with local panels and encodings
   - Data *Reps* as visual representations of data
   
-## Behavior of Situated Analytics in AR/XR Front-end
+## Behavior of Situated Analytics in AR/XR Frontend
 List of scenes (containing DataReps) are interpreted as level of details, time series, or sequence in narrative 3D data viz. They become interactive by embedding SAXR data visualization into dynamic AR experiences controlled by declarative scripts. 
 
 See declarations of behavior and screen recoding videos run within the [ARchi VR](https://archi.metason.net) app. The behavior of SAXR data viz in the ARchi VR App is documented as Event-Condition-Action (ECA) diagrams:  
@@ -45,7 +45,6 @@ See declarations of behavior and screen recoding videos run within the [ARchi VR
 * [__Narrative Data Storytelling__](ARchi/Storytelling/) using _Interaction_: https://youtube.com/shorts/85cTH27r540
  
 [<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY) [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
-
 
 
 ## Declarative Specification with Grammar of Graphics
@@ -67,7 +66,7 @@ Example of a settings.json file:
         "url": "../data/iris.json"
     },
     "assetURL": "$SERVER/run/vis/",
-    "output": "viz.json",
+    "output": "datareps.json",
     "background": "#FFFFFF",
     "gridColor": "#DDDE00",
     "plot": "scatter",
@@ -103,7 +102,7 @@ Example of a settings.json file:
 
 ## Data Reps
 
-Data Reps are a collection of simple representations of data elements that will be visualized in the XR front-end application. They are encoded as JSON file, such as:
+Data Reps are a collection of simple representations of data elements that will be visualized in the XR frontend application. They are encoded as JSON file, such as:
 
 ```json
 [
@@ -223,7 +222,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 - Find generated output in ```samples/iris``` folder: 
   - several 2D images in png format (used for panels)
   - encoding.json
-  - a list of data reps in viz.json (used as input for XR viewer)
+  - a list of data reps in datareps.json (used as input for XR viewer)
 - Sample to data viz with geo maps:
   - In  ```samples/geo``` folder run: ```python georepgen.py``` 
   - This will generate the map panel and the ```settings.json``` file
@@ -234,7 +233,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 - Install Blender 5.X: [blender.org](https://www.blender.org)
 - Install Blender as a Python module: https://docs.blender.org/api/current/info_advanced_blender_as_bpy.html
 - In project folder run: ```python export3D.py samples/iris``` 
-  - the python script reads the ```samples/iris/viz.json``` file as input 
+  - the python script reads the ```samples/iris/datareps.json``` file as input 
   - generates a blender file as output (with .blend file ending)
 - Export standard 3D file formats by adding corresponding file ending
   - USDZ: ```python export3D.py samples/iris usdz```
@@ -243,7 +242,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
   - GLTF: ```python export3D.py samples/iris gltf```
   - FBX: ```python export3D.py samples/iris fbx```
 
-## SAXR Front-ends
+## SAXR Frontends
 
 The presentation of SAXR data reps is supported by:
 
@@ -276,7 +275,7 @@ Philipp Ackermann, philipp@metason.net
 
 ## Acknowledgments
 
-- [Alexander Frank](https://github.com/Palmaco) and Emilio Lilie de Leon for refactoring the Python code and for the development of Unity and Web3D frontends
+- [Alexander Frank](https://github.com/Palmaco) and [Emilio Lilie](https://github.com/EmilioLilie) de Leon for refactoring the Python code and for the development of Unity and Web3D frontends
 - [Peter Butcher](https://github.com/PButcher) for the discussions on situated analytics
 
 ## License

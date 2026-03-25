@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>geoSPATIAL&period;json</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="geospatialjson">geoSPATIAL.json</h1>
+<p>[
+<a href="https://youtube.com/shorts/6w4DJwMHewY"><img src="../../docu/images/geoplacing.jpg" height="256"/></a></p>
+<h2 id="description">Description</h2>
+<p>The <a href="../../samples/geo/settings.json"><code>settings.json</code></a> file for this geo data viz has been generated with <a href="georepgen.py"><code>georepgen.py</code></a>. It uses the GeoPandas python library to generate a <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/map.png">map</a> of Switzerland from <a href="swissmap.json"><code>swissmap.json</code></a> with borders of the Swiss cantons.
+The generated specification in <a href="../../samples/geo/settings.json"><code>settings.json</code></a> does
+includes inline data on costs of the swiss healthcare system per capita.
+<code>datarepgen.py</code>generates all data reps and stores the result in <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json"><code>datareps.json</code></a>.</p>
+<p>The generated settings file includes data reps genereated by <code>georepgen.py</code> as auxiliary data reps (<code>auxReps</code>):</p>
+<pre><code class="language-json">    <span class="hljs-attr">&quot;auxReps&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;XZ&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;x&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;y&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;z&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;w&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;d&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.6386129613989837</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;h&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;asset&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;$SERVER/run/vis/map.png&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;lc&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;x&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-0.2</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;y&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;z&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.4674119352449464</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;w&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.6</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;d&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.11310545454545458</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;h&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;asset&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;$SERVER/run/vis/lc.png&quot;</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>
+</code></pre>
+<p>Grouped bar chart spec:</p>
+<pre><code class="language-json">    <span class="hljs-attr">&quot;group&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;fields&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;ambulant&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;stationary&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;total&quot;</span>
+        <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;colors&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">&quot;blue&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;yellow&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">&quot;black&quot;</span>
+        <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+</code></pre>
+<p>In the ARchi app the <a href="ecoANIM.json"><code>geoSPATIAL.json</code></a> script does run a
+spatial reasoning pipeline (according to the <a href="https://github.com/metason/SpatialReasoner">Spatial Reasoner</a> framework) in order to find a table of size larger then 1.2 m<sup>2</sup>. By defining a fixed size of 0.01 m (=1 cm) to extrude bbox sectors, a thin table top will be produced over the found table (by <code>produce(o)</code>) which serves as reference to place the SAXR data visualization.</p>
+<pre><code>adjust(sector fixed 0.01) | filter(type == 'table' AND footprint &gt; 1.2) | produce(o)
+</code></pre>
+<h2 id="items">Items</h2>
+<p><strong>1 'dataviz.placing'</strong>  🔓</p>
+<ul>
+<li>Data.Viz</li>
+<li><a href="https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json">https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json</a></li>
+</ul>
+<h2 id="tasks">Tasks</h2>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:detect spatial</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>adjust(sector fixed 0.01) | filter(type == 'table' AND footprint &gt; 1.2) | produce(o)</code></p>
+<table>
+<thead>
+<tr>
+<th><em>on:detect</em></th>
+<th>→</th>
+<th><em>do:add to AR anchor</em></th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'dataviz.placing' ➕</p>
+</blockquote>
+</blockquote>
+<h2 id="references">References</h2>
+<p><strong>Code Refs</strong></p>
+<ul>
+<li><em>SAXR spec</em>: <a href="../../samples/geo/settings.json">settings.json</a> generated by <code>georepgen.py</code></li>
+<li><em>ARchi script</em>: <a href="geoSPATIAL.json">geoSPATIAL.json</a></li>
+</ul>
+<p><strong>Asset Refs</strong></p>
+<ul>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json">https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/map.png">https://service.metason.net/ar/content/viz/geoSPATIAL/map.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/xy.png">https://service.metason.net/ar/content/viz/geoSPATIAL/xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/-xy.png">https://service.metason.net/ar/content/viz/geoSPATIAL/-xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/zy.png">https://service.metason.net/ar/content/viz/geoSPATIAL/zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/-zy.png">https://service.metason.net/ar/content/viz/geoSPATIAL/-zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/lg.png">https://service.metason.net/ar/content/viz/geoSPATIAL/lg.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/geoSPATIAL/lc.png">https://service.metason.net/ar/content/viz/geoSPATIAL/lc.png</a></li>
+</ul>
+<p><strong>Technology Refs</strong></p>
+<ul>
+<li><em>Spatial Reasoner</em>: <a href="https://github.com/metason/SpatialReasoner">https://github.com/metason/SpatialReasoner</a></li>
+<li><em>Technical Documentation :</em> <a href="https://service.metason.net/ar/docu/">https://service.metason.net/ar/docu/</a></li>
+<li><em>AR Pattern Diagram :</em> <a href="https://github.com/ARpatterns/diagram">https://github.com/ARpatterns/diagram</a></li>
+<li><em>ARchi VR App :</em> <a href="https://archi.metason.net">https://archi.metason.net</a></li>
+</ul>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>ecoANIM&period;json</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="ecoanimjson">ecoANIM.json</h1>
+<p><a href="https://youtube.com/shorts/PjelVMMz4Dk"><img src="../../docu/images/ecoanim.jpg" height="256"/></a></p>
+<h2 id="description">Description</h2>
+<p>The definition of a <code>sequence</code> in <a href="../../samples/eco/settings.json"><code>settings.json</code></a> does specify seperate data <em>scenes</em> with anual data reps corresponding to the year of the time series stored in <a href="../../samples/eco/perCapita.json"><code>perCapita.json</code></a>. <code>datarepgen.py</code>generates all anual scenes with their data reps and stores the result in <a href="https://service.metason.net/ar/content/viz/ecoANIM/datareps.json"><code>datareps.json</code></a>.</p>
+<pre><code class="language-json">    <span class="hljs-attr">&quot;sequence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;year&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;domain&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-number">2000</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-number">2024</span>
+        <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+</code></pre>
+<p>In the ARchi app the <a href="ecoANIM.json"><code>ecoANIM.json</code></a> script does increase the <code>data.idx</code>counter each second between 0 and 23.
+With the <code>setVal()</code>command the counter is applied to select the current data scene of the data visualization item.
+In parallel the year is shown in a label that is billboarding.</p>
+<h2 id="items">Items</h2>
+<p><strong>1 'dataviz.anim'</strong>  🔓</p>
+<ul>
+<li>Data.Viz</li>
+<li><a href="https://service.metason.net/ar/content/viz/ecoANIM/datareps.json">https://service.metason.net/ar/content/viz/ecoANIM/datareps.json</a></li>
+<li>value:0</li>
+</ul>
+<p><strong>2 'dataviz.label'</strong> 2000  🔓</p>
+<ul>
+<li>Data.Label</li>
+<li>wxdxh:0.20x0.0x0.07;color:#BBCCFF;bgcolor:#FFFFFF00;font:Courier</li>
+</ul>
+<h2 id="tasks">Tasks</h2>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add ahead 0 0.02 -1.25</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'dataviz.anim' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:add to 'dataviz.anim'</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'dataviz.label' ➕</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:billboard</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>'dataviz.label'</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>on:command</th>
+<th>→</th>
+<th>do:assign</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>data.idx = 0</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>as:repeated each 1 secs</th>
+<th>→</th>
+<th>do:eval</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>idx = modulus:by:(data.idx + 1,25)</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>as:repeated each 1 secs</th>
+<th>→</th>
+<th>do:execute</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p><code>setVal('dataviz.label', data.idx + 2000)</code><br>
+<code>setVal('dataviz.anim', data.idx)</code></p>
+</blockquote>
+<h2 id="references">References</h2>
+<p><strong>Code Refs</strong></p>
+<ul>
+<li><em>SAXR spec</em>: <a href="../../samples/eco/settings.json">settings.json</a></li>
+<li><em>ARchi script</em>: <a href="ecoANIM.json">ecoANIM.json</a></li>
+</ul>
+<p><strong>Asset Refs</strong></p>
+<ul>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/datareps.json">https://service.metason.net/ar/content/viz/ecoANIM/datareps.json</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/xz.png">https://service.metason.net/ar/content/viz/ecoANIM/xz.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/xy.png">https://service.metason.net/ar/content/viz/ecoANIM/xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/-xy.png">https://service.metason.net/ar/content/viz/ecoANIM/-xy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/zy.png">https://service.metason.net/ar/content/viz/ecoANIM/zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/-zy.png">https://service.metason.net/ar/content/viz/ecoANIM/-zy.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/lc.png">https://service.metason.net/ar/content/viz/ecoANIM/lc.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/USflag.png">https://service.metason.net/ar/content/viz/ecoANIM/USflag.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/EUflag.png">https://service.metason.net/ar/content/viz/ecoANIM/EUflag.png</a></li>
+<li><em>Item asset:</em> <a href="https://service.metason.net/ar/content/viz/ecoANIM/CNflag.png">https://service.metason.net/ar/content/viz/ecoANIM/CNflag.png</a></li>
+</ul>
+<p><strong>Technology Refs</strong></p>
+<ul>
+<li><em>Technical Documentation :</em> <a href="https://service.metason.net/ar/docu/">https://service.metason.net/ar/docu/</a></li>
+<li><em>AR Pattern Diagram :</em> <a href="https://github.com/ARpatterns/diagram">https://github.com/ARpatterns/diagram</a></li>
+<li><em>ARchi VR App :</em> <a href="https://archi.metason.net">https://archi.metason.net</a></li>
+</ul>
+
+            
+            
+        </body>
+        </html>

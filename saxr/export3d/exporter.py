@@ -1,4 +1,4 @@
-"""Exporter3D — orchestrator that reads viz.json and builds a 3D Blender scene."""
+"""Exporter3D — orchestrator that reads datareps.json and builds a 3D Blender scene."""
 
 from __future__ import annotations
 
@@ -22,12 +22,12 @@ logger = logging.getLogger(__name__)
 
 
 class Exporter3D:
-    """Reads ``viz.json`` and builds a 3D Blender scene."""
+    """Reads ``datareps.json`` and builds a 3D Blender scene."""
 
     def __init__(self, folder: str, format_name: str = "blend") -> None:
         self.folder = folder
         self.format_name = format_name
-        self.input_file = "viz.json"
+        self.input_file = "datareps.json"
         self.output_file = FORMAT_EXTENSIONS.get(format_name, "viz.blend")
         self.data_stage: Any = None
         self.data_scenes: Any = None
@@ -67,7 +67,7 @@ class Exporter3D:
             self._create_data_rep(rep)
 
     def run(self) -> None:
-        """Full pipeline: set up stage, load viz.json, create objects, save."""
+        """Full pipeline: set up stage, load datareps.json, create objects, save."""
         try:
             with open(os.path.join(self.folder, self.input_file), 'r') as data:
                 self._create_data_stage()
@@ -76,7 +76,7 @@ class Exporter3D:
         except FileNotFoundError:
             logger.error(
                 "Usage: python export3D.py <folder> <format>\n"
-                "Folder needs to contain a <viz.json> file created by datarepgen.py.\n"
+                "Folder needs to contain a <datareps.json> file created by datarepgen.py.\n"
                 "Supported output formats: usdz, usdc, gltf, glb, fbx, blend.\n"
                 "Given folder: %s", self.folder,
             )

@@ -77,14 +77,16 @@ def create_pyramid_down(rep: dict, setup_fn: SetupFn) -> None:
 def create_octahedron(rep: dict, setup_fn: SetupFn) -> None:
     """Create an octahedron from two opposing cones."""
     pos, sc = position(rep), scale(rep)
+    enlargeFactor = 1.3 # 2D diamond mark in Matplotlib is larger
+    sc = [enlargeFactor * f for f in sc]
     bpy.ops.mesh.primitive_cone_add(
         vertices=4, radius1=0.5, depth=0.5,
-        location=(pos[0], pos[1], pos[2] + rep['h'] / 4.0), scale=sc,
+        location=(pos[0], pos[1], pos[2] + (rep['h']*enlargeFactor) / 4.0), scale=sc,
     )
     upper = bpy.context.active_object
     bpy.ops.mesh.primitive_cone_add(
         vertices=4, radius1=0.5, depth=0.5,
-        location=(pos[0], pos[1], pos[2] - rep['h'] / 4.0),
+        location=(pos[0], pos[1], pos[2] - (rep['h']*enlargeFactor) / 4.0),
         scale=sc, rotation=(math.pi, 0, 0),
     )
     lower = bpy.context.active_object
@@ -121,9 +123,9 @@ def create_plus(rep: dict, setup_fn: SetupFn) -> None:
     """Create a 3D plus sign from three orthogonal bars."""
     w, d, h = rep['w'], rep['d'], rep['h']
     _create_composite(rep, setup_fn, arm_scales=[
-        (w, d * 0.2, h * 0.2),
-        (w * 0.2, d, h * 0.2),
-        (w * 0.2, d * 0.2, h),
+        (w, d * 0.3, h * 0.3),
+        (w * 0.3, d, h * 0.3),
+        (w * 0.3, d * 0.3, h),
     ])
 
 
@@ -131,9 +133,9 @@ def create_cross(rep: dict, setup_fn: SetupFn) -> None:
     """Create a rotated 3D cross from three orthogonal bars."""
     w, d, h = rep['w'], rep['d'], rep['h']
     _create_composite(rep, setup_fn, arm_scales=[
-        (w, d * 0.15, h * 0.15),
-        (w * 0.15, d, h * 0.15),
-        (w * 0.15, d * 0.15, h),
+        (w, d * 0.3, h * 0.3),
+        (w * 0.3, d, h * 0.3),
+        (w * 0.3, d * 0.3, h),
     ], rotation=(math.pi / 6.0, math.pi / 5.0, math.pi / 4.0))
 
 

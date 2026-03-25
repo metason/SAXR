@@ -7,7 +7,7 @@
 The [`settings.json`](../../samples/geo/settings.json) file for this geo data viz has been generated with [`georepgen.py`](georepgen.py). It uses the GeoPandas python library to generate a [map](https://service.metason.net/ar/content/viz/geoSPATIAL/map.png) of Switzerland from [`swissmap.json`](swissmap.json) with borders of the Swiss cantons.
 The generated specification in [`settings.json`](../../samples/geo/settings.json) does 
 includes inline data on costs of the swiss healthcare system per capita.
-`datarepgen.py`generates all data reps and stores the result in [`viz.json`](https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json).
+`datarepgen.py`generates all data reps and stores the result in [`datareps.json`](https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json).
 
 The generated settings file includes data reps genereated by `georepgen.py` as auxiliary data reps (`auxReps`):
 ```json
@@ -61,7 +61,7 @@ adjust(sector fixed 0.01) | filter(type == 'table' AND footprint > 1.2) | produc
 
 __1 'dataviz.placing'__  🔓
 - Data.Viz
-- https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json
+- https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json
 
 
 
@@ -87,7 +87,7 @@ __Code Refs__
 
 __Asset Refs__
 
-- _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/viz.json
+- _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/datareps.json
 - _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/map.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/xy.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/geoSPATIAL/-xy.png

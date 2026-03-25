@@ -17,7 +17,7 @@
   - https URL for schemas on metason.net?
     - "$schema": "https://service.metason.net/saxr/schemas/settings.json"
 - Rename files
-  - viz.json --> datareps.json
+  - viz.json --> datareps.json: more or less done, check test framework for naming of "golden" files
   - encoding.json --> specs.json
   - settings.json --> config.json???????
 

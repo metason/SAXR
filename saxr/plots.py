@@ -2,7 +2,7 @@
 
 Each function takes a :class:`~saxr.generator.DataRepGenerator` instance,
 reads its encoding / dimension state, and appends DataRep dicts to
-``gen.visuals``.  These dicts are later serialised as ``viz.json`` and
+``gen.visuals``.  These dicts are later serialised as ``datareps.json`` and
 consumed by the Unity runtime or the Blender exporter.
 """
 from __future__ import annotations
