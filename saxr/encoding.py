@@ -231,25 +231,30 @@ def deduce_encoding(gen: DataRepGenerator) -> None:
                     cat = gen.encoding['color']['scale']['domain']
                 else:
                     cat = gen.dimension[key]['domain']
-                gen.encoding['color']['labels'] = cat
+                if 'labels' not in gen.encoding['color']:
+                    gen.encoding['color']['labels'] = cat
 
-                # Nominal (<=10 categories): pick from a qualitative palette
-                if type != 'quantitative' and len(cat) <= 10:
-                    rgb_values = plt.get_cmap(gen.palette['nominal']).colors
-                    color_list = [rgb2hex(r, g, b) for r, g, b in rgb_values[:len(cat)]]
-                    scale = {'domain': cat, 'range': color_list}
+                if 'color' in gen.encoding and 'scale' in gen.encoding['color'] and 'range' in gen.encoding['color']['scale']:
+                    scale = {'domain': cat, 'range': gen.encoding['color']['scale']['range']}
                     gen.encoding['color']['scale'] = scale
                 else:
-                    # Quantitative: sample two colours from a sequential colormap
-                    cmap = plt.get_cmap(gen.palette['metrical'])
-                    rgb0 = cmap(cat[0])
-                    rgb1 = cmap(cat[1])
-                    rgb_values = [rgb0, rgb1]
-                    print("rgb_values")
-                    print(rgb_values)
-                    color_list = [rgb2hex(r, g, b) for r, g, b, a in rgb_values[:len(cat)]]
-                    scale = {'domain': cat, 'range': color_list}
-                    gen.encoding['color']['scale'] = scale
+                    # Nominal (<=10 categories): pick from a qualitative palette
+                    if type != 'quantitative' and len(cat) <= 10:
+                        rgb_values = plt.get_cmap(gen.palette['nominal']).colors
+                        color_list = [rgb2hex(r, g, b) for r, g, b in rgb_values[:len(cat)]]
+                        scale = {'domain': cat, 'range': color_list}
+                        gen.encoding['color']['scale'] = scale
+                    else:
+                        # Quantitative: sample two colours from a sequential colormap
+                        cmap = plt.get_cmap(gen.palette['metrical'])
+                        rgb0 = cmap(cat[0])
+                        rgb1 = cmap(cat[1])
+                        rgb_values = [rgb0, rgb1]
+                        print("rgb_values")
+                        print(rgb_values)
+                        color_list = [rgb2hex(r, g, b) for r, g, b, a in rgb_values[:len(cat)]]
+                        scale = {'domain': cat, 'range': color_list}
+                        gen.encoding['color']['scale'] = scale
 
     # === Shape channel ============================================================
     if 'shape' in gen.encoding:

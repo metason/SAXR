@@ -167,7 +167,7 @@ class TestRunHappyPath:
         with tempfile.TemporaryDirectory() as td:
             viz = [[{"type": "encoding", "x": 0, "y": 0, "z": 0,
                       "w": 1, "d": 1, "h": 1, "asset": "e.json"}]]
-            with open(os.path.join(td, "datareps.json"), "w") as f:
+            with open(os.path.join(td, "viz.json"), "w") as f:
                 json.dump(viz, f)
 
             exp = Exporter3D(td)

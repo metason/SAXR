@@ -1,0 +1,55 @@
+{
+    "data": {
+        "values": [
+            {
+                "ingredient": "vitamines & minerals",
+                "portion": 0.9
+            },
+            {
+                "ingredient": "protein",
+                "portion": 3.3
+            },
+            {
+                "ingredient": "fat",
+                "portion": 3.5
+            },
+            {
+                "ingredient": "lactose",
+                "portion": 4.8
+            },
+            {
+                "ingredient": "water",
+                "portion": 87.5
+            }
+        ]
+    },
+    "stage": {
+        "width": 0.08,
+        "height": 0.18,
+        "depth": 0.07
+    },
+    "plot": "stack",
+    "mark": "box",
+    "encoding": {
+        "y": {
+            "field": "portion"
+        },
+        "color": {
+            "field": "ingredient",
+            "type": "nominal",
+            "title": "Ingredients",
+            "scale": {
+                "range": [
+                    "green",
+                    "pink",
+                    "yellow",
+                    "red",
+                    "blue"
+                ]
+            }
+        }
+    },
+    "panels": [
+        "lc|>"
+    ]
+}

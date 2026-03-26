@@ -72,13 +72,15 @@ def create_legend(gen: DataRepGenerator, spec: str, bbox, y0: float) -> dict:
     """
     leg = spec[:3]
     layout = spec[2:]
-    # Convert legend bbox from figure inches to stage metres
-    w = inch2m((bbox.x1 - bbox.x0) * 4.8 * gen.stage['width'])
-    h = inch2m((bbox.y1 - bbox.y0) * 4.8 * gen.stage['width'])
+    # Convert legend bbox from figure inches to stage meters
+    w = inch2m((bbox.x1 - bbox.x0) * 4.8)
+    h = inch2m((bbox.y1 - bbox.y0) * 4.8)
+    print(w, h, y0)
     x = 0.0
-    y = 0.005
+    y = 0.0
     z = 0.0
     if '=' in layout:
+        y = 0.005
         # Floor-mounted legend (horizontal plane)
         shift = gen.stage['depth'] * 0.15
         if '<' in layout:
@@ -95,13 +97,17 @@ def create_legend(gen: DataRepGenerator, spec: str, bbox, y0: float) -> dict:
         # Wall-mounted legend (vertical plane)
         if '<' in layout:
             x = -float(gen.chartWidth / 2.0) + w / 2.0
+            if '|' in layout or '!' in layout:
+                x = x - w - 0.04
         elif '>' in layout:
             x = float(gen.chartWidth / 2.0) - w / 2.0
-        y = y0 + gen.chartHeight / 2.0
+            if '|' in layout or '!' in layout:
+                x = x + w + 0.04
+        y = y0 + (gen.chartHeight - h)/ 2.0
         if 'v' in layout:
-            y = y0 + h / 2.0
+            y = y0
         elif '^' in layout:
-            y = y0 + float(gen.chartHeight / 2.0) - h / 2.0
+            y = float(gen.chartHeight) - h
         z = 0.0
         if '-' in layout:
             z = -float(gen.chartDepth / 2.0)

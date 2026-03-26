@@ -16,11 +16,11 @@ Samples of dynamic behavior:
 ARchi Composer is a low-code editor for macOS to create dynamic and interactive AR content for the ARchi VR App using a declarative approach. 
 ARchi Composer supports the visualization of data reps generated with `datarepgen.py`.
 
-![composer](../docu/images/editor.png)
+![composer](../../docu/images/editor.png)
 
 The data visualization can be exported to 3D files:
-  - USDZ 3D samples: [iris.usdz](../samples/iris/result3D/iris.usdz), [eco.usdz](../samples/eco/result3D/eco.usdz), [fruits.usdz](../samples/fruits/result3D/fruits.usdz), [geo.usdz](../samples/geo/result3D/health.usdz)
-  - glTF 3D samples: [iris.glb](../samples/iris/result3D/iris.glb), [eco.glb](../samples/eco/result3D/eco.glb), [fruits.glb](../samples/fruits/result3D/fruits.glb), [geo.glb](../samples/geo/result3D/health.glb)
+  - USDZ 3D samples: [iris.usdz](../../samples/iris/result3D/iris.usdz), [eco.usdz](../../samples/eco/result3D/eco.usdz), [fruits.usdz](../../samples/fruits/result3D/fruits.usdz), [geo.usdz](../../samples/geo/result3D/health.usdz)
+  - glTF 3D samples: [iris.glb](../../samples/iris/result3D/iris.glb), [eco.glb](../../samples/eco/result3D/eco.glb), [fruits.glb](../../samples/fruits/result3D/fruits.glb), [geo.glb](../../samples/geo/result3D/health.glb)
 
 ## References
 

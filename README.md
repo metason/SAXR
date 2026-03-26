@@ -22,6 +22,7 @@ Data visualization generated with `datarepgen.py`:
 * 3D __scatter__ plot as in [samples/iris/settings.json](samples/iris/settings.json) or in [samples/burnout/settings.json](samples/burnout/settings.json)
 * 3D __cluster__: min-max cluster per category with median
 * 3D __pie__ chart: mixed 2D/3D pie/donut chart as in [samples/fruits/settings.json](samples/fruits/settings.json)
+* 3D __stack__: stacked box or cylinder as in [samples/ingredients/settings.json](samples/ingredients/settings.json)
 * 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json) using `georepgen.py`
 
 <img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
@@ -221,7 +222,7 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
   - the python script reads the ```samples/iris/settings.json``` file as input 
 - Find generated output in ```samples/iris``` folder: 
   - several 2D images in png format (used for panels)
-  - encoding.json
+  - specification of interactive behavior in specs.json (used as input for XR viewer)
   - a list of data reps in datareps.json (used as input for XR viewer)
 - Sample to data viz with geo maps:
   - In  ```samples/geo``` folder run: ```python georepgen.py``` 
@@ -275,7 +276,7 @@ Philipp Ackermann, philipp@metason.net
 
 ## Acknowledgments
 
-- [Alexander Frank](https://github.com/Palmaco) and [Emilio Lilie](https://github.com/EmilioLilie) de Leon for refactoring the Python code and for the development of Unity and Web3D frontends
+- [Alexander Frank](https://github.com/Palmaco) and [Emilio Lilie de Leon](https://github.com/EmilioLilie) for refactoring the Python code and for the development of Unity and Web3D frontends
 - [Peter Butcher](https://github.com/PButcher) for the discussions on situated analytics
 
 ## License

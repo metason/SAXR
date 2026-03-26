@@ -231,9 +231,12 @@ def create_pie(gen: DataRepGenerator) -> None:
 #     PLOT_REGISTRY["heatmap"] = create_heatmap
 # ---------------------------------------------------------------------------
 
+from .stack_plot import create_stack
+
 PLOT_REGISTRY: dict[str, Callable[[DataRepGenerator], None]] = {
     "scatter": create_scatter,
     "bar":     create_bar,
     "cluster": create_cluster,
     "pie":     create_pie,
+    "stack":   create_stack
 }
