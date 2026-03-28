@@ -498,6 +498,6 @@ def render_panels(gen: DataRepGenerator, spec: list) -> None:
 
     # Encoding meta-panel — tells Unity where the chart boundaries are
     if gen.doSaveEncoding:
-        panel = {"type": "encoding", "x": 0, "y": 0, "z": 0, "w": float(gen.chartWidth), "d": float(gen.chartDepth), "h": float(gen.chartHeight), "asset": gen.assetURL + "encoding.json"}
+        panel = {"type": "encoding", "x": 0, "y": 0, "z": 0, "w": float(gen.chartWidth), "d": float(gen.chartDepth), "h": float(gen.chartHeight), "asset": gen.assetURL + "specs.json"}
         gen.visuals.insert(0, panel)
     print("Factors: ", gen.factorX, gen.factorY, gen.factorZ)

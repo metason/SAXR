@@ -9,7 +9,7 @@ the pipeline needs (data, encoding, scale factors, visuals list, …) and
 Typical usage::
 
     gen = DataRepGenerator("samples/iris")
-    gen.run()  # reads settings.json, creates panels & plots, writes datareps.json
+    gen.run()  # reads config.json, creates panels & plots, writes datareps.json
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .panels import render_panels
 
 
 class DataRepGenerator:
-    """Generates DataRep ``datareps.json`` and panel images from a ``settings.json``.
+    """Generates DataRep ``datareps.json`` and panel images from a ``config.json``.
 
     The class owns all shared pipeline state as instance attributes and
     provides thin delegate methods that forward to the pure-function
@@ -37,13 +37,13 @@ class DataRepGenerator:
 
     Args:
         folder: Absolute or relative path to the sample directory that
-                contains ``settings.json`` and the data file.
+                contains ``config.json`` and the data file.
     """
 
     def __init__(self, folder: str) -> None:
         self.folder = folder
 
-        # ---- SETTINGS (overwritten by values read from settings.json) ----
+        # ---- SETTINGS (overwritten by values read from config.json) ----
         self.outputFile = "datareps.json"
         self.assetURL = ""
         self.doSaveEncoding = True
@@ -286,13 +286,13 @@ class DataRepGenerator:
         """Apply a settings dict: load data, set stage, configure encodings.
 
         This is the main configuration entry point.  The keys of
-        *settings* correspond 1:1 to the fields in ``settings.json``.
+        *settings* correspond 1:1 to the fields in ``config.json``.
         Processing order matters — data must be loaded before dimensions
         are deduced, and dimensions must exist before encodings are
         resolved.
 
         Args:
-            settings: Parsed JSON dictionary from ``settings.json``.
+            settings: Parsed JSON dictionary from ``config.json``.
         """
         # --- Stage geometry ------------------------------------------------
         if 'title' in settings:
@@ -320,7 +320,7 @@ class DataRepGenerator:
             if 'url' in settings['data']:
                 self.loadData(settings['data']['url'])
             else:
-                # Inline data embedded directly in settings.json
+                # Inline data embedded directly in config.json
                 if 'values' in settings['data']:
                     values = settings['data']['values']
                     if isinstance(values, dict):
@@ -461,8 +461,8 @@ class DataRepGenerator:
             self.scenes.append(self.visuals)
 
     def saveEncoding(self) -> None:
-        """Write encoding.json to the sample folder."""
-        jsonFile = os.path.join(self.folder, 'encoding.json')
+        """Write specs.json to the sample folder."""
+        jsonFile = os.path.join(self.folder, 'specs.json')
         with open(jsonFile, 'w') as jsonout:
             json.dump(self.encoding, jsonout)
             jsonout.close()
@@ -481,15 +481,15 @@ class DataRepGenerator:
         """Full pipeline: load settings, create panels, create viz, save output.
 
         This is the top-level method invoked by the CLI entry point
-        (``datarepgen.py``).  It reads ``settings.json`` from
+        (``datarepgen.py``).  It reads ``config.json`` from
         ``self.folder``, then runs the complete generation pipeline.
         """
         try:
-            with open(os.path.join(self.folder, 'settings.json'), 'r') as data:
+            with open(os.path.join(self.folder, 'config.json'), 'r') as data:
                 self.execute(json.load(data))
         except FileNotFoundError:
             print("Usage: python3 datarepgen.py <folder>")
-            print("folder needs to contain a <settings.json> file!")
+            print("folder needs to contain a <config.json> file!")
             print(self.folder)
             sys.exit(1)
         self.createPanels(self.panelsSpec)

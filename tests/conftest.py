@@ -9,7 +9,7 @@ import os
 import sys
 import pandas as pd
 
-path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "SAXR-main", "SAXR-main")
+path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path)
 
 from saxr.generator import DataRepGenerator

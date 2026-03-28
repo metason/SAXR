@@ -1,0 +1,276 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "config.json schema",
+	"description": "Schema for the config.json that are processed to generate the visualization",
+	"required": ["data", "stage", "plot", "panels", "mark", "encoding"],
+
+	"type": "object",
+	"properties": {
+		"title": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"assetURL": {
+			"type": "string",
+			"format": "uri-template"
+		},
+		"auxReps": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/auxRep"
+			}
+		},
+		"data": {
+			"description": "Datapoints to be displayed in the visualization. Can be a url to a file or the individual datapoints",
+			"type": "object",
+			"oneOf": [
+				{
+					"required": ["url"],
+					"properties": {
+						"url": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"required": ["values"],
+					"properties": {
+						"values": {
+							"oneOf": [
+								{
+									"type": "array"
+								},
+								{
+									"type": "object"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"encoding": {
+			"description": "",
+			"type": "object",
+			"properties": {
+				"x": {
+					"$ref": "#/definitions/channel"
+				},
+				"y": {
+					"$ref": "#/definitions/channel"
+				},
+				"z": {
+					"$ref": "#/definitions/channel"
+				},
+				"color": {
+					"$ref": "#/definitions/channel"
+				},
+				"size": {
+					"$ref": "#/definitions/sizeChannel"
+				},
+				"shape": {
+					"$ref": "#/definitions/channel"
+				},
+				"theta": {
+					"$ref": "#/definitions/channel"
+				}
+			},
+			"additionalProperties": false
+		},
+		"mark": {
+			"description": "Shape of representation of datapoint",
+			"type": "string"
+		},
+		"output": {
+			"description": "Output file",
+			"type": "string"
+		},
+		"palette": {
+			"type": "object",
+			"properties": {
+				"metrical": {
+					"type": "string"
+				},
+				"temporal": {
+					"type": "string"
+				},
+				"nominal": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"panels": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"uniqueItems": true
+		},
+		"plot": {
+			"description": "Type of visualization to be displayed",
+			"type": "string"
+		},
+		"stage": {
+			"description": "Size of the area in which the visualization is generated",
+			"type": "object",
+			"required": ["width", "height", "depth"],
+			"properties": {
+				"width": {
+					"description": "Width of the stage",
+					"type": "number"
+				},
+				"height": {
+					"description": "Height of the stage",
+					"type": "number"
+				},
+				"depth": {
+					"description": "Depth of the stage",
+					"type": "number"
+				}
+			}
+		},
+		"group": {
+			"type": "object",
+			"properties": {
+				"fields": { "type": "array", "items": { "type": "string" } },
+				"colors": { "type": "array", "items": { "type": "string" } }
+			}
+		},
+		"background": {
+			"type": "array",
+			"items": { "type": "number", "minimum": 0, "maximum": 1 },
+			"minItems": 4,
+			"maxItems": 4
+		},
+		"sequence": {
+			"type": "object",
+			"required": ["field", "domain"],
+			"properties": {
+				"field": {
+					"type": "string"
+				},
+				"domain": {
+					"type": "array",
+					"items": {
+						"type": "number"
+					},
+					"minItems": 2
+				}
+			}
+		},
+		"titleColor": {
+			"description": "Color of the title displayed for the visualization int RGBA",
+			"type": "string",
+			"pattern": "^#[0-9A-Fa-f]{6,8}$"
+		},
+		"labelColor": {
+			"description": "Color of the label of the datapoints in RGBA",
+			"type": "string",
+			"pattern": "^#[0-9A-Fa-f]{6,8}$"
+		},
+		"gridColor": {
+			"description": "Color of the grid on the walls in RGBA",
+			"type": "string",
+			"pattern": "^#[0-9A-Fa-f]{6,8}$"
+		},
+		"bgColor": {
+			"description": "Color of the background color of the walls in RGBA ",
+			"type": "string",
+			"pattern": "^#[0-9A-Fa-f]{6,8}$"
+		}
+	},
+	"definitions": {
+		"scale": {
+			"type": "object",
+			"properties": {
+				"domain": {
+					"type": "array",
+					"items": {
+						"type": ["number", "string"]
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"range": {
+					"type": "array",
+					"items": {
+						"type": ["number", "string"]
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false
+		},
+		"channel": {
+			"type": "object",
+			"properties": {
+				"field": {
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "object",
+							"properties": {
+								"group": {
+									"type": "string"
+								}
+							},
+							"required": ["group"]
+						}
+					]
+				},
+				"title": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["quantitative", "ordinal", "nominal", "temporal"]
+				},
+				"scale": {
+					"$ref": "#/definitions/scale"
+				}
+			},
+			"additionalProperties": false
+		},
+		"sizeChannel": {
+			"type": "object",
+			"oneOf": [
+				{
+					"required": ["value"],
+					"properties": {
+						"value": { "type": "number" }
+					},
+					"additionalProperties": false
+				},
+				{
+					"$ref": "#/definitions/channel"
+				}
+			]
+		},
+		"auxRep": {
+			"type": "object",
+			"required": ["type", "x", "y", "z", "w", "d", "h"],
+			"properties": {
+				"type": { "type": "string" },
+				"x": { "type": "number" },
+				"y": { "type": "number" },
+				"z": { "type": "number" },
+				"w": { "type": "number" },
+				"d": { "type": "number" },
+				"h": { "type": "number" },
+				"asset": { "type": "string" }
+			},
+			"additionalProperties": false
+		}
+	}
+}

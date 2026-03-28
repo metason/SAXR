@@ -124,13 +124,13 @@ setting["panels"] = ["XY", "-XY", "ZY", "-ZY", "LG=_>"]
 
 if doSaveSettings:
     folder = os.path.split(os.path.realpath(sys.argv[0]))[0] # default folder is script location
-    outputURL = os.path.join(folder, "settings.json")
+    outputURL = os.path.join(folder, "config.json")
     with open(outputURL, 'w') as outfile:
         json.dump(setting, outfile)
         outfile.close()
 else:
     print()
     print("================================================")
-    print("---- use following output for settings.json ----")
+    print("---- use following output for config.json ----")
     print("------------------------------------------------")
     print(json.dumps(setting, indent=4))
