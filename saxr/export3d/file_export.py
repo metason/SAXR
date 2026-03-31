@@ -17,7 +17,7 @@ def save_scene(folder: str, output_file: str, format_name: str) -> None:
     if format_name == "blend":
         bpy.ops.wm.save_as_mainfile(filepath=output_path, check_existing=False)
     elif format_name in ("usdc", "usdz"):
-        bpy.ops.wm.usd_export(filepath=output_path, check_existing=False, convert_orientation=True, export_global_forward_selection='NEGATIVE_Z', export_global_up_selection='Y')
+        bpy.ops.wm.usd_export(filepath=output_path, check_existing=False, export_mesh_colors=True, convert_orientation=True, export_global_forward_selection='NEGATIVE_Z', export_global_up_selection='Y')
     elif format_name == "fbx":
         bpy.ops.export_scene.fbx(filepath=output_path, check_existing=False)
     elif format_name == "gltf":

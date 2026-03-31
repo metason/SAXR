@@ -13,6 +13,7 @@ New shapes can be added by writing a handler and registering it in
 
 from __future__ import annotations
 
+import os
 import math
 from typing import Callable
 
@@ -191,6 +192,35 @@ def create_plane(rep: dict, setup_fn: SetupFn) -> None:
     plane.dimensions = dim
     setup_fn(rep)
 
+def create_surface(rep: dict, setup_fn: SetupFn) -> None:
+    """Create a surface DataRep."""
+    rotx = math.pi / 2.0
+    roty = 0.0
+    fileURL = os.path.join(rep['folder'], 'surface.ply')
+    bpy.ops.wm.ply_import(filepath=fileURL)
+    surface = bpy.context.active_object
+    surface.rotation_euler = (math.pi / 2.0, 0.0, 0.0)
+    material = bpy.data.materials.new(name="vertexColoring")
+    material.use_nodes = True
+    nodes = material.node_tree.nodes
+    links = material.node_tree.links
+    if len(surface.data.materials) > 0:
+        surface.data.materials[0] = material
+    else:
+        surface.data.materials.append(material)
+    nodes.clear()
+    node_attr = nodes.new(type='ShaderNodeVertexColor')
+    #node_attr.layer_name = "displayColor"
+    node_principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+    node_output = nodes.new(type='ShaderNodeOutputMaterial')
+    
+    links.new(node_attr.outputs['Color'], node_principled.inputs['Base Color'])
+    links.new(node_principled.outputs['BSDF'], node_output.inputs['Surface'])
+
+    node_principled.inputs["Metallic"].default_value = 0.2
+    node_principled.inputs["Roughness"].default_value = 1.0
+    #bpy.ops.object.shade_smooth()
+
 
 def create_text(rep: dict, setup_fn: SetupFn) -> None:
     """Create a 3D text mesh DataRep."""
@@ -233,5 +263,6 @@ SHAPE_REGISTRY: dict[str, Callable[[dict, SetupFn], None]] = {
     "cross":        create_cross,
     "arc":          create_arc,
     "plane":        create_plane,
+    "surface":      create_surface,
     "text":         create_text,
 }

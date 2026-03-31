@@ -1,0 +1,38 @@
+{
+    "$schema": "../../schemas/settings.json",
+    "data": {
+        "url": "data.csv"
+    },
+    "stage": {
+        "width": 0.5,
+        "height": 0.3,
+        "depth": 0.5
+    },
+    "gridColor": "#000000",
+    "bgColor": "#44BB00CC",
+    "palette": {
+        "metrical": "managua"
+    },
+    "plot": "surface",
+    "encoding": {
+        "x": {
+            "field": "x"
+        },
+        "y": {
+            "field": "y"
+        },
+        "z": {
+            "field": "z"
+        },
+        "color": {
+            "field": "y"
+        }
+    },
+    "panels": [
+        "XY",
+        "-XY",
+        "ZY",
+        "-ZY",
+        "XZ"
+    ]
+}

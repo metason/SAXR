@@ -55,6 +55,8 @@ class Exporter3D:
         """Dispatch a single DataRep to the appropriate shape handler."""
         handler = SHAPE_REGISTRY.get(rep['type'])
         if handler is not None:
+            if rep['type'] == 'surface':
+                rep['folder'] = self.folder
             handler(rep, self._setup_data_rep_item)
         elif rep['type'] == 'encoding':
             logger.info("encoding: %s", rep['asset'])
@@ -64,7 +66,7 @@ class Exporter3D:
 
     def _execute(self, datareps: list) -> None:
         for rep in datareps[0]:
-            self._create_data_rep(rep)
+            self._create_data_rep(rep, )
 
     def run(self) -> None:
         """Full pipeline: set up stage, load datareps.json, create objects, save."""

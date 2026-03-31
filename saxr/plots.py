@@ -232,11 +232,13 @@ def create_pie(gen: DataRepGenerator) -> None:
 # ---------------------------------------------------------------------------
 
 from .stack_plot import create_stack
+from .surface_plot import create_surface
 
 PLOT_REGISTRY: dict[str, Callable[[DataRepGenerator], None]] = {
     "scatter": create_scatter,
     "bar":     create_bar,
     "cluster": create_cluster,
     "pie":     create_pie,
-    "stack":   create_stack
+    "stack":   create_stack,
+    "surface":   create_surface
 }

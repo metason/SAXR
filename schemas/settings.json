@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "settings.jscon schema",
   "description": "Schema for the settings.json that are processed to generate the visualization",
-  "required": ["data", "stage", "plot", "panels", "mark", "encoding"],
+  "required": ["data", "stage", "plot", "panels", "encoding"],
 
   "type": "object",
   "properties": {
