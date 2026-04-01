@@ -22,10 +22,11 @@ Data visualization generated with `datarepgen.py`:
 * 3D __scatter__ plot as in [samples/iris/settings.json](samples/iris/settings.json) or in [samples/burnout/settings.json](samples/burnout/settings.json)
 * 3D __cluster__: min-max cluster per category with median
 * 3D __pie__ chart: mixed 2D/3D pie/donut chart as in [samples/fruits/settings.json](samples/fruits/settings.json)
-* 3D __stack__: stacked box or cylinder as in [samples/ingredients/settings.json](samples/ingredients/settings.json)
+* 3D __stack__: stacked boxes or cylinders as in [samples/ingredients/settings.json](samples/ingredients/settings.json)
+* 3D __surface__ plot: mesh surface as in [samples/mesh/settings.json](samples/mesh/settings.json)
 * 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json) using `georepgen.py`
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
+<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/>  <img src="docu/images/surface.png" height="256"/>  <img src="docu/images/geo.jpg" height="256"/>
 
 ## Data Scenery
 
@@ -45,7 +46,7 @@ See declarations of behavior and screen recoding videos run within the [ARchi VR
 * [__Time Series__](ARchi/Animation/) controlled by _Animation_: https://youtube.com/shorts/PjelVMMz4Dk
 * [__Narrative Data Storytelling__](ARchi/Storytelling/) using _Interaction_: https://youtube.com/shorts/85cTH27r540
  
-[<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY) [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540) 
+[<img src="docu/images/geoplacing.jpg" height="256"/>](https://youtube.com/shorts/6w4DJwMHewY) [<img src="docu/images/irislod.jpg" height="256"/>](https://youtu.be/UL8XRe5luu8) [<img src="docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk) [<img src="docu/images/salesstory.jpg" height="256"/>](https://youtube.com/shorts/85cTH27r540)
 
 
 ## Declarative Specification with Grammar of Graphics
