@@ -26,7 +26,7 @@ Data visualization generated with `datarepgen.py`:
 * 3D __surface__ plot: mesh surface as in [samples/mesh/settings.json](samples/mesh/settings.json)
 * 3D __map__: grouped bar chart on map as in [samples/geo/settings.json](samples/geo/settings.json) using `georepgen.py`
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/>  <img src="docu/images/surface.png" height="256"/>  <img src="docu/images/geo.jpg" height="256"/>
+<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/>  <img src="docu/images/ingredients.png" height="256"/>  <img src="docu/images/surface.png" height="256"/>  <img src="docu/images/geo.jpg" height="256"/>
 
 ## Data Scenery
 
