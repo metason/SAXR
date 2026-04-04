@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "datareps.json schema",
+  "description": "Schema for the datareps.json output produced by datarepgen.py. Contains an array of scenes, each scene being an array of data representation objects.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "array",
+    "items": {
+      "$ref": "#/definitions/dataRep"
+    }
+  },
+  "definitions": {
+    "dataRep": {
+      "type": "object",
+      "required": ["type", "x", "y", "z", "w", "h", "d"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Shape or panel type. Lowercase types (sphere, box, cylinder, arc, text, etc.) are scene-level data reps. Uppercase or panel types (xy, -xy, xz, zy, lc=_, etc.) are stage-level panels."
+        },
+        "x": {
+          "type": "number",
+          "description": "X position in the 3D scene."
+        },
+        "y": {
+          "type": "number",
+          "description": "Y position in the 3D scene."
+        },
+        "z": {
+          "type": "number",
+          "description": "Z position in the 3D scene."
+        },
+        "w": {
+          "type": "number",
+          "description": "Width of the data rep."
+        },
+        "h": {
+          "type": "number",
+          "description": "Height of the data rep."
+        },
+        "d": {
+          "type": "number",
+          "description": "Depth of the data rep."
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Hex colour of the data rep."
+        },
+        "asset": {
+          "type": "string",
+          "description": "Path/URL to an asset (e.g. encoding JSON, panel PNG) or an inline descriptor (e.g. arc parameters, text label)."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

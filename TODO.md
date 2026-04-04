@@ -17,13 +17,14 @@
   - https URL for schemas on metason.net?
     - "$schema": "https://service.metason.net/saxr/schemas/settings.json"
 - Rename files
-  - viz.json --> datareps.json: more or less done, check test framework for naming of "golden" files
-  - encoding.json --> specs.json
+  - viz.json --> datareps.json: DONE
+  - encoding.json --> specs.json: DONE
   - settings.json --> config.json???????
 
 ## Settings Schema Extensions
 
 Topics:
+
 - Spatio-temporal arrangement of data scene sequences
 - Behavior
   - placing
@@ -31,6 +32,7 @@ Topics:
   - interaction: selection? pick/gaze/...
 
 ### Temporal Sequence
+
 Datarep sequence automatically generated from data (as in samples/eco)
 Interval of animation in seconds.
 
@@ -47,6 +49,7 @@ Interval of animation in seconds.
 ```
 
 ### Comparative Sequence
+
 Datarep sequence automatically generated from data (as in samples/eco)
 Gap between side-by-side arrangement in meters.
 
@@ -63,6 +66,7 @@ Gap between side-by-side arrangement in meters.
 ```
 
 ### LOD Sequence
+
 Datarep sequence manually composed (as in samples/iris)
 Distance in meters (of user's proximity) when LOD elements are switched.
 
@@ -74,6 +78,7 @@ Distance in meters (of user's proximity) when LOD elements are switched.
 ```
 
 ### Narrative Sequence
+
 Datarep sequence manually composed (as in samples/fruits)
 Control as interaction buttons or defined in behavior as interaction?
 
@@ -100,11 +105,12 @@ Control as interaction buttons or defined in behavior as interaction?
     },
 ```
 
-## Frontend Specs 
-Formerly named "encoding.json", new "specs.json"
-- pass behavior definitions from settings.json
-- encoding are generated as is, used for remapping visuals to data 
+## Frontend Specs
 
+Formerly named "encoding.json", new "specs.json"
+
+- pass behavior definitions from settings.json
+- encoding are generated as is, used for remapping visuals to data
 
 ```json
 {
@@ -196,18 +202,21 @@ Formerly named "encoding.json", new "specs.json"
 ```
 
 ## FIXES
+
 - mark/shape: global and/or encoding?
-- datarep: rich-text panels, say, play 
+- datarep: rich-text panels, say, play
 - ls=size
 - legend pos, billboard
 
 ## TEST
+
 - size of legends
 - legends: ls=size, lc=color, lm=marker/shape
 
 ## DOCU
 
 Encodings
+
 ```json
     "encoding": {
         "x": {
@@ -259,12 +268,14 @@ Encodings
 ## IDEAS
 
 DataReps
+
 - label: text label for tooltip
 - link: URL link as asset attribute?
 - [rx,ry,rz: rotation --> not used due to not being view-independent for markers]
--Linking sceneries for comparing --> comparative sequence
+  -Linking sceneries for comparing --> comparative sequence
 
 Plot (Layout)
+
 - line
 - area?
 - text?
@@ -272,11 +283,13 @@ Plot (Layout)
 - stack
 
 Data Stage Panels + plotting
+
 - +l: line plot
 - +b: bar blot
 - +a: area plot
 
 Scenes
+
 ```json
     "scenes": [
         {
@@ -308,9 +321,11 @@ Scenes
 ```
 
 ## CHECK
+
 - rotation of top labels in xz plane (gave up)
 
 ## DATA SOURCES
+
 Economics
 https://data.worldbank.org/indicator/FS.AST.PRVT.GD.ZS?locations=EU
 https://www.macrotrends.net/global-metrics/countries/chn/china/gdp-per-capita
@@ -322,4 +337,3 @@ CH: https://opendata.swiss/de
 https://stats.swiss/vis?lc=de&df[ds]=disseminate&df[id]=DF_COU_HEALTH_COSTS&df[ag]=CH1.COU&df[vs]=1.0.0&dq=_T._T.M_1%2BM_2._T._T._T.4%2B5%2B6%2B7%2B8%2B9%2B10%2B11%2B12%2B13%2B14%2B15%2B16%2B17%2B18%2B19%2B20%2B21%2B22%2B23%2B24%2B25%2B26%2B3%2B2%2B1.CHF_R_POP_R_MH.A&lom=LASTNPERIODS&lo=1&to[TIME_PERIOD]=false&vw=ov
 
 https://swiss-maps.interactivethings.io
-

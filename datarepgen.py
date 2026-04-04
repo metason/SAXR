@@ -4,7 +4,7 @@ Usage::
 
     python datarepgen.py <sample-folder>
 
-The *sample-folder* must contain a ``settings.json`` that describes the
+The *sample-folder* must contain a ``config.json`` that describes the
 data source, visual encoding, panel layout, and output options.
 All heavy lifting is delegated to the :class:`saxr.DataRepGenerator` class.
 """
