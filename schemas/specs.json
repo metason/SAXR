@@ -1,0 +1,141 @@
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "3D Chart Encoding",
+  "type": "object",
+  "properties": {
+
+    "x": { "$ref": "#/definitions/positionalChannel" },
+    "y": { "$ref": "#/definitions/positionalChannel" },
+    "z": { "$ref": "#/definitions/positionalChannel" },
+    "theta": { "$ref": "#/definitions/thetaChannel" },
+
+    "color": { "$ref": "#/definitions/colorChannel" },
+    "size":  { "$ref": "#/definitions/sizeChannel" },
+    "shape": { "$ref": "#/definitions/shapeChannel" }
+  },
+
+  "definitions": {
+
+    "positionalChannel": {
+      "type": "object",
+      "required": ["field", "type", "scale"],
+      "properties": {
+        "field":  {
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+                "group": { "type": "string" }
+              },
+              "required": ["group"]
+            }
+          ]
+        },
+        "title": { "type": "string" },
+        "type":  { "enum": ["quantitative", "nominal", "ordinal"] },
+        "scale": {
+          "type": "object",
+          "required": ["domain", "range"],
+          "properties": {
+            "domain": {
+              "oneOf": [
+                { "type": "array", "items": { "type": "number" }, "minItems": 2 },
+                { "type": "array", "items": { "type": "string" } }
+              ]
+            },
+            "range": {
+              "oneOf": [
+                { "type": "array", "items": { "type": "number" }, "minItems": 2 },
+                { "type": "array", "items": { "type": "string" } }
+              ]
+            }
+          }
+        }
+      }
+    },
+
+    "thetaChannel": {
+      "type": "object",
+      "required": ["field"],
+      "properties": {
+        "field": { "type": "string" }
+      }
+    },
+
+    "colorChannel": {
+      "type": "object",
+      "required": ["field"],
+      "properties": {
+        "field": {
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": { "group": { "type": "string" } },
+              "required": ["group"]
+            }
+          ]
+        },
+        "title": { "type": "string" },
+        "type":  { "enum": ["quantitative", "nominal", "ordinal"] },
+        "labels": {
+          "type": "array",
+          "items": { "oneOf": [{ "type": "string" }, { "type": "number" }] }
+        },
+        "scale": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "oneOf": [
+                { "type": "array", "items": { "type": "number" } },
+                { "type": "array", "items": { "type": "string" } }
+              ]
+            },
+            "range": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+            }
+          }
+        }
+      }
+    },
+
+    "sizeChannel": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+
+    "shapeChannel": {
+      "type": "object",
+      "required": ["field", "scale"],
+      "properties": {
+        "field":  { "type": "string" },
+        "title":  { "type": "string" },
+        "type":   { "enum": ["quantitative", "nominal", "ordinal"] },
+        "labels": { "type": "array", "items": { "type": "string" } },
+        "marks":  {
+          "type": "array",
+          "items": { "enum": ["o", "s", "t", "d"] },
+          "description": "Short codes: o=sphere, s=box, t=triangle, d=diamond"
+        },
+        "scale": {
+          "type": "object",
+          "required": ["domain", "range"],
+          "properties": {
+            "domain": { "type": "array", "items": { "type": "string" } },
+            "range":  {
+              "type": "array",
+              "items": { "enum": ["sphere", "box", "triangle", "diamond"] }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

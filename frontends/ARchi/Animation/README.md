@@ -2,9 +2,9 @@
 
 [<img src="../../docu/images/ecoanim.jpg" height="256"/>](https://youtube.com/shorts/PjelVMMz4Dk)
 
-## Description 
+## Description
 
-The definition of a `sequence` in [`settings.json`](../../samples/eco/settings.json) does specify seperate data _scenes_ with anual data reps corresponding to the year of the time series stored in [`perCapita.json`](../../samples/eco/perCapita.json). `datarepgen.py`generates all anual scenes with their data reps and stores the result in [`datareps.json`](https://service.metason.net/ar/content/viz/ecoANIM/datareps.json).
+The definition of a `sequence` in [`config.json`](../../samples/eco/config.json) does specify seperate data _scenes_ with anual data reps corresponding to the year of the time series stored in [`perCapita.json`](../../samples/eco/perCapita.json). `datarepgen.py`generates all anual scenes with their data reps and stores the result in [`datareps.json`](https://service.metason.net/ar/content/viz/ecoANIM/datareps.json).
 
 ```json
     "sequence": {
@@ -20,56 +20,60 @@ In the ARchi app the [`ecoANIM.json`](ecoANIM.json) script does increase the `da
 With the `setVal()`command the counter is applied to select the current data scene of the data visualization item.
 In parallel the year is shown in a label that is billboarding.
 
+## Items
 
-## Items 
+**1 'dataviz.anim'** 🔓
 
-__1 'dataviz.anim'__  🔓
 - Data.Viz
 - https://service.metason.net/ar/content/viz/ecoANIM/datareps.json
 - value:0
 
-__2 'dataviz.label'__ 2000  🔓
+**2 'dataviz.label'** 2000 🔓
+
 - Data.Label
 - wxdxh:0.20x0.0x0.07;color:#BBCCFF;bgcolor:#FFFFFF00;font:Courier
 
+## Tasks
 
-## Tasks 
+| on:command | &rarr; | do:add ahead 0 0.02 -1.25 |
+| ---------- | ------ | ------------------------- |
 
- | on:command |  &rarr; | do:add ahead 0 0.02 -1.25 |
- |---|---|---|
 > 'dataviz.anim' ➕
- 
- | on:command |  &rarr; | do:add to 'dataviz.anim' |
- |---|---|---|
+
+| on:command | &rarr; | do:add to 'dataviz.anim' |
+| ---------- | ------ | ------------------------ |
+
 > 'dataviz.label' ➕
- 
- | on:command |  &rarr; | do:billboard |
- |---|---|---|
+
+| on:command | &rarr; | do:billboard |
+| ---------- | ------ | ------------ |
+
 > 'dataviz.label'
- 
- | on:command |  &rarr; | do:assign |
- |---|---|---|
+
+| on:command | &rarr; | do:assign |
+| ---------- | ------ | --------- |
+
 > `data.idx = 0`
- 
- | as:repeated each 1 secs |  &rarr; | do:eval |
- |---|---|---|
+
+| as:repeated each 1 secs | &rarr; | do:eval |
+| ----------------------- | ------ | ------- |
+
 > `idx = modulus:by:(data.idx + 1,25)`
- 
- | as:repeated each 1 secs |  &rarr; | do:execute |
- |---|---|---|
->  `setVal('dataviz.label', data.idx + 2000)`  
->  `setVal('dataviz.anim', data.idx)`  
-> 
- 
 
-## References 
+| as:repeated each 1 secs | &rarr; | do:execute |
+| ----------------------- | ------ | ---------- |
 
-__Code Refs__
+> `setVal('dataviz.label', data.idx + 2000)`  
+>  `setVal('dataviz.anim', data.idx)`
 
-- _SAXR spec_: [settings.json](../../samples/eco/settings.json)
+## References
+
+**Code Refs**
+
+- _SAXR spec_: [config.json](../../samples/eco/config.json)
 - _ARchi script_: [ecoANIM.json](ecoANIM.json)
 
-__Asset Refs__
+**Asset Refs**
 
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/datareps.json
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/xz.png
@@ -82,8 +86,7 @@ __Asset Refs__
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/EUflag.png
 - _Item asset:_ https://service.metason.net/ar/content/viz/ecoANIM/CNflag.png
 
-
-__Technology Refs__
+**Technology Refs**
 
 - _Technical Documentation :_ https://service.metason.net/ar/docu/
 - _AR Pattern Diagram :_ https://github.com/ARpatterns/diagram

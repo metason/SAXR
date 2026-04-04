@@ -2,7 +2,7 @@
 Regression tests for datarepgen.py
 
 These tests run datarepgen.py on each sample and compare the generated datareps.json
-and encoding.json against golden reference files captured before refactoring.
+and specs.json against golden reference files captured before refactoring.
 Panel PNGs are also validated for existence and basic integrity.
 
 If output stays identical, the refactoring is safe.
@@ -24,20 +24,19 @@ import pytest
 # ── Paths ──────────────────────────────────────────────────────────────────
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SAXR_MAIN = os.path.join(REPO_ROOT, "SAXR-main", "SAXR-main")
-SAMPLES_DIR = os.path.join(SAXR_MAIN, "samples")
+SAMPLES_DIR = os.path.join(REPO_ROOT, "samples")
 GOLDEN_DIR = os.path.join(REPO_ROOT, "tests", "golden")
-DATAREP_SCRIPT = os.path.join(SAXR_MAIN, "datarepgen.py")
+DATAREP_SCRIPT = os.path.join(REPO_ROOT, "datarepgen.py")
 PYTHON = sys.executable
 
 # ── Discover samples that have golden files ────────────────────────────────
 
 SAMPLES = []
 for name in sorted(os.listdir(GOLDEN_DIR)):
-    if name.endswith("_viz.json"):
-        sample_name = name.replace("_viz.json", "")
+    if name.endswith("_datareps.json"):
+        sample_name = name.replace("_datareps.json", "")
         sample_dir = os.path.join(SAMPLES_DIR, sample_name)
-        settings = os.path.join(sample_dir, "settings.json")
+        settings = os.path.join(sample_dir, "config.json")
         if os.path.isfile(settings):
             SAMPLES.append(sample_name)
 
@@ -68,7 +67,7 @@ def run_datarepgen(sample_name: str):
     sample_path = os.path.join(SAMPLES_DIR, sample_name)
     result = subprocess.run(
         [PYTHON, DATAREP_SCRIPT, sample_path],
-        cwd=SAXR_MAIN,
+        cwd=REPO_ROOT,
         capture_output=True,
         text=True,
         timeout=120,
@@ -91,10 +90,10 @@ def test_viz_json_matches_golden(sample, tmp_path):
     """
     sample_dir = os.path.join(SAMPLES_DIR, sample)
     viz_json_path = os.path.join(sample_dir, "datareps.json")
-    golden_path = os.path.join(GOLDEN_DIR, f"{sample}_viz.json")
+    golden_path = os.path.join(GOLDEN_DIR, f"{sample}_datareps.json")
 
-    # Back up current viz.json
-    backup_path = os.path.join(str(tmp_path), f"{sample}_viz_backup.json")
+    # Back up current datareps.json
+    backup_path = os.path.join(str(tmp_path), f"{sample}_datareps_backup.json")
     if os.path.exists(viz_json_path):
         shutil.copy2(viz_json_path, backup_path)
 
@@ -108,7 +107,7 @@ def test_viz_json_matches_golden(sample, tmp_path):
         )
 
         # Compare
-        assert os.path.isfile(viz_json_path), f"viz.json not created for {sample}"
+        assert os.path.isfile(viz_json_path), f"datareps.json not created for {sample}"
         generated = normalize_json(viz_json_path)
         golden = normalize_json(golden_path)
 
@@ -127,7 +126,7 @@ def test_viz_json_matches_golden(sample, tmp_path):
                     break
 
             pytest.fail(
-                f"viz.json for '{sample}' differs from golden file!\n"
+                f"datareps.json for '{sample}' differs from golden file!\n"
                 f"First difference at line {diff_line}:\n"
                 f"  GENERATED: {gen_lines[diff_line] if diff_line < len(gen_lines) else '<EOF>'}\n"
                 f"  EXPECTED:  {gol_lines[diff_line] if diff_line < len(gol_lines) else '<EOF>'}\n"
@@ -144,35 +143,35 @@ def test_viz_json_matches_golden(sample, tmp_path):
 # ── Test: All samples are accounted for ────────────────────────────────────
 
 def test_all_samples_have_golden_files():
-    """Ensure every sample with a settings.json has a corresponding golden file."""
+    """Ensure every sample with a config.json has a corresponding golden file."""
     missing = []
     for name in os.listdir(SAMPLES_DIR):
         sample_dir = os.path.join(SAMPLES_DIR, name)
-        if os.path.isfile(os.path.join(sample_dir, "settings.json")):
-            golden = os.path.join(GOLDEN_DIR, f"{name}_viz.json")
+        if os.path.isfile(os.path.join(sample_dir, "config.json")):
+            golden = os.path.join(GOLDEN_DIR, f"{name}_datareps.json")
             if not os.path.isfile(golden):
                 missing.append(name)
     assert not missing, f"Missing golden files for: {missing}"
 
 
-# ── Test: encoding.json golden regression ──────────────────────────────────
+# ── Test: specs.json golden regression ─────────────────────────────────────
 
 @pytest.mark.parametrize("sample", SAMPLES, ids=SAMPLES)
-def test_encoding_json_matches_golden(sample, tmp_path):
+def test_specs_json_matches_golden(sample, tmp_path):
     """
-    Run datarepgen.py on a sample and verify encoding.json matches the golden file.
+    Run datarepgen.py on a sample and verify specs.json matches the golden file.
     """
     sample_dir = os.path.join(SAMPLES_DIR, sample)
-    encoding_path = os.path.join(sample_dir, "encoding.json")
-    golden_path = os.path.join(GOLDEN_DIR, f"{sample}_encoding.json")
+    specs_path = os.path.join(sample_dir, "specs.json")
+    golden_path = os.path.join(GOLDEN_DIR, f"{sample}_specs.json")
 
     if not os.path.isfile(golden_path):
-        pytest.skip(f"No golden encoding.json for {sample}")
+        pytest.skip(f"No golden specs.json for {sample}")
 
-    # Back up current encoding.json
-    backup_path = os.path.join(str(tmp_path), f"{sample}_encoding_backup.json")
-    if os.path.exists(encoding_path):
-        shutil.copy2(encoding_path, backup_path)
+    # Back up current specs.json
+    backup_path = os.path.join(str(tmp_path), f"{sample}_specs_backup.json")
+    if os.path.exists(specs_path):
+        shutil.copy2(specs_path, backup_path)
 
     try:
         exit_code, stdout, stderr = run_datarepgen(sample)
@@ -181,8 +180,8 @@ def test_encoding_json_matches_golden(sample, tmp_path):
             f"STDOUT:\n{stdout}\nSTDERR:\n{stderr}"
         )
 
-        assert os.path.isfile(encoding_path), f"encoding.json not created for {sample}"
-        generated = normalize_json(encoding_path)
+        assert os.path.isfile(specs_path), f"specs.json not created for {sample}"
+        generated = normalize_json(specs_path)
         golden = normalize_json(golden_path)
 
         if generated != golden:
@@ -196,14 +195,14 @@ def test_encoding_json_matches_golden(sample, tmp_path):
                     diff_line = i
                     break
             pytest.fail(
-                f"encoding.json for '{sample}' differs from golden file!\n"
+                f"specs.json for '{sample}' differs from golden file!\n"
                 f"First difference at line {diff_line}:\n"
                 f"  GENERATED: {gen_lines[diff_line] if diff_line < len(gen_lines) else '<EOF>'}\n"
                 f"  EXPECTED:  {gol_lines[diff_line] if diff_line < len(gol_lines) else '<EOF>'}\n"
             )
     finally:
         if os.path.exists(backup_path):
-            shutil.copy2(backup_path, encoding_path)
+            shutil.copy2(backup_path, specs_path)
 
 
 # ── Test: Panel PNGs existence and validity ────────────────────────────────
@@ -212,8 +211,8 @@ PNG_HEADER = b'\x89PNG\r\n\x1a\n'
 
 
 def _expected_pngs_from_settings(sample_dir: str) -> list:
-    """Derive expected PNG filenames from the panels spec in settings.json."""
-    settings_path = os.path.join(sample_dir, "settings.json")
+    """Derive expected PNG filenames from the panels spec in config.json."""
+    settings_path = os.path.join(sample_dir, "config.json")
     with open(settings_path, "r", encoding="utf-8") as f:
         settings = json.load(f)
     panels = settings.get("panels", [])

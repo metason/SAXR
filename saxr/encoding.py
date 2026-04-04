@@ -7,7 +7,7 @@ This module contains the two heaviest pieces of configuration logic:
   its domain (unique categories or [min, max]).
 * :func:`deduce_encoding` — resolves every visual channel (x, y, z,
   colour, shape, size) by combining the user-supplied ``encoding`` dict
-  from *settings.json* with the deduced dimension metadata.  It builds
+  from *config.json* with the deduced dimension metadata.  It builds
   scale objects (domain → range) and sets the generator's boundary /
   factor attributes used later for coordinate mapping.
 """
@@ -33,7 +33,7 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
     * ``datetime64`` → *temporal*
     * ``int64`` / anything else → *quantitative*
 
-    If the user already provided a ``scale.domain`` in settings.json the
+    If the user already provided a ``scale.domain`` in config.json the
     automatic domain calculation is skipped for that column.
 
     Args:
@@ -46,7 +46,7 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
         calcDomain = True
         spec = {}
 
-        # Honour a user-supplied domain (settings.json) if present
+        # Honour a user-supplied domain (config.json) if present
         if col in gen.encoding and 'scale' in gen.encoding[col] and 'domain' in gen.encoding[col]['scale']:
             spec['domain'] = gen.encoding[col]['scale']['domain']
             calcDomain = False
