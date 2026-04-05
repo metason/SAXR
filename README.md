@@ -24,9 +24,10 @@ Data visualization generated with `datarepgen.py`:
 - 3D **cluster**: min-max cluster per category with median
 - 3D **pie** chart: mixed 2D/3D pie/donut chart as in [samples/fruits/config.json](samples/fruits/config.json)
 - 3D **stack**: stacked box or cylinder as in [samples/ingredients/config.json](samples/ingredients/config.json)
+- 3D **surface** plot as in [samples/mesh/config.json](samples/mesh/config.json)
 - 3D **map**: grouped bar chart on map as in [samples/geo/config.json](samples/geo/config.json) using `georepgen.py`
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
+<img src="docu/images/bar.png" height="176"/> <img src="docu/images/scatter.png" height="176"/> <img src="docu/images/cluster.png" height="176"/> <img src="docu/images/fruits.jpg" height="176"/> <img src="docu/images/ingredients.png" height="176"/> <img src="docu/images/surface.png" height="176"/> <img src="docu/images/geo.jpg" height="176"/>
 
 ## Data Scenery
 
