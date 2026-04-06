@@ -17,7 +17,7 @@
 
 ## 3D Plot Layouts
 
-Data visualization generated with `datarepgen.py`:
+Supported 3D plot types using `datarepgen.py`:
 
 - 3D **bar** chart as in [samples/eco/config.json](samples/eco/config.json) or in [samples/energy/config.json](samples/energy/config.json)
 - 3D **scatter** plot as in [samples/iris/config.json](samples/iris/config.json) or in [samples/burnout/config.json](samples/burnout/config.json)
@@ -254,8 +254,8 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 The presentation of SAXR data reps is supported by:
 
 - [Blender](export3D.py): Python programm using Blender in head-less mode to create 3D files
-- [Unity](frontends/Unity/): comming soon
-- [Web3D](frontends/Web3D/): comming soon
+- [Unity](frontends/Unity/): SAXR frontend package for Unity game engine
+- [Web3D](frontends/Web3D/): Browser-based 3D JavaScript frontend built with Next.js and React-Three-Fiber
 - [ARchi VR App](frontends/ARchi): iOS AR application
 - [ARchi Composer](frontends/ARchi): macOS AR editor
   - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)

@@ -2,26 +2,13 @@
 
 ## Version 1.0 Actions
 
-- Move Web3D and Unity code and READMEs to frontends folder
-- No Swift source code in repo (was only as kick-off for BA, now there is Blender, Unity and Web3D code available)
-- Python code is on root level of repo
-- Python tests
-  - README, howto
-  - check path dependencies
 - Schemas
-  - settings.json --> schema added to sample settings.json files
-    - "$schema": "../../schemas/settings.json",
-  - see schema bug in samples/burnout/settings.json
   - datareps schema?
   - specs schema?
   - https URL for schemas on metason.net?
-    - "$schema": "https://service.metason.net/saxr/schemas/settings.json"
-- Rename files
-  - viz.json --> datareps.json: DONE
-  - encoding.json --> specs.json: DONE
-  - settings.json --> config.json???????
+    - "$schema": "https://service.metason.net/saxr/schemas/config.json"
 
-## Settings Schema Extensions
+## Config Schema Extensions
 
 Topics:
 
@@ -277,10 +264,7 @@ DataReps
 Plot (Layout)
 
 - line
-- area?
-- text?
-- surface
-- stack
+- area
 
 Data Stage Panels + plotting
 
