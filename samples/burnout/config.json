@@ -1,6 +1,6 @@
 {
 	"$schema": "../../schemas/config.json",
-	"description": "3D data viz of burnout data set.",
+	"description": "3D data viz of burnout data set. Source: https://osf.io/29mqa/?view_only=4cece1cac87e44cf950c26b115395f37",
 	"title": "Workplace Experiences",
 	"stage": {
 		"width": 2.2,
