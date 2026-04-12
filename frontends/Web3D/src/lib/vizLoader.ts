@@ -2,7 +2,8 @@
 // Fetch and parse datareps.json files (Array<Array<DataRep>>)
 // Equivalent of VizJsonParser in DataViz.cs / JSON decoding in DataViz.swift
 
-import { DataRep, VizJson } from './types';
+import { DataRep, VizJson, SpecsJson } from './types';
+import * as THREE from 'three';
 
 /**
  * Load a datareps.json from a URL or local path and parse it.
@@ -54,6 +55,15 @@ export function parseHexColor(hex: string): {
 	opacity: number;
 } {
 	if (!hex) return { r: 1, g: 1, b: 1, opacity: 1 };
+
+	if (!hex.startsWith('#') && !/^[0-9a-fA-F]+$/.test(hex)) {
+		try {
+			const c = new THREE.Color(hex);
+			return { r: c.r, g: c.g, b: c.b, opacity: 1 };
+		} catch {
+			return { r: 1, g: 1, b: 1, opacity: 1 };
+		}
+	}
 
 	if (!hex.startsWith('#')) hex = '#' + hex;
 
@@ -110,10 +120,23 @@ export function classifyRep(rep: DataRep): RepCategory {
 			'cross',
 			'plane',
 			'arc',
+			'surface',
 		].includes(t)
 	) {
 		return 'shape';
 	}
 	// Everything else is a panel (xy, -xy, zy, -zy, xz, lc=..., etc.)
 	return 'panel';
+}
+
+export async function loadSpecsJson(
+	baseUrl: string,
+): Promise<SpecsJson | null> {
+	try {
+		const res = await fetch(`${baseUrl}/specs.json`);
+		if (!res.ok) return null;
+		return await res.json();
+	} catch {
+		return null;
+	}
 }

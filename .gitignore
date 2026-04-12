@@ -91,6 +91,12 @@ samples/*/result3D/
 !samples/geo/map.png
 
 # ========================
+# Binary data files
+# ========================
+*.ply
+*.pdf
+
+# ========================
 # Build outputs
 # ========================
 *.apk

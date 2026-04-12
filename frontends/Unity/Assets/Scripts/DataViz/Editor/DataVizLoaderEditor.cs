@@ -45,6 +45,48 @@ namespace SAXR
 
             serializedObject.ApplyModifiedProperties();
 
+            // ── Sequence info (play mode, when specs loaded) ──
+            if (Application.isPlaying && loader.Specs?.sequence != null)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Sequence", EditorStyles.boldLabel);
+
+                var seq = loader.Specs.sequence;
+                EditorGUILayout.LabelField("Arrangement", seq.arrangement);
+                EditorGUILayout.LabelField("Scene Count", loader.SceneCount.ToString());
+
+                if (seq.IsAnimated)
+                {
+                    EditorGUILayout.LabelField("Interval", seq.interval + "s");
+                }
+
+                if (seq.labels != null && seq.labels.Length > 0)
+                {
+                    EditorGUILayout.LabelField("Labels", string.Join(", ", seq.labels));
+                }
+            }
+
+            // ── Scene nav buttons (play mode) ───────
+            if (Application.isPlaying && loader.SceneCount > 1)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("◀ Prev"))
+                    loader.PreviousScene();
+
+                var controller = loader.GetComponent<SequenceController>();
+                if (controller != null && loader.Specs?.sequence != null && loader.Specs.sequence.IsAnimated)
+                {
+                    string playLabel = controller.IsPlaying ? "⏸ Pause" : "▶ Play";
+                    if (GUILayout.Button(playLabel))
+                        controller.TogglePlayPause();
+                }
+
+                if (GUILayout.Button("Next ▶"))
+                    loader.NextScene();
+                EditorGUILayout.EndHorizontal();
+            }
+
             // ── Reload button (play mode only) ──────
             EditorGUILayout.Space();
             GUI.enabled = Application.isPlaying;

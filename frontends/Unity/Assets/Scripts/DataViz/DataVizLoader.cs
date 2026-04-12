@@ -7,6 +7,7 @@
 //   3. Set assetBasePath to the folder/URL containing panel PNG images.
 //   4. At runtime it builds the full Data Stage hierarchy under itself.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -96,6 +97,18 @@ namespace SAXR
 
         private GameObject _stageRoot;
         private List<GameObject> _sceneNodes = new List<GameObject>();
+        private SpecsJson _specs;
+
+        /// <summary>
+        /// Parsed specs.json for the current sample (null if not available).
+        /// </summary>
+        public SpecsJson Specs => _specs;
+
+        /// <summary>
+        /// Fired after the visualization (and optional specs) have been loaded.
+        /// SequenceController and SequenceUI subscribe to this.
+        /// </summary>
+        public event Action OnLoaded;
 
         /// <summary>
         /// Number of scenes loaded.
@@ -142,6 +155,7 @@ namespace SAXR
                 _stageRoot = null;
             }
             _sceneNodes.Clear();
+            _specs = null;
 
             string path = ResolvedVizJsonPath;
             if (!string.IsNullOrEmpty(path))
@@ -201,6 +215,52 @@ namespace SAXR
 
             List<List<DataRep>> scenes = VizJsonParser.Parse(json);
             CreateDataScenery(scenes);
+
+            // Load specs.json from the same folder (best-effort)
+            yield return StartCoroutine(LoadSpecsJson());
+
+            OnLoaded?.Invoke();
+        }
+
+        /// <summary>
+        /// Load specs.json from the same folder as datareps.json (best-effort).
+        /// </summary>
+        private IEnumerator LoadSpecsJson()
+        {
+            _specs = null;
+            string specsPath;
+
+            if (vizJsonPath.StartsWith("http://") || vizJsonPath.StartsWith("https://"))
+            {
+                // Replace filename in URL
+                int lastSlash = vizJsonPath.LastIndexOf('/');
+                specsPath = vizJsonPath.Substring(0, lastSlash + 1) + "specs.json";
+
+                using (UnityWebRequest req = UnityWebRequest.Get(specsPath))
+                {
+                    yield return req.SendWebRequest();
+                    if (req.result == UnityWebRequest.Result.Success)
+                    {
+                        _specs = JsonUtility.FromJson<SpecsJson>(req.downloadHandler.text);
+                    }
+                }
+            }
+            else
+            {
+                string dir = string.IsNullOrEmpty(assetBasePath)
+                    ? Path.GetDirectoryName(ResolvePath(vizJsonPath))
+                    : assetBasePath;
+                specsPath = Path.Combine(dir, "specs.json");
+
+                if (File.Exists(specsPath))
+                {
+                    string text = File.ReadAllText(specsPath);
+                    _specs = JsonUtility.FromJson<SpecsJson>(text);
+                }
+            }
+
+            if (_specs?.sequence != null)
+                Debug.Log($"DataViz: Loaded specs.json (arrangement={_specs.sequence.arrangement}).");
         }
 
         /// <summary>
@@ -255,6 +315,12 @@ namespace SAXR
                     {
                         StartCoroutine(LoadPanelTexture(node, rep.asset));
                     }
+
+                    // If this is a surface with a PLY asset, load the mesh
+                    if (!string.IsNullOrEmpty(rep.asset) && node.name == "DataRep.surface")
+                    {
+                        StartCoroutine(LoadSurfacePly(node, rep.asset));
+                    }
                 }
 
                 // Hide non-selected scenes
@@ -306,6 +372,71 @@ namespace SAXR
                 {
                     renderer.material.mainTexture = tex;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Load a PLY mesh file and apply it to a surface GameObject.
+        /// </summary>
+        private IEnumerator LoadSurfacePly(GameObject surfaceRoot, string assetName)
+        {
+            string plyPath = assetName;
+
+            if (!assetName.StartsWith("http"))
+            {
+                string fileName = Path.GetFileName(assetName);
+                if (!string.IsNullOrEmpty(assetBasePath))
+                    plyPath = ResolvePath(Path.Combine(assetBasePath, fileName));
+                else
+                    plyPath = ResolvePath(fileName);
+            }
+
+            string plyText = null;
+
+            if (plyPath.StartsWith("http://") || plyPath.StartsWith("https://"))
+            {
+                using (UnityWebRequest req = UnityWebRequest.Get(plyPath))
+                {
+                    yield return req.SendWebRequest();
+                    if (req.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogWarning($"DataViz: Failed to load PLY from {plyPath}: {req.error}");
+                        yield break;
+                    }
+                    plyText = req.downloadHandler.text;
+                }
+            }
+            else
+            {
+                if (!File.Exists(plyPath))
+                {
+                    Debug.LogWarning($"DataViz: PLY file not found at {plyPath}");
+                    yield break;
+                }
+                plyText = File.ReadAllText(plyPath);
+            }
+
+            Mesh mesh = PlyLoader.Load(plyText);
+            MeshFilter mf = surfaceRoot.GetComponentInChildren<MeshFilter>();
+            if (mf != null)
+                mf.mesh = mesh;
+
+            // Apply vertex-color material if the mesh has colors
+            MeshRenderer mr = surfaceRoot.GetComponentInChildren<MeshRenderer>();
+            if (mr != null && mesh.colors32 != null && mesh.colors32.Length > 0)
+            {
+                Material mat = new Material(Shader.Find("Standard"));
+                mat.EnableKeyword("_VERTEXCOLOR");
+                mat.SetFloat("_Glossiness", 0.3f);
+                // Use a shader that supports vertex colors + double-sided
+                Shader vcShader = Shader.Find("Particles/Standard Unlit");
+                if (vcShader != null)
+                {
+                    mat = new Material(vcShader);
+                    mat.SetFloat("_ColorMode", 1f); // vertex color
+                    mat.SetInt("_Cull", 0); // double-sided
+                }
+                mr.material = mat;
             }
         }
 
