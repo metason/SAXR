@@ -12,7 +12,9 @@
 	},
 	"sequence": {
 		"field": "year",
-		"domain": [2000, 2024]
+		"domain": [2000, 2024],
+		"arrangement": "animated",
+		"interval": 1.5
 	},
 	"assetURL": "$SERVER/run/vis/",
 	"output": "datareps.json",

@@ -3,8 +3,9 @@
 // Renders a SAXR panel (xy, -xy, zy, -zy, xz, lc=...) as a textured quad.
 // Equivalent of DataViz.CreatePanel() in DataViz.cs.
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 import { DataRep } from '@/lib/types';
 
 interface PanelPlaneProps {
@@ -45,7 +46,15 @@ function PanelWithTexture({
 	rep: DataRep;
 	textureUrl: string;
 }) {
+	const meshRef = useRef<THREE.Mesh>(null);
 	const typeLower = rep.type.toLowerCase();
+
+	// Is this a wall panel that needs camera-based visibility?
+	const isWall =
+		typeLower.startsWith('xy') ||
+		typeLower.startsWith('-xy') ||
+		typeLower.startsWith('zy') ||
+		typeLower.startsWith('-zy');
 
 	// Determine orientation
 	let rotY = 0;
@@ -72,9 +81,22 @@ function PanelWithTexture({
 	} else {
 		const h = rep.h > rep.d ? rep.h : rep.d;
 		scale = [rep.w, h, 1];
-		// Three.js is right-handed like SceneKit — use rotation directly
 		rotation = [0, rotY, 0];
 	}
+
+	// Pre-allocated vectors (avoids garbage collection pressure)
+	const _normal = useMemo(() => new THREE.Vector3(), []);
+	const _toCamera = useMemo(() => new THREE.Vector3(), []);
+
+	// Wall panels: show only when the camera sees the front face.
+	// The plane's local normal (0,0,1) is transformed to world space via
+	// the mesh quaternion, then compared with the camera-to-panel direction.
+	useFrame(({ camera }) => {
+		if (!meshRef.current || !isWall) return;
+		_normal.set(0, 0, 1).applyQuaternion(meshRef.current.quaternion);
+		_toCamera.copy(camera.position).sub(meshRef.current.position);
+		meshRef.current.visible = _toCamera.dot(_normal) > 0;
+	});
 
 	// Load texture manually to handle errors gracefully
 	const [texture, setTexture] = useState<THREE.Texture | null>(null);
@@ -94,7 +116,7 @@ function PanelWithTexture({
 	}, [textureUrl, loader]);
 
 	return (
-		<mesh position={pos} scale={scale} rotation={rotation}>
+		<mesh ref={meshRef} position={pos} scale={scale} rotation={rotation}>
 			<planeGeometry args={[1, 1]} />
 			{texture ? (
 				<meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} />
@@ -119,12 +141,6 @@ function PanelWithTexture({
  */
 export default function PanelPlane({ rep, assetBasePath }: PanelPlaneProps) {
 	if (!rep.asset) {
-		return null;
-	}
-
-	// Skip vertical wall panels — they block the 3D scatter plot in browser view
-	const t = rep.type.toLowerCase();
-	if (t === '-xy' || t === '-zy') {
 		return null;
 	}
 

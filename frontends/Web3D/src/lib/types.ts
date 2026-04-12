@@ -19,3 +19,16 @@ export type VizJson = DataRep[][];
 
 /** Parsed key:value pairs from semicolon-separated asset strings (e.g. arc params) */
 export type KVMap = Record<string, string>;
+
+export interface SequenceConfig {
+	field?: string;
+	domain?: number[];
+	arrangement?: 'animated' | 'comparative' | 'LOD' | 'narrative';
+	interval?: number;
+	labels?: string[];
+}
+
+export interface SpecsJson {
+	sequence?: SequenceConfig;
+	encoding?: Record<string, unknown>;
+}

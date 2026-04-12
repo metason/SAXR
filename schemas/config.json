@@ -149,7 +149,6 @@
 		},
 		"sequence": {
 			"type": "object",
-			"required": ["field", "domain"],
 			"properties": {
 				"field": {
 					"type": "string"
@@ -160,6 +159,21 @@
 						"type": "number"
 					},
 					"minItems": 2
+				},
+				"arrangement": {
+					"type": "string",
+					"enum": ["animated", "comparative", "LOD", "narrative"]
+				},
+				"interval": {
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"labels": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1
 				}
 			}
 		},

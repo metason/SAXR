@@ -64,8 +64,6 @@ src/
 ├── lib/
 │   ├── types.ts                TypeScript interfaces matching datareps.json format
 │   └── vizLoader.ts            Fetch and validate datareps.json files
-scripts/
-└── copy-samples.mjs            Prebuild hook — copies sample data into public/
 ```
 
 ## Sample Discovery
@@ -73,16 +71,12 @@ scripts/
 Samples are discovered automatically — no manifest file needed.  
 The `/api/samples` route scans `public/samples/` for subdirectories containing `datareps.json`.
 
-For local development, samples are either:
-
-- Symlinked from the repo root `samples/` folder, or
-- Copied by the `copy-samples.mjs` prebuild script
+For local development, the `/api/pipeline-file` route serves files directly from the repo root `samples/` folder.
 
 ## Adding a New Sample
 
 1. Run the SAXR pipeline: `python datarepgen.py samples/mysample`
-2. Rebuild `public/samples`: `npm run copy-samples`
-3. The new sample appears automatically in the dropdown.
+2. The new sample appears automatically in the dropdown.
 
 ## Multi-Scene Navigation
 
@@ -115,7 +109,7 @@ npm i -g vercel
 vercel
 ```
 
-The `prebuild` hook runs `copy-samples.mjs` automatically, so sample data is included in the deployment.
+Sample data must be present in `public/samples/` for the deployment.
 
 ## Tech Stack
 

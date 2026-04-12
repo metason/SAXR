@@ -4,8 +4,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { DataRep, VizJson } from '@/lib/types';
-import { loadVizJson, isSceneLevel } from '@/lib/vizLoader';
+import { DataRep, VizJson, SpecsJson } from '@/lib/types';
+import { loadVizJson, isSceneLevel, loadSpecsJson } from '@/lib/vizLoader';
 import SceneNav from '@/components/SceneNav';
 import SamplePicker, { SampleInfo } from '@/components/SamplePicker';
 
@@ -26,6 +26,8 @@ export default function Home() {
 	const [currentSample, setCurrentSample] = useState('');
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [specs, setSpecs] = useState<SpecsJson | null>(null);
+	const [isPlaying, setIsPlaying] = useState(false);
 
 	// Auto-discover available samples via API (reads pipeline output directory)
 	useEffect(() => {
@@ -46,23 +48,32 @@ export default function Home() {
 			});
 	}, []);
 
-	const loadSample = useCallback(async (path: string) => {
-		if (!path) return;
-		setLoading(true);
-		setError(null);
-		setCurrentScene(0);
-		try {
-			const data = await loadVizJson(path);
-			setVizData(data);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : 'Failed to load datareps.json',
-			);
-			setVizData(null);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
+	const loadSample = useCallback(
+		async (path: string) => {
+			if (!path) return;
+			setLoading(true);
+			setError(null);
+			setCurrentScene(0);
+			try {
+				const data = await loadVizJson(path);
+				setVizData(data);
+				const specsData = await loadSpecsJson(
+					samples.find((s) => s.vizJsonPath === path)?.assetBasePath ?? '',
+				);
+				setSpecs(specsData);
+				setIsPlaying(specsData?.sequence?.arrangement === 'animated');
+			} catch (err) {
+				setError(
+					err instanceof Error ? err.message : 'Failed to load datareps.json',
+				);
+				setVizData(null);
+				setSpecs(null);
+			} finally {
+				setLoading(false);
+			}
+		},
+		[samples],
+	);
 
 	useEffect(() => {
 		loadSample(currentSample);
@@ -71,6 +82,17 @@ export default function Home() {
 	const handleSampleChange = (path: string) => {
 		setCurrentSample(path);
 	};
+
+	// Auto-play for animated sequences
+	useEffect(() => {
+		if (specs?.sequence?.arrangement !== 'animated' || !vizData || !isPlaying)
+			return;
+		const interval = (specs.sequence.interval ?? 1.5) * 1000;
+		const timer = setInterval(() => {
+			setCurrentScene((prev) => (prev + 1) % vizData.length);
+		}, interval);
+		return () => clearInterval(timer);
+	}, [specs, vizData, isPlaying]);
 
 	// Stage-level reps (panels, flags, encoding) live only in scene 0.
 	// Merge them into every scene so they persist across scene changes.
@@ -123,6 +145,14 @@ export default function Home() {
 							totalScenes={vizData.length}
 							currentScene={currentScene}
 							onSceneChange={setCurrentScene}
+							isPlaying={isPlaying}
+							labels={specs?.sequence?.labels}
+							domain={specs?.sequence?.domain}
+							onTogglePlay={
+								specs?.sequence?.arrangement === 'animated'
+									? () => setIsPlaying((p) => !p)
+									: undefined
+							}
 						/>
 					)}
 				</div>
