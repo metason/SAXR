@@ -1,5 +1,5 @@
 {
-    "$schema": "../../schemas/settings.json",
+    "$schema": "../../schemas/config.json",
     "data": {
         "values": [
             {

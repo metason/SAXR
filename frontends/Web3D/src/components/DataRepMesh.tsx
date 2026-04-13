@@ -5,11 +5,14 @@
 
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
+import { useLoader } from '@react-three/fiber';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
 import { DataRep } from '@/lib/types';
 import { parseHexColor, parseKV } from '@/lib/vizLoader';
 
 interface DataRepMeshProps {
 	rep: DataRep;
+	assetBasePath?: string;
 }
 
 /** Convert hex color to Three.js color + opacity */
@@ -252,9 +255,33 @@ function ShapeArc({ rep }: DataRepMeshProps) {
 	);
 }
 
+function ShapeSurface({ rep, assetBasePath }: DataRepMeshProps) {
+	const { color, opacity } = useColor(rep.color);
+	const url = `${assetBasePath || ''}/${rep.asset}`;
+	const geometry = useLoader(PLYLoader, url);
+
+	const hasVertexColors = useMemo(() => {
+		geometry.computeVertexNormals();
+		return !!geometry.attributes.color;
+	}, [geometry]);
+
+	return (
+		<mesh position={[rep.x, rep.y, rep.z]} scale={[rep.w, rep.h, rep.d]}>
+			<primitive object={geometry} attach="geometry" />
+			<meshStandardMaterial
+				color={hasVertexColors ? undefined : color}
+				vertexColors={hasVertexColors}
+				transparent={opacity < 1}
+				opacity={opacity}
+				side={THREE.DoubleSide}
+			/>
+		</mesh>
+	);
+}
+
 // ── Main DataRepMesh dispatcher ─────────────────────────
 
-export default function DataRepMesh({ rep }: DataRepMeshProps) {
+export default function DataRepMesh({ rep, assetBasePath }: DataRepMeshProps) {
 	const t = rep.type.toLowerCase();
 
 	switch (t) {
@@ -278,6 +305,8 @@ export default function DataRepMesh({ rep }: DataRepMeshProps) {
 			return <ShapePlane rep={rep} />;
 		case 'arc':
 			return <ShapeArc rep={rep} />;
+		case 'surface':
+			return <ShapeSurface rep={rep} assetBasePath={assetBasePath} />;
 		case 'encoding':
 			return null; // metadata only, not rendered
 		case 'text':

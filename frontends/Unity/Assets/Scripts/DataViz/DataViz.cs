@@ -187,6 +187,7 @@ namespace SAXR
                 case "cross":   return CreateCross(rep);
                 case "plane":   return CreatePlane(rep);
                 case "arc":     return CreateArc(rep);
+                case "surface": return CreateSurface(rep);
                 case "text":    return CreateText(rep);
                 case "encoding":
                     Debug.Log($"DataViz encoding: {rep.asset}");
@@ -427,6 +428,30 @@ namespace SAXR
                 Color col = ColorHelper.ParseHexColor(rep.color, out _);
                 tm.color = col;
             }
+
+            return go;
+        }
+
+        // ── Surface (PLY mesh loaded async) ─────────────
+
+        /// <summary>
+        /// Create a placeholder GameObject for a surface (PLY file).
+        /// The actual mesh is loaded asynchronously by DataVizLoader.
+        /// </summary>
+        private static GameObject CreateSurface(DataRep rep)
+        {
+            GameObject go = new GameObject("DataRep.surface");
+            go.transform.localPosition = new Vector3(rep.x, rep.y, rep.z);
+            go.transform.localScale = new Vector3(rep.w, rep.h, rep.d);
+
+            GameObject meshObj = new GameObject("SurfaceMesh");
+            meshObj.transform.SetParent(go.transform, false);
+            meshObj.AddComponent<MeshFilter>();
+            MeshRenderer mr = meshObj.AddComponent<MeshRenderer>();
+
+            // Default material — will be replaced with vertex-color material when PLY loads
+            mr.material = new Material(Shader.Find("Standard"));
+            mr.material.SetFloat("_Glossiness", 0.3f);
 
             return go;
         }

@@ -8,14 +8,12 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/samples
  *
- * Auto-discovers sample datasets by scanning web/public/samples/.
- * Each subfolder that contains both config.json and datareps.json is
- * returned as an available sample.  The title comes from config.json.
- *
- * This replaces the static samples.json manifest — no build step needed.
+ * Auto-discovers sample datasets by scanning the pipeline output directory
+ * (SAXR/samples/). Each subfolder that contains datareps.json is returned
+ * as an available sample. The title comes from config.json.
  */
 export async function GET() {
-	const samplesDir = path.join(process.cwd(), 'public', 'samples');
+	const samplesDir = path.resolve(process.cwd(), '..', '..', 'samples');
 
 	if (!fs.existsSync(samplesDir)) {
 		return NextResponse.json([]);

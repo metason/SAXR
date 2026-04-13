@@ -3,9 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"copy-samples": "node scripts/copy-samples.mjs",
 		"dev": "next dev",
-		"prebuild": "npm run copy-samples",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint"

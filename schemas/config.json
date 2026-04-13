@@ -2,7 +2,7 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"title": "config.json schema",
 	"description": "Schema for the config.json that are processed to generate the visualization",
-	"required": ["data", "stage", "plot", "panels", "mark", "encoding"],
+	"required": ["data", "stage", "plot", "panels", "encoding"],
 
 	"type": "object",
 	"properties": {
@@ -149,7 +149,6 @@
 		},
 		"sequence": {
 			"type": "object",
-			"required": ["field", "domain"],
 			"properties": {
 				"field": {
 					"type": "string"
@@ -160,6 +159,21 @@
 						"type": "number"
 					},
 					"minItems": 2
+				},
+				"arrangement": {
+					"type": "string",
+					"enum": ["animated", "comparative", "LOD", "narrative"]
+				},
+				"interval": {
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"labels": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1
 				}
 			}
 		},
@@ -193,16 +207,14 @@
 					"items": {
 						"type": ["number", "string"]
 					},
-					"minItems": 2,
-					"maxItems": 2
+					"minItems": 2
 				},
 				"range": {
 					"type": "array",
 					"items": {
 						"type": ["number", "string"]
 					},
-					"minItems": 2,
-					"maxItems": 2
+					"minItems": 2
 				},
 				"offset": {
 					"type": "number"

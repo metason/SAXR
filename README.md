@@ -17,16 +17,17 @@
 
 ## 3D Plot Layouts
 
-Data visualization generated with `datarepgen.py`:
+Supported 3D plot types using `datarepgen.py`:
 
 - 3D **bar** chart as in [samples/eco/config.json](samples/eco/config.json) or in [samples/energy/config.json](samples/energy/config.json)
 - 3D **scatter** plot as in [samples/iris/config.json](samples/iris/config.json) or in [samples/burnout/config.json](samples/burnout/config.json)
 - 3D **cluster**: min-max cluster per category with median
 - 3D **pie** chart: mixed 2D/3D pie/donut chart as in [samples/fruits/config.json](samples/fruits/config.json)
 - 3D **stack**: stacked box or cylinder as in [samples/ingredients/config.json](samples/ingredients/config.json)
+- 3D **surface** plot as in [samples/mesh/config.json](samples/mesh/config.json)
 - 3D **map**: grouped bar chart on map as in [samples/geo/config.json](samples/geo/config.json) using `georepgen.py`
 
-<img src="docu/images/bar.png" height="256"/> <img src="docu/images/scatter.png" height="256"/> <img src="docu/images/cluster.png" height="256"/> <img src="docu/images/fruits.jpg" height="256"/> <img src="docu/images/geo.jpg" height="256"/>
+<img src="docu/images/bar.png" height="176"/> <img src="docu/images/scatter.png" height="176"/> <img src="docu/images/cluster.png" height="176"/> <img src="docu/images/fruits.jpg" height="176"/> <img src="docu/images/ingredients.png" height="176"/> <img src="docu/images/surface.png" height="176"/> <img src="docu/images/geo.jpg" height="176"/>
 
 ## Data Scenery
 
@@ -253,8 +254,8 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 The presentation of SAXR data reps is supported by:
 
 - [Blender](export3D.py): Python programm using Blender in head-less mode to create 3D files
-- [Unity](frontends/Unity/): comming soon
-- [Web3D](frontends/Web3D/): comming soon
+- [Unity](frontends/Unity/): SAXR frontend package for Unity game engine
+- [Web3D](frontends/Web3D/): Browser-based 3D JavaScript frontend built with Next.js and React-Three-Fiber
 - [ARchi VR App](frontends/ARchi): iOS AR application
 - [ARchi Composer](frontends/ARchi): macOS AR editor
   - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)

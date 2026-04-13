@@ -463,9 +463,12 @@ class DataRepGenerator:
     def saveEncoding(self) -> None:
         """Write specs.json to the sample folder."""
         jsonFile = os.path.join(self.folder, 'specs.json')
+        specs = {"encoding": self.encoding}
+        sequence = self.sequence
+        if sequence:
+            specs["sequence"] = sequence
         with open(jsonFile, 'w') as jsonout:
-            json.dump(self.encoding, jsonout)
-            jsonout.close()
+            json.dump(specs, jsonout)
 
     def saveVizRep(self) -> None:
         """Write the final datareps.json (list of scenes) to disk."""

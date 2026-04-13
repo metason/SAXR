@@ -34,7 +34,11 @@ function SceneContent({ scene, assetBasePath }: DataVizCanvasProps) {
 	return (
 		<Center disableY>
 			{shapes.map((rep, i) => (
-				<DataRepMesh key={`shape-${i}`} rep={rep} />
+				<DataRepMesh
+					key={`shape-${i}`}
+					rep={rep}
+					assetBasePath={assetBasePath}
+				/>
 			))}
 			{panels.map((rep, i) => (
 				<PanelPlane
