@@ -663,7 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5f936c6025bc1d49bf4cae0deaa2abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sampleIndex: 5
+  sampleIndex: 1
   vizJsonPath: samples/stars/datareps.json
   assetBasePath: 
   selectedScene: 0
@@ -694,6 +694,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e778acd2b9dbd409e95ed8d2dc47d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vrYOffset: 1
+  vrZOffset: 0
+  vrScale: 0.002
 --- !u!114 &1579721338
 MonoBehaviour:
   m_ObjectHideFlags: 0
