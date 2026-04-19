@@ -1,4 +1,4 @@
-"""Shape handler functions and SHAPE_REGISTRY for 3D DataRep creation.
+"""Shape handler functions and SHAPE_REGISTRY for 3D DataViz creation.
 
 Each public ``create_*`` function has the signature::
 
@@ -15,20 +15,22 @@ from __future__ import annotations
 
 import os
 import math
+
 from typing import Callable
 
 import bpy
-
 from .helpers import kv2dict, position, scale
 
 # Type alias for the setup callback
 SetupFn = Callable[[dict], None]
 
+def magnitude(x): 
+    return math.sqrt(sum(i**2 for i in x))
 
 # ── Simple primitives ────────────────────────────────────────────────────
 
 def create_sphere(rep: dict, setup_fn: SetupFn) -> None:
-    """Create an ico-sphere DataRep."""
+    """Create an ico-sphere DataViz."""
     pos, sc = position(rep), scale(rep)
     bpy.ops.mesh.primitive_ico_sphere_add(
         radius=0.5, subdivisions=3, location=pos, scale=sc,
@@ -38,14 +40,14 @@ def create_sphere(rep: dict, setup_fn: SetupFn) -> None:
 
 
 def create_box(rep: dict, setup_fn: SetupFn) -> None:
-    """Create a cube DataRep."""
+    """Create a cube DataViz."""
     pos, sc = position(rep), scale(rep)
     bpy.ops.mesh.primitive_cube_add(size=1.0, location=pos, scale=sc)
     setup_fn(rep)
 
 
 def create_cylinder(rep: dict, setup_fn: SetupFn) -> None:
-    """Create a cylinder DataRep."""
+    """Create a cylinder DataViz."""
     pos, sc = position(rep), scale(rep)
     bpy.ops.mesh.primitive_cylinder_add(
         vertices=32, radius=0.5, depth=1.0, location=pos, scale=sc,
@@ -172,9 +174,26 @@ def create_arc(rep: dict, setup_fn: SetupFn) -> None:
     arc.data.name = plane.name = rep['type']
     setup_fn(rep)
 
+def create_line(rep: dict, setup_fn: SetupFn) -> None:
+    """Create a line DataViz."""
+    pos = position(rep)
+    v1 = (rep['x'] - rep['w']/2.0, rep['y'] - rep['h']/2.0, rep['z'] - rep['d']/2.0)
+    v2 = (rep['x'] + rep['w']/2.0, rep['y'] + rep['h']/2.0, rep['z'] + rep['d']/2.0)
+    dvec = (v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2])
+    dist = magnitude(dvec)
+    bpy.ops.mesh.primitive_cylinder_add(
+        vertices=8, radius=0.0025, depth=dist, location=pos, end_fill_type='NOTHING'
+    )
+    cylinder = bpy.context.active_object
+    phi = math.atan2(dvec[2], dvec[0]) 
+    theta = math.acos(dvec[1]/dist) 
+    cylinder.rotation_euler[1] = theta
+    cylinder.rotation_euler[2] = -phi
+    cylinder.data.name = cylinder.name = rep['type']
+    setup_fn(rep)
 
 def create_plane(rep: dict, setup_fn: SetupFn) -> None:
-    """Create a flat plane DataRep."""
+    """Create a flat plane DataViz."""
     rotx = math.pi / 2.0
     roty = 0.0
     if rep['h'] > rep['d']:
@@ -193,7 +212,7 @@ def create_plane(rep: dict, setup_fn: SetupFn) -> None:
     setup_fn(rep)
 
 def create_surface(rep: dict, setup_fn: SetupFn) -> None:
-    """Create a surface DataRep."""
+    """Create a surface DataViz."""
     rotx = math.pi / 2.0
     roty = 0.0
     fileURL = os.path.join(rep['folder'], 'surface.ply')
@@ -223,7 +242,7 @@ def create_surface(rep: dict, setup_fn: SetupFn) -> None:
 
 
 def create_text(rep: dict, setup_fn: SetupFn) -> None:
-    """Create a 3D text mesh DataRep."""
+    """Create a 3D text mesh DataViz."""
     bpy.ops.object.text_add()
     obj = bpy.context.object
     obj.data.body = rep['asset']
@@ -262,6 +281,7 @@ SHAPE_REGISTRY: dict[str, Callable[[dict, SetupFn], None]] = {
     "plus":         create_plus,
     "cross":        create_cross,
     "arc":          create_arc,
+    "line":         create_line,
     "plane":        create_plane,
     "surface":      create_surface,
     "text":         create_text,

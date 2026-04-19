@@ -263,8 +263,8 @@ DataReps
 
 Plot (Layout)
 
-- line
 - area
+- flow
 
 Data Stage Panels + plotting
 

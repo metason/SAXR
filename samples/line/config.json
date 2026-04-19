@@ -1,0 +1,36 @@
+{
+    "$schema": "../../schemas/config.json",
+    "data": {
+        "url": "data.csv"
+    },
+    "stage": {
+        "width": 0.5,
+        "height": 0.4,
+        "depth": 0.5
+    },
+    "gridColor": "#FFFFFF",
+    "labelColor": "#000000",
+    "bgColor": "#BBBB00CC",
+    "plot": "line",
+    "encoding": {
+        "x": {
+            "field": "x"
+        },
+        "y": {
+            "field": "y"
+        },
+        "z": {
+            "field": "z"
+        },
+        "color": {
+            "value": "blue"
+        }
+    },
+    "panels": [
+        "XY",
+        "-XY",
+        "ZY",
+        "-ZY",
+        "XZ"
+    ]
+}

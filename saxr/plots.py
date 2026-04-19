@@ -231,6 +231,7 @@ def create_pie(gen: DataRepGenerator) -> None:
 #     PLOT_REGISTRY["heatmap"] = create_heatmap
 # ---------------------------------------------------------------------------
 
+from .line_plot import create_line
 from .stack_plot import create_stack
 from .surface_plot import create_surface
 
@@ -239,6 +240,7 @@ PLOT_REGISTRY: dict[str, Callable[[DataRepGenerator], None]] = {
     "bar":     create_bar,
     "cluster": create_cluster,
     "pie":     create_pie,
+    "line":   create_line,
     "stack":   create_stack,
     "surface":   create_surface
 }

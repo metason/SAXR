@@ -6,7 +6,6 @@ without Blender.
 
 from __future__ import annotations
 
-
 def kv2dict(text: str) -> dict[str, str]:
     """Convert a semicolon-separated key:value string to a dictionary.
 
