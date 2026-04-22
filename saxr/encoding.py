@@ -50,7 +50,7 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
         if col in gen.encoding and 'scale' in gen.encoding[col] and 'domain' in gen.encoding[col]['scale']:
             spec['domain'] = gen.encoding[col]['scale']['domain']
             calcDomain = False
-
+        print(col, calcDomain)
         # --- Classify column dtype -----------------------------------------------
         if gen.df[col].dtype == 'object' or gen.df[col].dtype == 'category' or gen.df[col].dtype == 'str' or gen.df[col].dtype.name == 'string':
             spec['type'] = 'nominal'
@@ -117,7 +117,7 @@ def deduce_encoding(gen: DataRepGenerator) -> None:
             if 'range' in gen.dimension[key]:
                 scale['range'] = gen.dimension[key]['range']
             else:
-                scale = {'domain': gen.dimension[key]['domain'], 'range': [-gen.chartWidth/2.0, gen.chartWidth/2.0]}
+                scale['range'] = [-gen.chartWidth/2.0, gen.chartWidth/2.0]
             gen.encoding['x']['scale'] = scale
 
         # For quantitative axes: compute boundary padding and linear factor
@@ -199,7 +199,7 @@ def deduce_encoding(gen: DataRepGenerator) -> None:
             if 'range' in gen.dimension[key]:
                 scale['range'] = gen.dimension[key]['range']
             else:
-                scale = {'domain': gen.dimension[key]['domain'], 'range': [-gen.chartDepth/2.0, gen.chartDepth/2.0]}
+                scale['range'] = [-gen.chartDepth/2.0, gen.chartDepth/2.0]
             gen.encoding['z']['scale'] = scale
         if key in gen.dimension and 'type' in gen.dimension[key]:
             type = gen.dimension[key]['type']

@@ -67,7 +67,7 @@
 					"$ref": "#/definitions/channel"
 				},
 				"color": {
-					"$ref": "#/definitions/channel"
+					"$ref": "#/definitions/colorChannel"
 				},
 				"size": {
 					"$ref": "#/definitions/sizeChannel"
@@ -269,6 +269,21 @@
 				}
 			]
 		},
+		"colorChannel": {
+			"type": "object",
+			"oneOf": [
+				{
+					"required": ["value"],
+					"properties": {
+						"value": { "type": "string" }
+					},
+					"additionalProperties": false
+				},
+				{
+					"$ref": "#/definitions/channel"
+				}
+			]
+		},
 		"auxRep": {
 			"type": "object",
 			"required": ["type", "x", "y", "z", "w", "d", "h"],
@@ -280,6 +295,7 @@
 				"w": { "type": "number" },
 				"d": { "type": "number" },
 				"h": { "type": "number" },
+				"color": { "type": "string" },
 				"asset": { "type": "string" }
 			},
 			"additionalProperties": false

@@ -13,22 +13,22 @@ import bpy
 import matplotlib.colors as mcolors
 
 
-class MaterialCache:
+class Materials:
     """Cache that maps colour names to Blender ``bpy.types.Material`` objects.
 
     Identical colours share a single PBR material, avoiding duplicates.
 
     Example::
 
-        cache = MaterialCache()
-        mat = cache.get("red")
-        mat2 = cache.get("red")  # same object, no new material
+        mat = Materials.get("red")
+        mat2 = Materials.get("red")  # same object, no new material
     """
 
-    def __init__(self) -> None:
-        self._cache: dict[str, Any] = {}
+    # static cache
+    _cache: dict[str, Any] = {}
 
-    def get(self, color: str) -> Any:
+    @classmethod
+    def get(cls, color: str) -> Any:
         """Return an existing material or create a new PBR material.
 
         Args:
@@ -37,13 +37,13 @@ class MaterialCache:
         Returns:
             A ``bpy.types.Material`` instance.
         """
-        if color in self._cache:
-            return self._cache[color]
+        if color in Materials._cache:
+            return Materials._cache[color]
 
         # Check bpy.data.materials for pre-existing materials
         for mat in bpy.data.materials:
             if mat.name == color:
-                self._cache[color] = mat
+                Materials._cache[color] = mat
                 return mat
 
         # Create new PBR material
@@ -54,5 +54,5 @@ class MaterialCache:
         principled_bsdf_node.inputs["Metallic"].default_value = 0.2
         principled_bsdf_node.inputs["Roughness"].default_value = 1.0
 
-        self._cache[color] = material
+        Materials._cache[color] = material
         return material

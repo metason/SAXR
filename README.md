@@ -14,6 +14,8 @@
 - **Python-based**: Scripts for generation of data reps using Matplotlib for chart layouting
 - **Data Import**: Inline data specification or loading of data files in json/xlsx/csv format
 - **3D Export**: Generation of 3D files of data viz in usdz/gltf/glb/fbx format
+- **3D Viz Frontends**: Interactive data viz components for Web3D and Unity
+
 
 ## 3D Plot Layouts
 
@@ -23,11 +25,13 @@ Supported 3D plot types using `datarepgen.py`:
 - 3D **scatter** plot as in [samples/iris/config.json](samples/iris/config.json) or in [samples/burnout/config.json](samples/burnout/config.json)
 - 3D **cluster**: min-max cluster per category with median
 - 3D **pie** chart: mixed 2D/3D pie/donut chart as in [samples/fruits/config.json](samples/fruits/config.json)
+- 3D **stack**: stacked bar chart as in [samples/ingredients/config.json](samples/ingredients/config.json)
 - 3D **line** plot: line chart as in [samples/line/config.json](samples/line/config.json)
+- 3D **area** plot: area chart as in [samples/area/config.json](samples/area/config.json)
 - 3D **surface** plot as in [samples/mesh/config.json](samples/mesh/config.json)
 - 3D **map**: grouped bar chart on map as in [samples/geo/config.json](samples/geo/config.json) using `georepgen.py`
 
-<img src="docu/images/bar.png" height="176"/> <img src="docu/images/scatter.png" height="176"/> <img src="docu/images/cluster.png" height="176"/> <img src="docu/images/fruits.jpg" height="176"/> <img src="docu/images/ingredients.png" height="176"/> <img src="docu/images/line.png" height="176"/> <img src="docu/images/surface.png" height="176"/> <img src="docu/images/geo.jpg" height="176"/>
+<img src="docu/images/bar.png" height="176"/> <img src="docu/images/scatter.png" height="176"/> <img src="docu/images/cluster.png" height="176"/> <img src="docu/images/fruits.jpg" height="176"/> <img src="docu/images/ingredients.png" height="176"/> <img src="docu/images/line.png" height="176"/> <img src="docu/images/area.png" height="176"/> <img src="docu/images/surface.png" height="176"/> <img src="docu/images/geo.jpg" height="176"/>
 
 ## Data Scenery
 

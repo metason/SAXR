@@ -12,7 +12,7 @@ import bpy
 
 from saxr.constants import FORMAT_EXTENSIONS
 from saxr.export3d.helpers import kv2dict          # re-exported for backward compat
-from saxr.export3d.material_cache import MaterialCache
+from saxr.export3d.materials import Materials
 from saxr.export3d.shapes import SHAPE_REGISTRY
 from saxr.export3d.file_export import save_scene
 from saxr.export3d.scene_setup import create_data_stage
@@ -32,13 +32,12 @@ class Exporter3D:
         self.data_stage: Any = None
         self.data_scenes: Any = None
         self.data_scene: Any = None
-        self.materials = MaterialCache()
 
     def _setup_data_rep_item(self, rep: dict) -> None:
         """Assign material to the active object and move it into the scene collection."""
         obj = bpy.context.active_object
         obj.name = "DataRep." + rep['type']
-        obj.data.materials.append(self.materials.get(rep['color']))
+        obj.data.materials.append(Materials.get(rep['color']))
         self.data_stage.objects.unlink(obj)
         self.data_scene.objects.link(obj)
 

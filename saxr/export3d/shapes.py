@@ -20,6 +20,8 @@ from typing import Callable
 
 import bpy
 from .helpers import kv2dict, position, scale
+from saxr.export3d.materials import Materials
+
 
 # Type alias for the setup callback
 SetupFn = Callable[[dict], None]
@@ -176,6 +178,7 @@ def create_arc(rep: dict, setup_fn: SetupFn) -> None:
 
 def create_line(rep: dict, setup_fn: SetupFn) -> None:
     """Create a line DataViz."""
+    global lastColor
     pos = position(rep)
     v1 = (rep['x'] - rep['w']/2.0, rep['y'] - rep['h']/2.0, rep['z'] - rep['d']/2.0)
     v2 = (rep['x'] + rep['w']/2.0, rep['y'] + rep['h']/2.0, rep['z'] + rep['d']/2.0)
@@ -191,6 +194,37 @@ def create_line(rep: dict, setup_fn: SetupFn) -> None:
     cylinder.rotation_euler[2] = -phi
     cylinder.data.name = cylinder.name = rep['type']
     setup_fn(rep)
+
+lastAreaColor:str = "" # used to create new area on changed color
+
+def create_area(rep: dict, setup_fn: SetupFn) -> None:
+    """Create a area DataViz."""
+    global lastAreaColor
+    v1 = (rep['x'] - rep['w']/2.0, -(rep['z'] - rep['d']/2.0), rep['y'] - rep['h']/2.0)
+    v2 = (rep['x'] + rep['w']/2.0, -(rep['z'] + rep['d']/2.0), rep['y'] + rep['h']/2.0)
+    v0 = (rep['x'] - rep['w']/2.0, -(rep['z'] - rep['d']/2.0), 0.0)
+    v3 = (rep['x'] + rep['w']/2.0, -(rep['z'] + rep['d']/2.0), 0.0)
+    verts = [v0, v1, v2, v3]
+    edges = [[0,1],[1,2],[2,3],[3,0]]
+    faces =  [(0, 1, 2, 3)]
+    mesh = bpy.data.meshes.new("quad_mesh")
+    mesh.from_pydata(verts, edges, faces)
+    mesh.update()
+    area = bpy.data.objects.new("area", mesh)
+    area.data.name = area.name = "quad" # rep['type']
+    area.data.materials.append(Materials.get(rep['color']))
+    ds = bpy.context.scene.collection.children[0]
+    if ds != None:
+        scenes = ds.children[0]
+        if scenes != None:
+            scene = scenes.children[0]
+            if scene != None:
+                if len(scene.children) == 0 or rep['color'] != lastAreaColor:
+                    line = bpy.data.collections.new("Area")
+                    scene.children.link(line)
+                line = scene.children[-1]
+                line.objects.link(area)
+                lastAreaColor = rep['color']
 
 def create_plane(rep: dict, setup_fn: SetupFn) -> None:
     """Create a flat plane DataViz."""
@@ -282,6 +316,7 @@ SHAPE_REGISTRY: dict[str, Callable[[dict, SetupFn], None]] = {
     "cross":        create_cross,
     "arc":          create_arc,
     "line":         create_line,
+    "area":         create_area,
     "plane":        create_plane,
     "surface":      create_surface,
     "text":         create_text,

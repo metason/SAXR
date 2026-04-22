@@ -3,7 +3,7 @@
 Provides:
 - :class:`Exporter3D` — orchestrator that reads datareps.json and builds a Blender scene.
 - :func:`main` — CLI entry point.
-- :class:`MaterialCache` — colour-keyed PBR material cache.
+- :class:`Materials` — colour-keyed PBR material cache.
 - :data:`SHAPE_REGISTRY` — type→handler mapping for DataRep shapes.
 - Pure helpers: :func:`kv2dict`, :func:`position`, :func:`scale`.
 - Scene setup: :func:`create_data_stage`, :func:`clean_scene`.
@@ -12,7 +12,7 @@ Provides:
 """
 
 from .helpers import kv2dict, position, scale
-from .material_cache import MaterialCache
+from .materials import Materials
 from .shapes import SHAPE_REGISTRY
 from .scene_setup import clean_scene, create_data_stage
 from .file_export import save_scene
@@ -25,7 +25,7 @@ __all__ = [
     "kv2dict",
     "position",
     "scale",
-    "MaterialCache",
+    "Materials",
     "SHAPE_REGISTRY",
     "clean_scene",
     "create_data_stage",

@@ -232,6 +232,7 @@ def create_pie(gen: DataRepGenerator) -> None:
 # ---------------------------------------------------------------------------
 
 from .line_plot import create_line
+from .area_plot import create_area
 from .stack_plot import create_stack
 from .surface_plot import create_surface
 
@@ -241,6 +242,7 @@ PLOT_REGISTRY: dict[str, Callable[[DataRepGenerator], None]] = {
     "cluster": create_cluster,
     "pie":     create_pie,
     "line":   create_line,
+    "area":   create_area,
     "stack":   create_stack,
     "surface":   create_surface
 }
