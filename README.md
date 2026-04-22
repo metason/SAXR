@@ -134,15 +134,18 @@ Data Reps are a collection of simple representations of data elements that will 
 The data fields of Data Reps are:
 
 - **type**: visual shape or panel type
-  - shape of marker: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
+  - shape of markers: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
     - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
     - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
     - plt: `o, s, ^, v, D, P, X` (Matplotlib symbols for 2D marks)
-  - shape of chart element
+  - shape of chart elements
     - cylinder: for bar plots (instead of box)
     - arc: arc bow for pie charts
-    - plane: for flat overlays on panels
-    - image: for placing any icon or image
+    - plane: for flat overlays, e.g. as transparent plane infront of panels
+    - line: line segment from bottom-front-left to top-back-right corner of bbox
+    - area: area segmemt (quad analog to line going down to ground level of data stage)  
+    - image: for placing any icon or image defined as asset in PNG or JPG format
+    - surface: mesh provided as asset in PLY format
     - text: for labels
   - panel type (see next chapter)
 - **x,y,z**: position
@@ -258,12 +261,18 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 The presentation of SAXR data reps is supported by:
 
 - [Blender](export3D.py): Python programm using Blender in head-less mode to create 3D files
+  - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)
+  - glTF 3D samples: [iris.glb](samples/iris/result3D/iris.glb), [eco.glb](samples/eco/result3D/eco.glb), [fruits.glb](samples/fruits/result3D/fruits.glb), [geo.glb](samples/geo/result3D/health.glb)
 - [Unity](frontends/Unity/): SAXR frontend package for Unity game engine
 - [Web3D](frontends/Web3D/): Browser-based 3D JavaScript frontend built with Next.js and React-Three-Fiber
 - [ARchi VR App](frontends/ARchi): iOS AR application
 - [ARchi Composer](frontends/ARchi): macOS AR editor
-  - USDZ 3D samples: [iris.usdz](samples/iris/result3D/iris.usdz), [eco.usdz](samples/eco/result3D/eco.usdz), [fruits.usdz](samples/fruits/result3D/fruits.usdz), [geo.usdz](samples/geo/result3D/health.usdz)
-  - glTF 3D samples: [iris.glb](samples/iris/result3D/iris.glb), [eco.glb](samples/eco/result3D/eco.glb), [fruits.glb](samples/fruits/result3D/fruits.glb), [geo.glb](samples/geo/result3D/health.glb)
+
+## Setup for Deployment
+
+- Copy all generated files to your Web server
+- In `datareps.json` replace all asset file names with absolute URLs
+- Access `datareps.json` from within your XR frontend
 
 ## Screen Recording Videos
 
