@@ -22,6 +22,7 @@ namespace SAXR
         private Button _hoveredButton;
         private float _scanLogTimer;
 
+        //On start move the Aim object to same position as object this script is attached to
         private void Start()
         {
             foreach (Transform t in GetComponentsInChildren<Transform>(true))
@@ -45,27 +46,21 @@ namespace SAXR
             bool triggered = false;
             if (device.isValid)
             {
+                //try reading trigger as a button (bool). If that does not work read it as an axis (float)
                 if (!device.TryGetFeatureValue(CommonUsages.triggerButton, out triggered))
                 {
+                    //translate float value from axis to bool
                     device.TryGetFeatureValue(CommonUsages.trigger, out float a);
                     triggered = a > 0.5f;
                 }
             }
+            //only read trigger once per update 
             bool justPressed = triggered && !_wasTriggered;
             _wasTriggered = triggered;
 
-            var ray = new Ray(_aimTransform.position, _aimTransform.forward);
+            Canvas.ForceUpdateCanvases();
 
-            // Periodic scan log — every 3 s show what buttons exist in scene
-            _scanLogTimer -= Time.deltaTime;
-            if (_scanLogTimer <= 0f)
-            {
-                _scanLogTimer = 3f;
-                var all = FindObjectsByType<Button>(FindObjectsSortMode.None);
-                Debug.Log($"[VRPointerInteractor] ({_hand}) Scene has {all.Length} Button(s).");
-                foreach (var b in all)
-                    Debug.Log($"  • {b.name}  interactable={b.IsInteractable()}  active={b.gameObject.activeInHierarchy}");
-            }
+            var ray = new Ray(_aimTransform.position, _aimTransform.forward);
 
             // On trigger press: detailed per-button diagnostic
             if (justPressed)

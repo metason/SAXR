@@ -16,19 +16,13 @@ namespace SAXR
 
         private XRNode Node => _hand == Hand.Left ? XRNode.LeftHand : XRNode.RightHand;
 
+        private void Start()
+        {
+            SetVisible(true);
+        }
         private void Update()
         {
             var device = InputDevices.GetDeviceAtXRNode(Node);
-
-            if (!device.isValid)
-            {
-                SetVisible(false);
-                return;
-            }
-
-            // Some OpenXR runtimes don't reliably report isTracked via the legacy API,
-            // so show the controller whenever the device itself is valid.
-            SetVisible(true);
 
             if (device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 pos))
                 transform.localPosition = pos;
