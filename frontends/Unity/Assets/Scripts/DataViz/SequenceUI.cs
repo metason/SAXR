@@ -106,6 +106,7 @@ namespace SAXR
             if (vr)
             {
                 canvas.renderMode = RenderMode.WorldSpace;
+                canvas.worldCamera = Camera.main;
                 var rt = _canvasRoot.GetComponent<RectTransform>();
                 rt.sizeDelta = new Vector2(800f, 200f);
                 _canvasRoot.transform.localPosition = new Vector3(0f, vrYOffset, vrZOffset);
