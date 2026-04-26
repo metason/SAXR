@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 namespace SAXR
 {
@@ -17,6 +18,14 @@ namespace SAXR
     [RequireComponent(typeof(SequenceController))]
     public class SequenceUI : MonoBehaviour
     {
+        [Header("VR World-Space Panel")]
+        [Tooltip("Local Y offset from the chart pivot (negative = below).")]
+        [SerializeField] private float vrYOffset = 50.0f;
+        [Tooltip("Local Z offset from the chart pivot (positive = in front of chart, toward viewer).")]
+        [SerializeField] private float vrZOffset = 0.0f;
+        [Tooltip("Uniform scale applied to the world-space canvas (meters per pixel).")]
+        [SerializeField] private float vrScale = 0.002f;
+
         private DataVizLoader _loader;
         private SequenceController _controller;
 
@@ -86,16 +95,31 @@ namespace SAXR
             if (_loader.SceneCount <= 1) return;
 
             var seq = _loader.Specs?.sequence;
+            bool vr = XRSettings.isDeviceActive;
 
             // Create Canvas
             _canvasRoot = new GameObject("SequenceUI Canvas");
             _canvasRoot.transform.SetParent(transform, false);
 
             var canvas = _canvasRoot.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 100;
 
-            _canvasRoot.AddComponent<CanvasScaler>();
+            if (vr)
+            {
+                canvas.renderMode = RenderMode.WorldSpace;
+                canvas.worldCamera = Camera.main;
+                var rt = _canvasRoot.GetComponent<RectTransform>();
+                rt.sizeDelta = new Vector2(800f, 200f);
+                _canvasRoot.transform.localPosition = new Vector3(0f, vrYOffset, vrZOffset);
+                _canvasRoot.transform.localRotation = Quaternion.identity;
+                _canvasRoot.transform.localScale = Vector3.one * vrScale;
+            }
+            else
+            {
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 100;
+                _canvasRoot.AddComponent<CanvasScaler>();
+            }
+
             _canvasRoot.AddComponent<GraphicRaycaster>();
 
             // Ensure an EventSystem exists (required for UI click handling)
@@ -107,13 +131,23 @@ namespace SAXR
                 es.AddComponent<StandaloneInputModule>();
             }
 
-            // Bottom-center container
+            // Bottom-center container (anchored to canvas centre in VR, bottom-centre on screen)
             var container = CreatePanel(_canvasRoot, "NavContainer");
             var containerRect = container.GetComponent<RectTransform>();
-            containerRect.anchorMin = new Vector2(0.5f, 0f);
-            containerRect.anchorMax = new Vector2(0.5f, 0f);
-            containerRect.pivot = new Vector2(0.5f, 0f);
-            containerRect.anchoredPosition = new Vector2(0f, 20f);
+            if (vr)
+            {
+                containerRect.anchorMin = new Vector2(0.5f, 0.5f);
+                containerRect.anchorMax = new Vector2(0.5f, 0.5f);
+                containerRect.pivot = new Vector2(0.5f, 0.5f);
+                containerRect.anchoredPosition = Vector2.zero;
+            }
+            else
+            {
+                containerRect.anchorMin = new Vector2(0.5f, 0f);
+                containerRect.anchorMax = new Vector2(0.5f, 0f);
+                containerRect.pivot = new Vector2(0.5f, 0f);
+                containerRect.anchoredPosition = new Vector2(0f, 20f);
+            }
             containerRect.sizeDelta = new Vector2(0f, 0f); // auto-size
 
             var vertLayout = container.AddComponent<VerticalLayoutGroup>();
