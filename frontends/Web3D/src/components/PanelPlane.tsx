@@ -1,44 +1,20 @@
 'use client';
-// PanelPlane.tsx
-// Renders a SAXR panel (xy, -xy, zy, -zy, xz, lc=...) as a textured quad.
-// Equivalent of DataViz.CreatePanel() in DataViz.cs.
+/**
+ * @module PanelPlane
+ * Renders a SAXR panel (`xy`, `-xy`, `zy`, `-zy`, `xz`, `lc=…`) as a textured quad.
+ * Wall panels use camera-based frustum culling to hide back-facing sides.
+ * Equivalent of DataViz.CreatePanel() in DataViz.cs.
+ */
 
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { DataRep } from '@/lib/types';
+import { resolveAssetUrl } from '@/lib/assetUrl';
+import { getPanelOrientation } from '@/lib/panelOrientation';
+import { useVizContext } from '@/context/VizContext';
 
-interface PanelPlaneProps {
-	rep: DataRep;
-	/** Base URL/path for resolving panel image assets */
-	assetBasePath: string;
-}
-
-/**
- * Resolve the asset URL for a panel.
- * datareps.json uses "$SERVER/run/vis/xy.png" style paths — we replace $SERVER
- * with the actual base path.
- */
-function resolveAssetUrl(asset: string, basePath: string): string {
-	if (!asset) return '';
-	// Skip non-image assets (e.g. specs.json)
-	if (!asset.match(/\.(png|jpg|jpeg|webp)$/i)) return '';
-	// Replace $SERVER/run/vis/ prefix — keep just the filename
-	if (asset.startsWith('$SERVER/')) {
-		const filename = asset.split('/').pop() || '';
-		return basePath + '/' + filename;
-	}
-	// Already absolute URL
-	if (
-		asset.startsWith('http://') ||
-		asset.startsWith('https://') ||
-		asset.startsWith('/')
-	) {
-		return asset;
-	}
-	return basePath + '/' + asset;
-}
-
+/** Inner component that loads a texture and renders the oriented panel mesh. */
 function PanelWithTexture({
 	rep,
 	textureUrl,
@@ -56,20 +32,11 @@ function PanelWithTexture({
 		typeLower.startsWith('zy') ||
 		typeLower.startsWith('-zy');
 
-	// Determine orientation
-	let rotY = 0;
-	let horizontal = false;
-
-	if (typeLower.startsWith('-xy')) rotY = Math.PI;
-	else if (typeLower.startsWith('-zy')) rotY = Math.PI / 2;
-	else if (typeLower.startsWith('zy')) rotY = -Math.PI / 2;
-	else if (typeLower.startsWith('xz')) horizontal = true;
-	else if (typeLower.startsWith('l') && typeLower.includes('='))
-		horizontal = true;
-
-	// Generic flat-panel detection: h==0 with non-zero d means
-	// the panel lies on the XZ ground plane (e.g. flag images in eco).
-	if (!horizontal && rep.h === 0 && rep.d > 0) horizontal = true;
+	const { rotationY: rotY, horizontal } = getPanelOrientation(
+		typeLower,
+		rep.h,
+		rep.d,
+	);
 
 	let scale: [number, number, number];
 	let rotation: [number, number, number];
@@ -89,8 +56,6 @@ function PanelWithTexture({
 	const _toCamera = useMemo(() => new THREE.Vector3(), []);
 
 	// Wall panels: show only when the camera sees the front face.
-	// The plane's local normal (0,0,1) is transformed to world space via
-	// the mesh quaternion, then compared with the camera-to-panel direction.
 	useFrame(({ camera }) => {
 		if (!meshRef.current || !isWall) return;
 		_normal.set(0, 0, 1).applyQuaternion(meshRef.current.quaternion);
@@ -108,7 +73,7 @@ function PanelWithTexture({
 			textureUrl,
 			(tex) => setTexture(tex),
 			undefined,
-			() => setTexture(null), // silently ignore load errors
+			() => setTexture(null),
 		);
 		return () => {
 			if (texture) texture.dispose();
@@ -133,13 +98,12 @@ function PanelWithTexture({
 }
 
 /**
- * Wrapper that only renders if the panel has a valid asset URL.
- * For browser viewing, skip vertical wall panels (xy, -xy, zy, -zy)
- * that would obstruct the view — only keep floor (xz) and legend panels.
- * In VR (Swift/Unity) all walls are needed since the user is inside the cube,
- * but in a browser you look in from outside.
+ * Panel component that resolves the asset URL and delegates to
+ * {@link PanelWithTexture}. Returns `null` if the panel has no valid image asset.
  */
-export default function PanelPlane({ rep, assetBasePath }: PanelPlaneProps) {
+export default function PanelPlane({ rep }: { rep: DataRep }) {
+	const { assetBasePath } = useVizContext();
+
 	if (!rep.asset) {
 		return null;
 	}

@@ -1,22 +1,31 @@
+/**
+ * @module api/pipeline-file
+ * GET /api/pipeline-file/:path* — serves static assets from the SAXR pipeline output directory.
+ * Used via URL rewrite: `/samples/:path*` → `/api/pipeline-file/:path*`.
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
 /**
- * GET /api/pipeline-file/:path*
+ * Serves static assets directly from `SAXR/samples/`.
+ * This lets the dev server read freshly-generated files without a manual copy step.
  *
- * Serves static assets directly from the pipeline output directory
- * (SAXR/samples/). This is used as a fallback rewrite so the dev server
- * can read freshly-generated files without a manual copy step.
+ * **Security:**
+ * - Resolved path must stay inside `SAMPLES_ROOT` (no path traversal).
+ * - Only whitelisted file extensions are served.
  *
- * Security:
- *  - Resolved path must stay inside SAMPLES_ROOT (no path traversal).
- *  - Only whitelisted file extensions are served.
+ * @param _req - Incoming request (unused).
+ * @param params.path - URL path segments after `/api/pipeline-file/`.
+ * @returns File content with appropriate MIME type, or 403/404 error.
  */
 
 const SAMPLES_ROOT = path.resolve(process.cwd(), '..', '..', 'samples');
 
 const MIME: Record<string, string> = {
+	// Multipurpose Internet Mail Extensions
+	// It's a standard that tells the browser what kind of file it's receiving, so it knows how to handle it.
 	'.json': 'application/json',
 	'.png': 'image/png',
 	'.jpg': 'image/jpeg',
