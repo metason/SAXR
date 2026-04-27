@@ -1,12 +1,17 @@
-// vizLoader.ts
-// Fetch and parse datareps.json files (Array<Array<DataRep>>)
-// Equivalent of VizJsonParser in DataViz.cs / JSON decoding in DataViz.swift
+/**
+ * @module vizLoader
+ * Fetch and parse datareps.json files (`Array<Array<DataRep>>`).
+ * Equivalent of VizJsonParser in DataViz.cs / JSON decoding in DataViz.swift.
+ */
 
 import { DataRep, VizJson, SpecsJson } from './types';
 import * as THREE from 'three';
 
 /**
  * Load a datareps.json from a URL or local path and parse it.
+ * @param url - URL or path to the datareps.json file.
+ * @returns Parsed array-of-arrays structure (scenes of DataReps).
+ * @throws Error if the fetch fails or the JSON structure is invalid.
  */
 export async function loadVizJson(url: string): Promise<VizJson> {
 	const res = await fetch(url);
@@ -29,8 +34,9 @@ export async function loadVizJson(url: string): Promise<VizJson> {
 
 /**
  * Parse semicolon-separated key:value pairs from a DataRep asset string.
- * e.g. "ratio:0.5;start:0;angle:120" → { ratio: "0.5", start: "0", angle: "120" }
- * Matches DataViz.ParseKV() in C#.
+ * @param str - Semicolon-separated string, e.g. `"ratio:0.5;start:0;angle:120"`.
+ * @returns Key-value dictionary, e.g. `{ ratio: "0.5", start: "0", angle: "120" }`.
+ * @see DataViz.ParseKV() in C#.
  */
 export function parseKV(str: string): Record<string, string> {
 	const dict: Record<string, string> = {};
@@ -45,8 +51,10 @@ export function parseKV(str: string): Record<string, string> {
 }
 
 /**
- * Parse hex color string (#RRGGBB or #RRGGBBAA) into { r, g, b, opacity }.
- * All values 0–1. Matches ColorHelper.ParseHexColor() in C#.
+ * Parse hex color string (`#RRGGBB` or `#RRGGBBAA`) into normalized RGBA components.
+ * @param hex - Hex color string, Three.js named color, or raw hex digits.
+ * @returns Object with `r`, `g`, `b` (0–1) and `opacity` (0–1).
+ * @see ColorHelper.ParseHexColor() in C#.
  */
 export function parseHexColor(hex: string): {
 	r: number;
@@ -93,16 +101,28 @@ export function parseHexColor(hex: string): {
 /**
  * Determine if a DataRep is a scene-level data point (all-lowercase type)
  * vs a stage-level panel/wall (has uppercase).
- * Matches DataRep.IsSceneLevel in C#.
+ * @param rep - The DataRep to classify.
+ * @returns `true` if the rep belongs to a data scene, `false` if stage-level.
+ * @see DataRep.IsSceneLevel in C#.
  */
 export function isSceneLevel(rep: DataRep): boolean {
 	return rep.type === rep.type.toLowerCase();
 }
 
 /**
- * Classify a DataRep type for rendering.
+ * Category for routing a DataRep to the correct renderer.
+ * - `'shape'` — 3D geometry (sphere, box, arc, etc.)
+ * - `'panel'` — textured image quad (xy, zy, xz, lc=…)
+ * - `'encoding'` — encoding metadata (not rendered)
+ * - `'text'` — text element
  */
 export type RepCategory = 'shape' | 'panel' | 'encoding' | 'text';
+
+/**
+ * Classify a DataRep type for rendering dispatch.
+ * @param rep - The DataRep to classify.
+ * @returns The rendering category for the given rep.
+ */
 
 export function classifyRep(rep: DataRep): RepCategory {
 	const t = rep.type.toLowerCase();
@@ -120,7 +140,7 @@ export function classifyRep(rep: DataRep): RepCategory {
 			'cross',
 			'plane',
 			'arc',
-			'surface',
+			'surface', // Add surface as a renderable shape type for ply files
 		].includes(t)
 	) {
 		return 'shape';
@@ -129,6 +149,11 @@ export function classifyRep(rep: DataRep): RepCategory {
 	return 'panel';
 }
 
+/**
+ * Load specs.json from a sample’s base URL.
+ * @param baseUrl - Asset base path for the sample (e.g. `/samples/eco`).
+ * @returns Parsed specs or `null` if the file doesn’t exist or fails to load.
+ */
 export async function loadSpecsJson(
 	baseUrl: string,
 ): Promise<SpecsJson | null> {

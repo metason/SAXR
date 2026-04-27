@@ -1,16 +1,20 @@
+/**
+ * @module api/samples
+ * GET /api/samples — auto-discovers sample datasets from the SAXR pipeline output directory.
+ */
+
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// Force dynamic rendering — samples directory may change between deploys
+/** Force dynamic rendering — samples directory may change between deploys. */
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/samples
- *
- * Auto-discovers sample datasets by scanning the pipeline output directory
- * (SAXR/samples/). Each subfolder that contains datareps.json is returned
- * as an available sample. The title comes from config.json.
+ * Scans `SAXR/samples/` for subdirectories containing `datareps.json`.
+ * Returns a JSON array of {@link SampleInfo}-shaped objects sorted alphabetically.
+ * The display name comes from `config.json` `title` (falls back to capitalized dir name).
+ * @returns `NextResponse` with JSON array of discovered samples.
  */
 export async function GET() {
 	const samplesDir = path.resolve(process.cwd(), '..', '..', 'samples');

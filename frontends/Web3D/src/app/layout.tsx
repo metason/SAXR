@@ -1,3 +1,8 @@
+/**
+ * @module layout
+ * Root layout for the SAXR Web Viewer — applies Inter font and global metadata.
+ */
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';

@@ -1,15 +1,31 @@
 'use client';
-// page.tsx
-// Main SAXR Web Viewer page — loads datareps.json, renders 3D data viz with scene navigation.
+/**
+ * @module page
+ * Main SAXR Web Viewer page — loads datareps.json, renders 3D data viz with scene navigation.
+ * Orchestrates {@link useSampleLoader}, {@link useScenePlayback}, {@link useComparativeSelection},
+ * and {@link mergeSceneWithStage} to drive the {@link DataVizCanvas} and HUD overlay.
+ */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { DataRep, VizJson, SpecsJson } from '@/lib/types';
-import { loadVizJson, isSceneLevel, loadSpecsJson } from '@/lib/vizLoader';
+import { useSampleLoader } from '@/hooks/useSampleLoader';
+import { useScenePlayback } from '@/hooks/useScenePlayback';
+import {
+	mergeSceneWithStage,
+	mergeMultipleScenesWithStage,
+} from '@/lib/sceneMerge';
+import { useComparativeSelection } from '@/hooks/useComparativeSelection';
 import SceneNav from '@/components/SceneNav';
-import SamplePicker, { SampleInfo } from '@/components/SamplePicker';
+import SamplePicker from '@/components/SamplePicker';
+import EditorPanel from '@/components/EditorPanel';
+import { SpecsJson } from '@/lib/types';
+import { useEffect, useState } from 'react';
 
-// Dynamic import for the Canvas — SSR must be disabled for Three.js / R3F
+/**
+ * Lazily loaded 3D canvas component.
+ * SSR is disabled because Three.js requires the browser's WebGL API,
+ * which does not exist on the server. `dynamic()` delays rendering to the client.
+ */
 const DataVizCanvas = dynamic(() => import('@/components/DataVizCanvas'), {
 	ssr: false,
 	loading: () => (
@@ -20,143 +36,203 @@ const DataVizCanvas = dynamic(() => import('@/components/DataVizCanvas'), {
 });
 
 export default function Home() {
-	const [samples, setSamples] = useState<SampleInfo[]>([]);
-	const [vizData, setVizData] = useState<VizJson | null>(null);
-	const [currentScene, setCurrentScene] = useState(0);
-	const [currentSample, setCurrentSample] = useState('');
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [specs, setSpecs] = useState<SpecsJson | null>(null);
-	const [isPlaying, setIsPlaying] = useState(false);
+	/** Loaded dataset, sample list, and asset base URL. See {@link useSampleLoader}. */
+	const {
+		samples,
+		vizData,
+		specs,
+		loading,
+		error,
+		currentSample,
+		assetBasePath,
+		handleSampleChange,
+		loadSample,
+	} = useSampleLoader();
 
-	// Auto-discover available samples via API (reads pipeline output directory)
-	useEffect(() => {
-		fetch('/api/samples')
-			.then((r) => r.json())
-			.then((list: SampleInfo[]) => {
-				setSamples(list);
-				if (list.length > 0) {
-					setCurrentSample(list[0].vizJsonPath);
-				} else {
-					setLoading(false);
-					setError('No samples found');
-				}
-			})
-			.catch(() => {
-				setLoading(false);
-				setError('Failed to discover samples');
-			});
-	}, []);
+	const [editorOpen, setEditorOpen] = useState(false);
 
-	const loadSample = useCallback(
-		async (path: string) => {
-			if (!path) return;
-			setLoading(true);
-			setError(null);
-			setCurrentScene(0);
-			try {
-				const data = await loadVizJson(path);
-				setVizData(data);
-				const specsData = await loadSpecsJson(
-					samples.find((s) => s.vizJsonPath === path)?.assetBasePath ?? '',
-				);
-				setSpecs(specsData);
-				setIsPlaying(specsData?.sequence?.arrangement === 'animated');
-			} catch (err) {
-				setError(
-					err instanceof Error ? err.message : 'Failed to load datareps.json',
-				);
-				setVizData(null);
-				setSpecs(null);
-			} finally {
-				setLoading(false);
-			}
-		},
-		[samples],
+	// Clear editor overrides when the user picks a different sample
+	useEffect(() => {}, [currentSample]);
+
+	/** Current scene index, auto-play state, and playback controls. See {@link useScenePlayback}. */
+	const { currentScene, setCurrentScene, isPlaying, totalScenes, togglePlay } =
+		useScenePlayback(vizData, specs);
+
+	/** Selected scenes for comparative view. See {@link useComparativeSelection}. */
+	const { selectedScenes, toggleScene, allowedScenes } =
+		useComparativeSelection(vizData, specs);
+
+	/** `true` when the sequence arrangement is `'comparative'` (side-by-side mode). */
+	const isComparative = specs?.sequence?.arrangement === 'comparative';
+
+	/**
+	 * All selected scenes merged with stage elements, ready for side-by-side rendering.
+	 * `null` when arrangement is not `'comparative'`. See {@link mergeMultipleScenesWithStage}.
+	 */
+	const comparativeScenes = useMemo(() => {
+		if (isComparative) {
+			return mergeMultipleScenesWithStage(vizData, selectedScenes);
+		}
+		return null;
+	}, [isComparative, vizData, selectedScenes]);
+
+	/** XYZ spacing between scenes. Falls back to `[2, 0, 0]` if not set in specs. */
+	const gap = specs?.sequence?.gap ?? [2, 0, 0];
+
+	/** Column count for comparative grid. If omitted from specs, computed automatically. */
+	const columns = specs?.sequence?.columns;
+
+	/**
+	 * One label string per selected scene, used as floating 3D labels in comparative mode.
+	 * Derived from the same domain interpolation as the HUD scene picker buttons.
+	 */
+	const sceneLabels = useMemo(() => {
+		if (!isComparative || !vizData) return [];
+		const domain = specs?.sequence?.domain;
+		return selectedScenes.map((sceneIndex) =>
+			domain
+				? String(
+						Math.round(
+							domain[0] +
+								((sceneIndex - 1) * (domain[1] - domain[0])) /
+									(totalScenes - 2),
+						),
+					)
+				: `Scene ${sceneIndex}`,
+		);
+	}, [isComparative, vizData, selectedScenes, specs, totalScenes]);
+
+	/**
+	 * Active scene merged with persistent stage elements from scene 0 (panels, labels, legends).
+	 * `useMemo` ensures recomputation only when `vizData` or `currentScene` changes.
+	 */
+	const scene = useMemo(
+		() => mergeSceneWithStage(vizData, currentScene),
+		[vizData, currentScene],
 	);
 
-	useEffect(() => {
-		loadSample(currentSample);
-	}, [currentSample, loadSample]);
-
-	const handleSampleChange = (path: string) => {
-		setCurrentSample(path);
-	};
-
-	// Auto-play for animated sequences
-	useEffect(() => {
-		if (specs?.sequence?.arrangement !== 'animated' || !vizData || !isPlaying)
-			return;
-		const interval = (specs.sequence.interval ?? 1.5) * 1000;
-		const timer = setInterval(() => {
-			setCurrentScene((prev) => (prev + 1) % vizData.length);
-		}, interval);
-		return () => clearInterval(timer);
-	}, [specs, vizData, isPlaying]);
-
-	// Stage-level reps (panels, flags, encoding) live only in scene 0.
-	// Merge them into every scene so they persist across scene changes.
-	const scene = useMemo(() => {
-		if (!vizData) return [];
-		const current = vizData[currentScene] ?? [];
-		if (currentScene === 0) return current;
-		// Carry over non-shape reps from scene 0: panels (uppercase), images, encoding
-		const stageReps = (vizData[0] ?? []).filter((r: DataRep) => {
-			const t = r.type.toLowerCase();
-			return !isSceneLevel(r) || t === 'image' || t === 'encoding';
-		});
-		return [...current, ...stageReps];
-	}, [vizData, currentScene]);
+	/** Total number of DataRep primitives in the current scene — displayed in the info bar. */
 	const repCount = scene.length;
 
 	return (
 		<div className="relative w-screen h-screen bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-			{/* 3D Viewport */}
+			{/* 3D Viewport — always full screen */}
 			<div className="absolute inset-0">
-				{!loading && vizData && (
-					<DataVizCanvas
-						scene={scene}
-						assetBasePath={
-							samples.find((s) => s.vizJsonPath === currentSample)
-								?.assetBasePath || ''
-						}
-					/>
-				)}
+				{!loading &&
+					vizData &&
+					(isComparative ? (
+						<DataVizCanvas
+							comparativeScenes={comparativeScenes}
+							gap={gap}
+							columns={columns}
+							sceneLabels={sceneLabels}
+							assetBasePath={assetBasePath}
+						/>
+					) : (
+						<DataVizCanvas scene={scene} assetBasePath={assetBasePath} />
+					))}
 			</div>
 
 			{/* HUD overlay */}
 			<div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 pointer-events-none">
-				{/* Left: title + sample picker */}
+				{/* Left: title + editor toggle */}
 				<div className="flex items-center gap-4 pointer-events-auto">
 					<h1 className="text-white font-semibold text-lg tracking-tight">
 						SAXR Web Viewer
 					</h1>
+					<button
+						onClick={() => setEditorOpen((o) => !o)}
+						className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors backdrop-blur ${
+							editorOpen
+								? 'bg-white/20 text-white border-white/40'
+								: 'bg-black/60 text-white border-white/20 hover:bg-white/10'
+						}`}
+					>
+						{'</>'}
+					</button>
+				</div>
+
+				{/* Center: comparative scene picker — only visible in comparative mode */}
+				{isComparative && vizData && (
+					<div className="flex items-center gap-2 pointer-events-auto flex-wrap justify-center">
+						{(
+							allowedScenes ??
+							Array.from({ length: totalScenes - 1 }, (_, i) => i + 1)
+						).map((sceneIndex: number) => {
+							const domain = specs?.sequence?.domain;
+							const label = domain
+								? String(
+										Math.round(
+											domain[0] +
+												((sceneIndex - 1) * (domain[1] - domain[0])) /
+													(totalScenes - 2),
+										),
+									)
+								: `Scene ${sceneIndex}`;
+							const isSelected = selectedScenes.includes(sceneIndex);
+							return (
+								<button
+									key={sceneIndex}
+									onClick={() => toggleScene(sceneIndex)}
+									className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors backdrop-blur ${
+										isSelected
+											? 'bg-white/20 text-white border-white/40'
+											: 'bg-black/60 text-white border-white/20 hover:bg-white/10'
+									}`}
+								>
+									{label}
+								</button>
+							);
+						})}
+					</div>
+				)}
+
+				{/* Right: scene nav + sample picker */}
+				<div className="flex items-center gap-3 pointer-events-auto">
+					{vizData && !isComparative && (
+						<SceneNav
+							totalScenes={totalScenes}
+							currentScene={currentScene}
+							onSceneChange={setCurrentScene}
+							isPlaying={isPlaying}
+							labels={specs?.sequence?.labels}
+							domain={specs?.sequence?.domain}
+							onTogglePlay={togglePlay}
+						/>
+					)}
 					<SamplePicker
 						samples={samples}
 						current={currentSample}
 						onSelect={handleSampleChange}
 					/>
 				</div>
-
-				{/* Right: scene navigation */}
-				<div className="pointer-events-auto">
-					{vizData && (
-						<SceneNav
-							totalScenes={vizData.length}
-							currentScene={currentScene}
-							onSceneChange={setCurrentScene}
-							isPlaying={isPlaying}
-							labels={specs?.sequence?.labels}
-							domain={specs?.sequence?.domain}
-							onTogglePlay={
-								specs?.sequence?.arrangement === 'animated'
-									? () => setIsPlaying((p) => !p)
-									: undefined
-							}
-						/>
-					)}
-				</div>
 			</div>
+
+			{/* Floating editor box — appears below the header when open */}
+			{editorOpen && (
+				<div className="absolute top-16 left-4 z-20 w-[480px] h-[calc(100vh-5rem)] rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+					<EditorPanel
+						assetBasePath={assetBasePath}
+						//onSpecsChange={(parsed) => setOverrideSpecs(parsed)}
+						// playbutton and then onSpecsChange.
+						onRun={async (configText: string): Promise<string | null> => {
+							const slug = assetBasePath.split('/').pop();
+							const response = await fetch('/api/run-pipeline', {
+								headers: { 'Content-Type': 'application/json' },
+								method: 'POST',
+								body: JSON.stringify({ slug, configText }),
+							});
+							if (response.ok) {
+								loadSample(currentSample);
+								return null;
+							} else {
+								const data = await response.json().catch(() => ({}));
+								return data.error ?? 'Pipeline failed';
+							}
+						}}
+					/>
+				</div>
+			)}
 
 			{/* Bottom info bar */}
 			<div className="absolute bottom-4 left-4 z-10 text-white/40 text-xs pointer-events-none">
