@@ -39,8 +39,11 @@ function SurfaceInner({
 }) {
 	const { color } = useColor(rep.color);
 
-	// Build the URL: "/samples/mesh" + "/" + "surface.ply"
-	const url = `${assetBasePath || ''}/${rep.asset}`;
+	// Build the URL: strip $SERVER/ prefix, then resolve relative to assetBasePath
+	let assetFile = rep.asset;
+	if (assetFile.startsWith('$SERVER/'))
+		assetFile = assetFile.split('/').pop() || '';
+	const url = `${assetBasePath || ''}/${assetFile}`;
 
 	// useLoader fetches the .ply file and parses it into a BufferGeometry
 	const geometry = useLoader(PLYLoader, url);

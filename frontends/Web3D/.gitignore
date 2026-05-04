@@ -43,4 +43,7 @@ yarn-error.log*
 /public/samples
 next-env.d.ts
 
+# Derived from schemas/config.json — imported at build time, not needed in public/
+/public/config-schema.json
+
 .vercel

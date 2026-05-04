@@ -1,28 +1,29 @@
 /**
  * @module sceneMerge
- * Pure function to merge stage-level reps from scene 0 into the current scene.
- * Stage-level reps (panels, flags, encoding) live only in scene 0 —
- * this function ensures they persist across scene changes.
+ * Pure functions to merge stage-level reps from {@link ParsedVizData.stage}
+ * into the current scene from {@link ParsedVizData.scenes}.
+ * Stage-level reps (panels, flags, encoding) persist across scene changes.
  */
 
-import { DataRep, VizJson } from '@/lib/types';
+import { DataRep, ParsedVizData } from '@/lib/types';
 import { isSceneLevel } from '@/lib/vizLoader';
 
 /**
- * Merge persistent stage-level reps (scene 0) with the active data scene.
- * @param vizData - Full visualization data (all scenes), or `null` if not loaded.
- * @param currentScene - Zero-based index of the scene to display.
- * @returns Flat array of DataReps combining the current scene with stage elements.
+ * Merge persistent stage-level reps with the active data scene.
+ * @param vizData - Parsed visualization data, or `null` if not loaded.
+ * @param sceneIndex - Zero-based index into `vizData.scenes`.
+ * @returns Flat array of DataReps: active scene reps + non-shape stage reps.
+ *          When there are no data scenes, returns the stage reps directly.
  */
 export function mergeSceneWithStage(
-	vizData: VizJson | null,
-	currentScene: number,
+	vizData: ParsedVizData | null,
+	sceneIndex: number,
 ): DataRep[] {
 	if (!vizData) return [];
-	const current = vizData[currentScene] ?? [];
-	if (currentScene === 0) return current;
-	// Carry over non-shape reps from scene 0: panels (uppercase), images, encoding
-	const stageReps = (vizData[0] ?? []).filter((r: DataRep) => {
+	if (vizData.scenes.length === 0) return vizData.stage;
+	const current = vizData.scenes[sceneIndex] ?? [];
+	// Carry over non-shape reps from the stage: panels (uppercase), images, encoding
+	const stageReps = vizData.stage.filter((r: DataRep) => {
 		const t = r.type.toLowerCase();
 		return !isSceneLevel(r) || t === 'image' || t === 'encoding';
 	});
@@ -30,7 +31,7 @@ export function mergeSceneWithStage(
 }
 
 export function mergeMultipleScenesWithStage(
-	vizData: VizJson | null,
+	vizData: ParsedVizData | null,
 	sceneIndices: number[],
 ): DataRep[][] {
 	if (!vizData) return [];

@@ -69,14 +69,21 @@ function PanelWithTexture({
 
 	useEffect(() => {
 		if (!textureUrl) return;
+		let loaded: THREE.Texture | null = null;
 		loader.load(
 			textureUrl,
-			(tex) => setTexture(tex),
+			(tex) => {
+				loaded = tex;
+				setTexture(tex);
+			},
 			undefined,
-			() => setTexture(null),
+			(err) => {
+				console.warn(`[PanelPlane] Failed to load texture: ${textureUrl}`, err);
+				setTexture(null);
+			},
 		);
 		return () => {
-			if (texture) texture.dispose();
+			loaded?.dispose();
 		};
 	}, [textureUrl, loader]);
 

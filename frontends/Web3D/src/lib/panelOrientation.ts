@@ -33,6 +33,10 @@ export function getPanelOrientation(
 	else if (typeLower.startsWith('xz')) horizontal = true;
 	else if (typeLower.startsWith('l') && typeLower.includes('='))
 		horizontal = true;
+	else if (!typeLower.startsWith('xy'))
+		console.warn(
+			`[panelOrientation] Unrecognized panel type "${typeLower}" — defaulting to upright`,
+		);
 
 	// Generic flat-panel detection: h==0 with non-zero d means
 	// the panel lies on the XZ ground plane (e.g. flag images in eco).

@@ -23,7 +23,12 @@ export default function DataRepMesh({ rep }: { rep: DataRep }) {
 	if (t === 'pyramid_down') return <ShapePyramid rep={rep} upsideDown />;
 
 	const Shape = SHAPE_REGISTRY[t];
-	if (!Shape) return null; // encoding, text, panels — not rendered here
+	if (!Shape) {
+		console.warn(
+			`[DataRepMesh] Unknown DataRep type: "${rep.type}" — skipping`,
+		);
+		return null;
+	}
 
 	return <Shape rep={rep} assetBasePath={assetBasePath} />;
 }
