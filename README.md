@@ -135,18 +135,18 @@ The data fields of Data Reps are:
 
 - **type**: visual shape or panel type
   - shape of markers: 3D representation and equivalent 2D mark, with the goal of being recognizable view-independent in 3D and in 2D
-    - 3D: sphere, box, pyramid, pyramid_down, octahedron, plus, cross
-    - 2D: circle, square, triangle_up, triangle_down, diamond, plus, cross
+    - 3D: `sphere, box, pyramid, pyramid_down, octahedron, plus, cross`
+    - 2D: `circle, square, triangle_up, triangle_down, diamond, plus, cross`
     - plt: `o, s, ^, v, D, P, X` (Matplotlib symbols for 2D marks)
   - shape of chart elements
-    - cylinder: for bar plots (instead of box)
-    - arc: arc bow for pie charts
-    - plane: for flat overlays, e.g. as transparent plane infront of panels
-    - line: line segment from bottom-front-left to top-back-right corner of bbox
-    - area: area segmemt (quad analog to line going down to ground level of data stage)  
-    - image: for placing any icon or image defined as asset in PNG or JPG format
-    - surface: mesh provided as asset in PLY format
-    - text: for labels
+    - `cylinder`: for bar plots (instead of box)
+    - `arc`: arc bow for pie charts
+    - `plane`: for flat overlays, e.g. as transparent plane infront of panels
+    - `line`: line segment from bottom-front-left to top-back-right corner of bbox
+    - `area`: area segmemt (quad analog to line going down to ground level of data stage)  
+    - `image`: for placing any icon or image defined as asset in PNG or JPG format
+    - `surface`: mesh provided as asset in PLY format
+    - `text`: for labels
   - panel type (see next chapter)
 - **x,y,z**: position
 - **w,h,d**: bbox size of shape
