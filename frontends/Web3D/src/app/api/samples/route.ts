@@ -36,10 +36,12 @@ export async function GET() {
 		if (!fs.existsSync(vizPath)) continue;
 
 		let title = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+		let description: string | undefined;
 		if (fs.existsSync(settingsPath)) {
 			try {
 				const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
 				if (settings.title) title = settings.title;
+				if (settings.description) description = settings.description;
 			} catch {
 				// keep default title
 			}
@@ -47,6 +49,7 @@ export async function GET() {
 
 		samples.push({
 			name: title,
+			description,
 			slug: entry.name,
 			vizJsonPath: `/samples/${entry.name}/datareps.json`,
 			assetBasePath: `/samples/${entry.name}`,

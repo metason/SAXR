@@ -15,6 +15,8 @@ import ShapeCross from './Cross';
 import ShapePlane from './Plane';
 import ShapeArc from './Arc';
 import ShapeSurface from './Surface';
+import ShapeLine from './Line';
+import ShapeArea from './Area';
 
 export interface ShapeProps {
 	rep: DataRep;
@@ -36,6 +38,8 @@ export const SHAPE_REGISTRY: Record<string, ComponentType<ShapeProps>> = {
 	plane: ShapePlane,
 	arc: ShapeArc,
 	surface: ShapeSurface,
+	line: ShapeLine,
+	area: ShapeArea,
 };
 
 /**
@@ -43,3 +47,24 @@ export const SHAPE_REGISTRY: Record<string, ComponentType<ShapeProps>> = {
  * Handled as a special case in the dispatcher rather than here,
  * because it needs the `upsideDown` prop.
  */
+
+/**
+ * Category for routing a DataRep to the correct renderer.
+ * - `'shape'` — 3D geometry (sphere, box, arc, etc.)
+ * - `'panel'` — textured image quad (xy, zy, xz, lc=…)
+ * - `'encoding'` — encoding metadata (not rendered)
+ * - `'text'` — text element
+ */
+export type RepCategory = 'shape' | 'panel' | 'encoding' | 'text';
+
+/**
+ * Classify a DataRep type for rendering dispatch.
+ * Uses SHAPE_REGISTRY as the authoritative list of shape types.
+ */
+export function classifyRep(rep: DataRep): RepCategory {
+	const t = rep.type.toLowerCase();
+	if (t === 'encoding') return 'encoding';
+	if (t === 'text') return 'text';
+	if (t in SHAPE_REGISTRY || t === 'pyramid_down') return 'shape';
+	return 'panel';
+}

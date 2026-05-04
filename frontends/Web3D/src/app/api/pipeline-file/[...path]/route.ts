@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 
 /**
@@ -24,8 +24,6 @@ import path from 'path';
 const SAMPLES_ROOT = path.resolve(process.cwd(), '..', '..', 'samples');
 
 const MIME: Record<string, string> = {
-	// Multipurpose Internet Mail Extensions
-	// It's a standard that tells the browser what kind of file it's receiving, so it knows how to handle it.
 	'.json': 'application/json',
 	'.png': 'image/png',
 	'.jpg': 'image/jpeg',
@@ -52,11 +50,10 @@ export async function GET(
 		return new NextResponse('Not Found', { status: 404 });
 	}
 
-	if (!fs.existsSync(filePath)) {
+	const content = await fs.readFile(filePath).catch(() => null);
+	if (!content) {
 		return new NextResponse('Not Found', { status: 404 });
 	}
-
-	const content = fs.readFileSync(filePath);
 	return new NextResponse(content, {
 		headers: { 'Content-Type': MIME[ext] },
 	});

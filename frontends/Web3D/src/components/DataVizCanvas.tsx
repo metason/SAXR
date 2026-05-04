@@ -5,14 +5,45 @@
  * Equivalent of the Unity DataVizLoader scene setup.
  */
 
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useMemo, Component, ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Center, Grid, Html } from '@react-three/drei';
 import { DataRep } from '@/lib/types';
-import { classifyRep } from '@/lib/vizLoader';
+import type { GapVector } from '@/lib/types';
+import { classifyRep } from '@/components/shapes/registry';
 import { VizProvider } from '@/context/VizContext';
 import DataRepMesh from './DataRepMesh';
 import PanelPlane from './PanelPlane';
+
+// ── Scene defaults ──────────────────────────────────────────────────────────
+/** Default XYZ gap between comparative scenes (metres): 2 m along X, none on Y/Z. */
+const DEFAULT_GAP: GapVector = [2, 0, 0];
+/** Y offset (metres) applied to the floating scene label above each comparative group. */
+const LABEL_Y_LIFT = 0.5;
+
+// ── Camera ───────────────────────────────────────────────────────────────────
+const CAMERA_POSITION: [number, number, number] = [1.2, 0.8, 1.2];
+const CAMERA_FOV = 50;
+const CAMERA_NEAR = 0.01;
+const CAMERA_FAR = 100;
+
+// ── Lighting ─────────────────────────────────────────────────────────────────
+const AMBIENT_INTENSITY = 0.6;
+const KEY_LIGHT_INTENSITY = 0.8;
+const FILL_LIGHT_INTENSITY = 0.3;
+
+// ── Ground grid ──────────────────────────────────────────────────────────────
+const GRID_SIZE = 10;
+const GRID_CELL_SIZE = 0.1;
+const GRID_SECTION_SIZE = 0.5;
+const GRID_FADE_DISTANCE = 5;
+/** Sink grid slightly below y=0 to avoid z-fighting with flat scene geometry. */
+const GRID_Y_OFFSET = -0.01;
+
+// ── Orbit controls ───────────────────────────────────────────────────────────
+const ORBIT_DAMPING_FACTOR = 0.1;
+const ORBIT_MIN_DISTANCE = 0.3;
+const ORBIT_MAX_DISTANCE = 50;
 
 /** Props for the {@link DataVizCanvas} component. */
 interface DataVizCanvasProps {
@@ -21,7 +52,7 @@ interface DataVizCanvasProps {
 	/** Multiple merged scenes for side-by-side rendering. `null` when not in comparative mode. */
 	comparativeScenes?: DataRep[][] | null;
 	/** XYZ offset between scenes in comparative mode (e.g. `[2, 0, 0]`). */
-	gap?: number[];
+	gap?: GapVector;
 	/** Per-scene labels shown floating above each scene in comparative mode (e.g. year strings). */
 	sceneLabels?: string[];
 	/** Base path for resolving panel image assets. */
@@ -53,6 +84,7 @@ function ComparativeContent({
 	const rows = Math.ceil(n / cols);
 	const totalWidth = (cols - 1) * gap[0];
 	const totalDepth = (rows - 1) * (gap[2] ?? 0);
+	// gap[1] is reserved for vertical (LOD) stacking — always 0 in current arrangements
 	const totalHeight = (rows - 1) * (gap[1] ?? 0);
 
 	return (
@@ -66,9 +98,9 @@ function ComparativeContent({
 				const z = row * (gap[2] ?? 0) - totalDepth / 2;
 				return (
 					<group key={i} position={[x, y, z]}>
-						<SceneContentRaw scene={scene} />
+						<SceneContent scene={scene} />
 						{labels?.[i] && (
-							<Html center position={[0, 0.5, 0]}>
+							<Html center position={[0, LABEL_Y_LIFT, 0]}>
 								<div
 									style={{
 										color: 'white',
@@ -90,8 +122,14 @@ function ComparativeContent({
 	);
 }
 
-/** Renders shapes and panels without any centering — used inside comparative groups. */
-function SceneContentRaw({ scene }: { scene: DataRep[] }) {
+/** Partitions reps into shapes and panels, optionally centering the result. */
+function SceneContent({
+	scene,
+	centered = false,
+}: {
+	scene: DataRep[];
+	centered?: boolean;
+}) {
 	const { shapes, panels } = useMemo(() => {
 		const shapes: DataRep[] = [];
 		const panels: DataRep[] = [];
@@ -103,7 +141,7 @@ function SceneContentRaw({ scene }: { scene: DataRep[] }) {
 		return { shapes, panels };
 	}, [scene]);
 
-	return (
+	const content = (
 		<>
 			{shapes.map((rep, i) => (
 				<DataRepMesh
@@ -116,91 +154,102 @@ function SceneContentRaw({ scene }: { scene: DataRep[] }) {
 			))}
 		</>
 	);
+
+	return centered ? <Center disableY>{content}</Center> : content;
 }
 
-/** Inner scene renderer that partitions reps into shapes and panels. */
-function SceneContent({ scene }: { scene: DataRep[] }) {
-	const { shapes, panels } = useMemo(() => {
-		const shapes: DataRep[] = [];
-		const panels: DataRep[] = [];
-		for (const rep of scene) {
-			const cat = classifyRep(rep);
-			if (cat === 'shape') shapes.push(rep);
-			else if (cat === 'panel') panels.push(rep);
+/** Catches WebGL / Three.js crashes so the HUD remains usable. */
+class CanvasErrorBoundary extends Component<
+	{ children: ReactNode },
+	{ hasError: boolean }
+> {
+	constructor(props: { children: ReactNode }) {
+		super(props);
+		this.state = { hasError: false };
+	}
+	static getDerivedStateFromError() {
+		return { hasError: true };
+	}
+	render() {
+		if (this.state.hasError) {
+			return (
+				<div className="flex items-center justify-center w-full h-full text-white/50 text-sm">
+					3D rendering error — try reloading or selecting another sample.
+				</div>
+			);
 		}
-		return { shapes, panels };
-	}, [scene]);
-
-	return (
-		<Center disableY>
-			{shapes.map((rep, i) => (
-				<DataRepMesh
-					key={`shape-${rep.type}-${rep.x}-${rep.y}-${rep.z}-${i}`}
-					rep={rep}
-				/>
-			))}
-			{panels.map((rep, i) => (
-				<PanelPlane key={`panel-${rep.x}-${rep.y}-${rep.z}-${i}`} rep={rep} />
-			))}
-		</Center>
-	);
+		return this.props.children;
+	}
 }
 
 /** Main 3D canvas with camera, lighting, grid, and orbit controls. */
 export default function DataVizCanvas({
 	scene,
 	comparativeScenes,
-	gap = [2, 0, 0],
+	gap = DEFAULT_GAP,
 	sceneLabels,
 	assetBasePath,
 	columns,
 }: DataVizCanvasProps) {
 	return (
-		<Canvas
-			camera={{ position: [1.2, 0.8, 1.2], fov: 50, near: 0.01, far: 100 }}
-			style={{ width: '100%', height: '100%' }}
-			gl={{ antialias: true }}
-		>
-			<VizProvider assetBasePath={assetBasePath || ''}>
-				{/* Lighting */}
-				<ambientLight intensity={0.6} />
-				<directionalLight position={[5, 5, 5]} intensity={0.8} />
-				<directionalLight position={[-3, 3, -3]} intensity={0.3} />
+		<CanvasErrorBoundary>
+			<Canvas
+				camera={{
+					position: CAMERA_POSITION,
+					fov: CAMERA_FOV,
+					near: CAMERA_NEAR,
+					far: CAMERA_FAR,
+				}}
+				style={{ width: '100%', height: '100%' }}
+				gl={{ antialias: true }}
+			>
+				<VizProvider assetBasePath={assetBasePath || ''}>
+					{/* Lighting */}
+					<ambientLight intensity={AMBIENT_INTENSITY} />
+					<directionalLight
+						position={[5, 5, 5]}
+						intensity={KEY_LIGHT_INTENSITY}
+					/>
+					<directionalLight
+						position={[-3, 3, -3]}
+						intensity={FILL_LIGHT_INTENSITY}
+					/>
 
-				{/* Ground grid for spatial reference */}
-				<Grid
-					args={[10, 10]}
-					cellSize={0.1}
-					cellColor="#666666"
-					sectionSize={0.5}
-					sectionColor="#888888"
-					fadeDistance={5}
-					infiniteGrid
-					position={[0, -0.01, 0]}
-				/>
+					{/* Ground grid for spatial reference */}
+					<Grid
+						args={[GRID_SIZE, GRID_SIZE]}
+						cellSize={GRID_CELL_SIZE}
+						cellColor="#666666"
+						sectionSize={GRID_SECTION_SIZE}
+						sectionColor="#888888"
+						fadeDistance={GRID_FADE_DISTANCE}
+						infiniteGrid
+						position={[0, GRID_Y_OFFSET, 0]}
+					/>
 
-				{/* Data visualization */}
-				<Suspense fallback={null}>
-					{comparativeScenes ? (
-						<ComparativeContent
-							scenes={comparativeScenes}
-							gap={gap}
-							labels={sceneLabels}
-							columns={columns}
-						/>
-					) : (
-						<SceneContent scene={scene ?? []} />
-					)}
-				</Suspense>
+					{/* Data visualization */}
+					<Suspense fallback={null}>
+						{comparativeScenes ? (
+							<ComparativeContent
+								scenes={comparativeScenes}
+								gap={gap}
+								labels={sceneLabels}
+								columns={columns}
+							/>
+						) : (
+							<SceneContent scene={scene ?? []} centered />
+						)}
+					</Suspense>
 
-				{/* Camera controls */}
-				<OrbitControls
-					enableDamping
-					dampingFactor={0.1}
-					minDistance={0.3}
-					maxDistance={50}
-				/>
-			</VizProvider>
-		</Canvas>
+					{/* Camera controls */}
+					<OrbitControls
+						enableDamping
+						dampingFactor={ORBIT_DAMPING_FACTOR}
+						minDistance={ORBIT_MIN_DISTANCE}
+						maxDistance={ORBIT_MAX_DISTANCE}
+					/>
+				</VizProvider>
+			</Canvas>
+		</CanvasErrorBoundary>
 	);
 }

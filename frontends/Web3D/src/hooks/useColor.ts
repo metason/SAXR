@@ -9,6 +9,9 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { parseHexColor } from '@/lib/vizLoader';
 
+/** Fallback color used when no hex is provided — a neutral mid-gray. */
+const DEFAULT_COLOR = new THREE.Color(0.8, 0.8, 0.8);
+
 /**
  * Hook that parses a hex color string into a memoized Three.js `Color` and opacity.
  * @param hex - Hex color string (`'#RRGGBB'` or `'#RRGGBBAA'`), or `undefined` for default gray.
@@ -16,7 +19,7 @@ import { parseHexColor } from '@/lib/vizLoader';
  */
 export function useColor(hex?: string) {
 	return useMemo(() => {
-		if (!hex) return { color: new THREE.Color(0.8, 0.8, 0.8), opacity: 1 };
+		if (!hex) return { color: DEFAULT_COLOR, opacity: 1 };
 		const { r, g, b, opacity } = parseHexColor(hex);
 		return { color: new THREE.Color(r, g, b), opacity };
 	}, [hex]);

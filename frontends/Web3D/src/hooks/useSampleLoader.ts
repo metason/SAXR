@@ -5,20 +5,19 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { VizJson, SpecsJson } from '@/lib/types';
+import { ParsedVizData, SpecsJson, SampleInfo } from '@/lib/types';
 import { loadVizJson, loadSpecsJson } from '@/lib/vizLoader';
-import { SampleInfo } from '@/components/SamplePicker';
 
 /**
  * Hook that auto-discovers available samples and loads the selected dataset.
  * Fetches `/api/samples` on mount, then loads `datareps.json` + `specs.json`
  * whenever the selected sample changes.
  * @returns Object containing `samples`, `vizData`, `specs`, `loading`, `error`,
- *          `currentSample`, `assetBasePath`, and `handleSampleChange`.
+ *          `currentSample` and `assetBasePath`.
  */
-export function useSampleLoader() {
+export function useSampleLoader(initialSlug?: string) {
 	const [samples, setSamples] = useState<SampleInfo[]>([]);
-	const [vizData, setVizData] = useState<VizJson | null>(null);
+	const [vizData, setVizData] = useState<ParsedVizData | null>(null);
 	const [currentSample, setCurrentSample] = useState('');
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -31,7 +30,10 @@ export function useSampleLoader() {
 			.then((list: SampleInfo[]) => {
 				setSamples(list);
 				if (list.length > 0) {
-					setCurrentSample(list[0].vizJsonPath);
+					const target = initialSlug
+						? (list.find((s) => s.slug === initialSlug) ?? list[0])
+						: list[0];
+					setCurrentSample(target.vizJsonPath);
 				} else {
 					setLoading(false);
 					setError('No samples found');
@@ -41,7 +43,7 @@ export function useSampleLoader() {
 				setLoading(false);
 				setError('Failed to discover samples');
 			});
-	}, []);
+	}, [initialSlug]);
 
 	const loadSample = useCallback(
 		async (path: string) => {
@@ -72,12 +74,9 @@ export function useSampleLoader() {
 		loadSample(currentSample);
 	}, [currentSample, loadSample]);
 
-	const handleSampleChange = (path: string) => {
-		setCurrentSample(path);
-	};
-
 	const assetBasePath =
 		samples.find((s) => s.vizJsonPath === currentSample)?.assetBasePath || '';
+	const slug = samples.find((s) => s.vizJsonPath === currentSample)?.slug ?? '';
 
 	return {
 		samples,
@@ -87,7 +86,7 @@ export function useSampleLoader() {
 		error,
 		currentSample,
 		assetBasePath,
-		handleSampleChange,
+		slug,
 		loadSample,
 	};
 }

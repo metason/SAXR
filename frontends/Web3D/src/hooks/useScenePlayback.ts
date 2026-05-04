@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { VizJson, SpecsJson } from '@/lib/types';
+import { ParsedVizData, SpecsJson } from '@/lib/types';
 
 /**
  * Hook that manages the current scene index and auto-play timer.
@@ -17,7 +17,7 @@ import { VizJson, SpecsJson } from '@/lib/types';
  *          `totalScenes`, and `togglePlay` (undefined if not animated).
  */
 export function useScenePlayback(
-	vizData: VizJson | null,
+	vizData: ParsedVizData | null,
 	specs: SpecsJson | null,
 ) {
 	const [currentScene, setCurrentScene] = useState(0);
@@ -34,18 +34,18 @@ export function useScenePlayback(
 		if (
 			specs?.sequence?.arrangement !== 'animated' ||
 			!vizData ||
-			vizData.length === 0 ||
+			vizData.scenes.length === 0 ||
 			!isPlaying
 		)
 			return;
 		const interval = (specs.sequence.interval ?? 1.5) * 1000;
 		const timer = setInterval(() => {
-			setCurrentScene((prev) => (prev + 1) % vizData.length);
+			setCurrentScene((prev) => (prev + 1) % vizData.scenes.length);
 		}, interval);
 		return () => clearInterval(timer);
 	}, [specs, vizData, isPlaying]);
 
-	const totalScenes = vizData?.length ?? 0;
+	const totalScenes = vizData?.scenes.length ?? 0;
 
 	const togglePlay =
 		specs?.sequence?.arrangement === 'animated'

@@ -8,17 +8,17 @@
  */
 
 import { useEffect, useState } from 'react';
-import { VizJson, SpecsJson } from '@/lib/types';
+import { ParsedVizData, SpecsJson } from '@/lib/types';
 
 export function useComparativeSelection(
-	vizData: VizJson | null,
+	vizData: ParsedVizData | null,
 	specs: SpecsJson | null,
 ) {
 	const [selectedScenes, setSelectedScenes] = useState<number[]>([]);
 	const [allowedScenes, setAllowedScenes] = useState<number[] | null>(null);
 
 	useEffect(() => {
-		if (!vizData || vizData.length < 3) {
+		if (!vizData || vizData.scenes.length < 2) {
 			setSelectedScenes([]);
 			setAllowedScenes(null);
 			return;
@@ -26,17 +26,15 @@ export function useComparativeSelection(
 		const seq = specs?.sequence;
 		if (seq?.selection && seq?.domain && seq.selection.length >= 1) {
 			const [dMin, dMax] = seq.domain;
-			const totalData = vizData.length - 1; // scene 0 is the stage
+			const totalData = vizData.scenes.length;
 			const indices = seq.selection
-				.map(
-					(v) => Math.round(((v - dMin) / (dMax - dMin)) * (totalData - 1)) + 1,
-				)
-				.filter((i) => i >= 1 && i < vizData.length);
-			const resolved = indices.length >= 1 ? indices : [1, 2];
+				.map((v) => Math.round(((v - dMin) / (dMax - dMin)) * (totalData - 1)))
+				.filter((i) => i >= 0 && i < vizData.scenes.length);
+			const resolved = indices.length >= 1 ? indices : [0, 1];
 			setSelectedScenes(resolved);
 			setAllowedScenes(resolved); // restrict buttons to this set
 		} else {
-			setSelectedScenes([1, 2]);
+			setSelectedScenes([0, 1]);
 			setAllowedScenes(null); // all scenes available
 		}
 	}, [vizData, specs]);

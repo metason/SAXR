@@ -7,6 +7,9 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
+import { loader } from '@monaco-editor/react';
+import configSchema from '../../../../schemas/config.json';
+
 /**
  * Lazily loaded Monaco editor component.
  * SSR is disabled because Monaco Editor requires the browser's APIs,
@@ -35,30 +38,51 @@ export default function EditorPanel({
 }: EditorPanelProps) {
 	const [specsText, setSpecsText] = useState('');
 	const [hasError, setHasError] = useState(false);
+	const [schemaError, setSchemaError] = useState(false);
 	const [isRunning, setIsRunning] = useState(false);
 	const [runError, setRunError] = useState<string | null>(null);
+	const [loadError, setLoadError] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!assetBasePath) return;
-
-		fetch(assetBasePath + '/config.json') // Fetch /config.json from the current sample's asset base path instead of the root
+		setHasError(false);
+		setRunError(null);
+		setLoadError(null);
+		fetch(assetBasePath + '/config.json')
 			.then((r) => r.text())
 			.then((text) => setSpecsText(JSON.stringify(JSON.parse(text), null, 2)))
-			.catch(() => {});
+			.catch(() => setLoadError('Failed to load config.json'));
 	}, [assetBasePath]);
 
 	return (
 		<div className="h-full w-full flex flex-col">
 			<div className="flex-1 min-h-0">
 				<MonacoEditor
+					key={assetBasePath}
 					height="100%"
 					defaultLanguage="json"
 					value={specsText}
 					theme="vs-dark"
+					beforeMount={(monaco) => {
+						monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+							validate: true,
+							schemas: [
+								{
+									uri: 'https://saxr/config-schema.json',
+									fileMatch: ['*'],
+									schema: configSchema,
+								},
+							],
+						});
+					}}
+					onValidate={(markers) => {
+						// markers with severity 8 = Error
+						setSchemaError(markers.some((m) => m.severity === 8));
+					}}
 					onChange={(value) => {
 						if (value) {
 							try {
-								JSON.parse(value); // Validate JSON before applying
+								JSON.parse(value); // Validate JSON syntax before applying
 								setHasError(false);
 								setSpecsText(value);
 							} catch {
@@ -78,19 +102,29 @@ export default function EditorPanel({
 					setIsRunning(false);
 					if (error) setRunError(error);
 				}}
-				disabled={hasError || isRunning}
+				disabled={hasError || schemaError || isRunning}
 			>
 				{isRunning ? 'Running…' : 'Run'}
 			</button>
 
 			{hasError && (
 				<div className="flex-shrink-0 px-3 py-1.5 bg-red-900/80 text-red-300 text-xs">
-					Invalid JSON — changes not applied
+					Invalid JSON — fix syntax errors before running
+				</div>
+			)}
+			{!hasError && schemaError && (
+				<div className="flex-shrink-0 px-3 py-1.5 bg-yellow-900/80 text-yellow-300 text-xs">
+					Schema validation errors — fix highlighted fields before running
 				</div>
 			)}
 			{runError && (
 				<div className="flex-shrink-0 px-3 py-1.5 bg-red-900/80 text-red-300 text-xs">
 					Pipeline error: {runError}
+				</div>
+			)}
+			{loadError && (
+				<div className="flex-shrink-0 px-3 py-1.5 bg-red-900/80 text-red-300 text-xs">
+					{loadError}
 				</div>
 			)}
 		</div>

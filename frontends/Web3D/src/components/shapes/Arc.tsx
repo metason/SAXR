@@ -38,9 +38,7 @@ export default function ShapeArc({ rep }: { rep: DataRep }) {
 			const cos = Math.cos(angle);
 			const sin = Math.sin(angle);
 
-			// Inner vertex
 			vertices.push(innerR * cos, 0, innerR * sin);
-			// Outer vertex
 			vertices.push(outerR * cos, 0, outerR * sin);
 		}
 

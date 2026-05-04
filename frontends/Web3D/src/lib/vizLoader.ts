@@ -4,32 +4,36 @@
  * Equivalent of VizJsonParser in DataViz.cs / JSON decoding in DataViz.swift.
  */
 
-import { DataRep, VizJson, SpecsJson } from './types';
+import { DataRep, VizJson, ParsedVizData, SpecsJson } from './types';
 import * as THREE from 'three';
 
+export { classifyRep } from '@/components/shapes/registry';
+export type { RepCategory } from '@/components/shapes/registry';
+
 /**
- * Load a datareps.json from a URL or local path and parse it.
+ * Load a datareps.json from a URL or local path and parse it into a
+ * {@link ParsedVizData} with an explicit stage/scenes split.
  * @param url - URL or path to the datareps.json file.
- * @returns Parsed array-of-arrays structure (scenes of DataReps).
+ * @returns Parsed data with `stage` (scene 0) and `scenes` (scenes 1..n).
  * @throws Error if the fetch fails or the JSON structure is invalid.
  */
-export async function loadVizJson(url: string): Promise<VizJson> {
+export async function loadVizJson(url: string): Promise<ParsedVizData> {
 	const res = await fetch(url);
 	if (!res.ok)
 		throw new Error(
 			`Failed to load datareps.json: ${res.status} ${res.statusText}`,
 		);
-	const data: VizJson = await res.json();
+	const raw: VizJson = await res.json();
 
 	// Validate structure: must be array of arrays
-	if (!Array.isArray(data) || data.length === 0) {
+	if (!Array.isArray(raw) || raw.length === 0) {
 		throw new Error('datareps.json must be a non-empty array of arrays');
 	}
-	if (!Array.isArray(data[0])) {
+	if (!Array.isArray(raw[0])) {
 		throw new Error('datareps.json must be an array of arrays (scenes)');
 	}
 
-	return data;
+	return { stage: raw[0] ?? [], scenes: raw.slice(1) };
 }
 
 /**
@@ -110,47 +114,28 @@ export function isSceneLevel(rep: DataRep): boolean {
 }
 
 /**
- * Category for routing a DataRep to the correct renderer.
- * - `'shape'` — 3D geometry (sphere, box, arc, etc.)
- * - `'panel'` — textured image quad (xy, zy, xz, lc=…)
- * - `'encoding'` — encoding metadata (not rendered)
- * - `'text'` — text element
+ * Interpolate a domain label for a scene index.
+ * Maps a 0-based scene index linearly onto `[domain[0], domain[1]]` and returns
+ * the rounded value as a string. Used by SceneNav, ComparativeScenePicker, and
+ * useViewerState to produce consistent year/value labels from the same formula.
+ * @param sceneIndex - 0-based index into the data scenes array.
+ * @param totalScenes - Total number of data scenes.
+ * @param domain - `[min, max]` value range from `specs.sequence.domain`.
+ * @returns Rounded interpolated value as a string (e.g. `"2012"`).
  */
-export type RepCategory = 'shape' | 'panel' | 'encoding' | 'text';
-
-/**
- * Classify a DataRep type for rendering dispatch.
- * @param rep - The DataRep to classify.
- * @returns The rendering category for the given rep.
- */
-
-export function classifyRep(rep: DataRep): RepCategory {
-	const t = rep.type.toLowerCase();
-	if (t === 'encoding') return 'encoding';
-	if (t === 'text') return 'text';
-	if (
-		[
-			'box',
-			'sphere',
-			'cylinder',
-			'pyramid',
-			'pyramid_down',
-			'octahedron',
-			'plus',
-			'cross',
-			'plane',
-			'arc',
-			'surface', // Add surface as a renderable shape type for ply files
-		].includes(t)
-	) {
-		return 'shape';
-	}
-	// Everything else is a panel (xy, -xy, zy, -zy, xz, lc=..., etc.)
-	return 'panel';
+export function domainLabelForScene(
+	sceneIndex: number,
+	totalScenes: number,
+	domain: number[],
+): string {
+	const value =
+		domain[0] +
+		(sceneIndex * (domain[1] - domain[0])) / Math.max(totalScenes - 1, 1);
+	return String(Math.round(value));
 }
 
 /**
- * Load specs.json from a sample’s base URL.
+ * Load specs.json from a sample's base URL.
  * @param baseUrl - Asset base path for the sample (e.g. `/samples/eco`).
  * @returns Parsed specs or `null` if the file doesn’t exist or fails to load.
  */

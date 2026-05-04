@@ -14,6 +14,7 @@
  */
 
 import React from 'react';
+import { domainLabelForScene } from '@/lib/vizLoader';
 
 /** Props passed from page.tsx — all sequence-related data comes via specs.json */
 interface SceneNavProps {
@@ -92,7 +93,7 @@ export default function SceneNav({
 				{!hasLabels && (
 					<span className="tabular-nums">
 						{domain && domain.length >= 2 && typeof domain[0] === 'number'
-							? domain[0] + currentScene
+							? domainLabelForScene(currentScene, totalScenes, domain)
 							: `Scene ${currentScene + 1} / ${totalScenes}`}
 					</span>
 				)}
