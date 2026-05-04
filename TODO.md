@@ -1,5 +1,9 @@
 # TODO
 
+## Bug Fixes
+
+- Layout when not all panels are generated?
+
 ## Version 1.0 Actions
 
 - Schemas

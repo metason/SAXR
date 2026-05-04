@@ -1,7 +1,7 @@
 {
     "$schema": "../../schemas/config.json",
     "data": {
-        "url": "data.csv"
+        "url": "data2.csv"
     },
     "stage": {
         "width": 0.5,

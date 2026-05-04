@@ -53,6 +53,7 @@ class Materials:
         principled_bsdf_node.inputs["Base Color"].default_value = rgba
         principled_bsdf_node.inputs["Metallic"].default_value = 0.2
         principled_bsdf_node.inputs["Roughness"].default_value = 1.0
+        principled_bsdf_node.inputs["Alpha"].default_value = rgba[-1]
 
         Materials._cache[color] = material
         return material

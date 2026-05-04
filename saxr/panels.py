@@ -157,15 +157,23 @@ def _render_xy_panels(gen, spec, ctx):
         gen.visuals.append(panel)
     ax.xaxis.set_inverted(False)
     if 'xy+s' in spec:
-        for xp, yp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
-            ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=m)
+        if 'shape' in gen.encoding:
+            for xp, yp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
+                ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=m)
+        else:
+            for xp, yp, c in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor()):
+                ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=gen.getMarker())
         plt.savefig(os.path.join(gen.folder, 'xy+s.png'))
         panel = {"type": gen.maptype["xy+s"][:2], "x": 0.0, "y": float(ctx['panelY']), "z": -float(gen.chartDepth / 2.0), "w": float(ctx['panelWidth']), "d": 0, "h": float(ctx['panelHeight']), "asset": gen.assetURL + "xy+s.png"}
         gen.visuals.append(panel)
     ax.xaxis.set_inverted(True)
     if '-xy+s' in spec:
-        for xp, yp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
-            ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=m)
+        if 'shape' in gen.encoding:
+            for xp, yp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
+                ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=m)
+        else:
+            for xp, yp, c in zip(gen.df[gen.key('x')], gen.df[gen.key('y')], gen.getColor()):
+                ax.scatter(xp, yp, s=gen.getSize2D(), c=c, marker=gen.getMarker())
         plt.savefig(os.path.join(gen.folder, '-xy+s.png'))
         panel = {"type": gen.maptype["-xy+s"][:3], "x": 0.0, "y": float(ctx['panelY']), "z": float(gen.chartDepth / 2.0), "w": float(ctx['panelWidth']), "d": 0, "h": float(ctx['panelHeight']), "asset": gen.assetURL + "-xy+s.png"}
         gen.visuals.append(panel)
@@ -262,15 +270,23 @@ def _render_zy_panels(gen, spec, ctx):
         gen.visuals.append(panel)
     ax.xaxis.set_inverted(False)
     if 'zy+s' in spec:
-        for zp, yp, c, m in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
-            ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=m)
+        if 'shape' in gen.encoding:
+            for zp, yp, c, m in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
+                ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=m)
+        else:
+            for zp, yp, c in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor()):
+                ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=gen.getMarker())
         plt.savefig(os.path.join(gen.folder, 'zy+s.png'))
         panel = {"type": gen.maptype["zy+s"][:2], "x": float(gen.chartWidth / 2.0), "y": float(ctx['panelY2']), "z": 0.0, "w": float(ctx['panelDepth2']), "d": 0, "h": float(ctx['panelHeight2']), "asset": gen.assetURL + "zy+s.png"}
         gen.visuals.append(panel)
     ax.xaxis.set_inverted(True)
     if '-zy+s' in spec:
-        for zp, yp, c, m in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
-            ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=m)
+        if 'shape' in gen.encoding:
+            for zp, yp, c, m in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor(), gen.getMarkers()):
+                ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=m)
+        else:
+            for zp, yp, c in zip(gen.df[gen.key('z')], gen.df[gen.key('y')], gen.getColor()):
+                ax.scatter(zp, yp, s=gen.getSize2D(), c=c, marker=gen.getMarker())
         plt.savefig(os.path.join(gen.folder, '-zy+s.png'))
         panel = {"type": gen.maptype["-zy+s"][:3], "x": -float(gen.chartWidth / 2.0), "y": float(ctx['panelY2']), "z": 0.0, "w": float(ctx['panelDepth2']), "d": 0, "h": float(ctx['panelHeight2']), "asset": gen.assetURL + "-zy+s.png"}
         gen.visuals.append(panel)
@@ -387,8 +403,12 @@ def _render_xz_panels(gen, spec):
         if 'xz' in spec:
             plt.savefig(os.path.join(gen.folder, 'xz.png'))
         if 'xz+s' in spec:
-            for xp, zp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('z')], gen.getColor(), gen.getMarkers()):
-                ax.scatter(xp, zp, s=gen.getSize2D(), c=c, marker=m)
+            if 'shape' in gen.encoding:
+                for xp, zp, c, m in zip(gen.df[gen.key('x')], gen.df[gen.key('z')], gen.getColor(), gen.getMarkers()):
+                    ax.scatter(xp, zp, s=gen.getSize2D(), c=c, marker=m)
+            else:
+                for xp, zp, c in zip(gen.df[gen.key('x')], gen.df[gen.key('z')], gen.getColor()):
+                    ax.scatter(xp, zp, s=gen.getSize2D(), c=c, marker=gen.getMarker())
             plt.savefig(os.path.join(gen.folder, 'xz+s.png'))
 
     fig_width, fig_height = plt.gcf().get_size_inches()

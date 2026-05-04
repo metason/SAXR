@@ -59,7 +59,7 @@ def create_cluster(gen: DataRepGenerator) -> None:
             if 'scale' in gen.encoding['color'] and 'range' in gen.encoding['color']['scale']:
                 color = gen.encoding['color']['scale']['range'][idx]
 
-        alpha = 'AA'
+        alpha = 'CC'
         if 'opacity' in gen.encoding:
             opac = gen.encoding['opacity']['value']
             alpha = '%02x' % int(opac * 255.0)
