@@ -24,7 +24,7 @@ def create_area(gen: DataRepGenerator) -> None:
         if gen.encoding['z']['type'] == "quantitative":
             posZ = gen.placeZ(z)
         else:
-            posZ = gen.encoding['z']['scale']['range'][gen.indexOf(z, 'z')]
+            posZ = gen.placeNominal(z, 'z')
         color = gen.resolve_color(row, default='white')
         if lastColor == color:
             w = posX - posx

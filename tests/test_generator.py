@@ -2,6 +2,7 @@
 import os
 import sys
 import unittest
+import jsonschema
 
 path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "SAXR-main", "SAXR-main")
 sys.path.append(path)
@@ -101,6 +102,59 @@ class TestPlace(unittest.TestCase):
 
     def test_placeZ_upper_bound(self):
         self.assertAlmostEqual(self.g.placeZ(10.0), 0.5, places=6)
+
+
+class TestValidateConfig(unittest.TestCase):
+    """validate_config() enforces schema rules and cross-field constraints."""
+
+    VALID = {
+        "data": {"url": "test.csv"},
+        "stage": {"width": 1.0, "height": 1.0, "depth": 1.0},
+        "plot": "scatter",
+        "panels": ["XY"],
+        "encoding": {"x": {"field": "a"}, "y": {"field": "b"}},
+    }
+
+    def test_valid_config_passes(self):
+        g = make_gen()
+        g.validate_config(dict(self.VALID))  # should not raise
+
+    def test_invalid_arrangement_raises(self):
+        g = make_gen()
+        cfg = {**self.VALID, "sequence": {"field": "year", "domain": [2000, 2024], "arrangement": "amated"}}
+        with self.assertRaises(jsonschema.ValidationError):
+            g.validate_config(cfg)
+
+    def test_valid_arrangement_passes(self):
+        g = make_gen()
+        for arr in ("animated", "comparative", "LOD", "narrative"):
+            cfg = {**self.VALID, "sequence": {"field": "year", "domain": [2000, 2024], "arrangement": arr}}
+            g.validate_config(cfg)  # should not raise
+
+    def test_selection_within_domain_passes(self):
+        g = make_gen()
+        cfg = {**self.VALID, "sequence": {"field": "year", "domain": [2000, 2024], "selection": [2000, 2012, 2024]}}
+        g.validate_config(cfg)  # should not raise
+
+    def test_selection_outside_domain_raises(self):
+        g = make_gen()
+        cfg = {**self.VALID, "sequence": {"field": "year", "domain": [2000, 2024], "selection": [2000, 201]}}
+        with self.assertRaises(ValueError) as ctx:
+            g.validate_config(cfg)
+        self.assertIn("201", str(ctx.exception))
+        self.assertIn("2000", str(ctx.exception))
+
+    def test_missing_required_field_raises(self):
+        g = make_gen()
+        cfg = {k: v for k, v in self.VALID.items() if k != "plot"}
+        with self.assertRaises(jsonschema.ValidationError):
+            g.validate_config(cfg)
+
+    def test_wrong_type_for_stage_width_raises(self):
+        g = make_gen()
+        cfg = {**self.VALID, "stage": {"width": "wide", "height": 1.0, "depth": 1.0}}
+        with self.assertRaises(jsonschema.ValidationError):
+            g.validate_config(cfg)
 
 
 if __name__ == "__main__":

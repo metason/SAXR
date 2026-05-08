@@ -17,6 +17,7 @@ import os
 import sys
 import json
 from typing import Any, Union
+import jsonschema
 
 import pandas as pd
 import matplotlib as mpl
@@ -153,6 +154,18 @@ class DataRepGenerator:
     def placeZ(self, val: float) -> float:
         """Map a data Z value to a centred stage position."""
         return (val - (self.lowerZ + (self.upperZ - self.lowerZ) / 2.0)) * self.factorZ
+
+    def placeNominal(self, val: Any, dim: str) -> float:
+        """Map a nominal category to an evenly-spaced stage position."""
+        domain = self.encoding[dim]['scale']['domain']
+        rng = self.encoding[dim]['scale']['range']
+        i = self.indexOf(val, dim)
+        # When the range stores one explicit position per category (set by
+        # createPanels from matplotlib tick positions), use it directly.
+        # Otherwise interpolate linearly between rng[0] and rng[-1].
+        if len(rng) == len(domain):
+            return rng[i]
+        return rng[0] + i * (rng[-1] - rng[0]) / max(len(domain) - 1, 1)
 
     # ---- ENCODING ACCESSORS ----
 
@@ -432,7 +445,8 @@ class DataRepGenerator:
         if handler:
             handler(self)
         else:
-            raise ValueError(f"Unknown plot type: {self.plot}")
+            valid = ', '.join(sorted(PLOT_REGISTRY))
+            raise ValueError(f'Unknown plot type "{self.plot}". Valid types: {valid}')
 
     # ---- SEQUENCE / SCENES ----
 
@@ -450,12 +464,15 @@ class DataRepGenerator:
     def createDataViz(self) -> None:
         """Build all scenes — handles sequences (animation frames) if configured."""
         if self.sequence is not None and 'domain' in self.sequence:
-            for val in range(self.sequence['domain'][0] + 1, self.sequence['domain'][1] + 2):
+            # Flush stage-level visuals (panels) as scene 0 before iterating data scenes.
+            # This keeps panels separate from year data so mergeSceneWithStage works correctly.
+            self.scenes.append(self.visuals)
+            self.visuals = []
+            for val in range(self.sequence['domain'][0], self.sequence['domain'][1] + 1):
+                self.df = self.srcdf[self.srcdf[self.sequence['field']] == val]
                 self.createPlots()
                 self.scenes.append(self.visuals)
                 self.visuals = []
-                self.df = self.srcdf[self.srcdf[self.sequence['field']] == val]
-            self.scenes.append(self.visuals)
         else:
             self.createPlots()
             self.scenes.append(self.visuals)
@@ -470,8 +487,20 @@ class DataRepGenerator:
         with open(jsonFile, 'w') as jsonout:
             json.dump(specs, jsonout)
 
+    def validate_output(self) -> None:
+        """Validate ``self.scenes`` against the datareps JSON Schema.
+
+        Raises:
+            jsonschema.ValidationError: if the generated output violates the schema.
+        """
+        schema_path = os.path.join(os.path.dirname(__file__), '..', 'schemas', 'datareps.json')
+        with open(os.path.normpath(schema_path), 'r') as f:
+            schema = json.load(f)
+        jsonschema.validate(instance=self.scenes, schema=schema)
+
     def saveVizRep(self) -> None:
         """Write the final datareps.json (list of scenes) to disk."""
+        self.validate_output()
         path = str(self.outputFile)
         outputURL = path
         if path.startswith("http") == False and path.startswith("file") == False and path.startswith("/") == False:
@@ -479,6 +508,33 @@ class DataRepGenerator:
         with open(outputURL, 'w') as outfile:
             json.dump(self.scenes, outfile)
             outfile.close()
+
+    def validate_config(self, settings: dict) -> None:
+        """Validate *settings* against the JSON Schema, then check semantic constraints.
+
+        Structural rules (types, enums, required fields) are enforced by the schema
+        so they don't need to be duplicated here.  Only cross-field constraints that
+        JSON Schema cannot express belong in this method.
+
+        Raises:
+            jsonschema.ValidationError: if the config violates the schema.
+            ValueError: if a semantic cross-field constraint is violated.
+        """
+
+        schema_path = os.path.join(os.path.dirname(__file__), '..', 'schemas', 'config.json')
+        with open(os.path.normpath(schema_path), 'r') as f:
+            schema = json.load(f)
+        jsonschema.validate(instance=settings, schema=schema)
+
+        # Cross-field: selection values must lie within domain — cannot be expressed in JSON Schema
+        seq = settings.get('sequence')
+        if seq and 'domain' in seq and 'selection' in seq:
+            d_min, d_max = seq['domain'][0], seq['domain'][1]
+            bad = [v for v in seq['selection'] if not (d_min <= v <= d_max)]
+            if bad:
+                raise ValueError(
+                    f"sequence.selection values {bad} are outside domain [{d_min}, {d_max}]"
+                )
 
     def run(self) -> None:
         """Full pipeline: load settings, create panels, create viz, save output.
@@ -489,7 +545,9 @@ class DataRepGenerator:
         """
         try:
             with open(os.path.join(self.folder, 'config.json'), 'r') as data:
-                self.execute(json.load(data))
+                settings = json.load(data)
+            self.validate_config(settings)
+            self.execute(settings)
         except FileNotFoundError:
             print("Usage: python3 datarepgen.py <folder>")
             print("folder needs to contain a <config.json> file!")

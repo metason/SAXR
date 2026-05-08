@@ -4,18 +4,10 @@
  */
 
 import { SampleInfo } from '@/lib/types';
+import { listSamples } from '@/lib/listSamples';
 
-async function getSamples(): Promise<SampleInfo[]> {
-	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-	try {
-		const res = await fetch(`${baseUrl}/api/samples`, {
-			next: { revalidate: 60 },
-		});
-		if (!res.ok) return [];
-		return res.json();
-	} catch {
-		return [];
-	}
+function getSamples(): SampleInfo[] {
+	return listSamples();
 }
 
 const IRIS_CONFIG = `{
@@ -233,7 +225,7 @@ const VISUAL_ENCODING: VisualEncodingEntry[] = [
 ];
 
 export default async function HomePage() {
-	const samples = await getSamples();
+	const samples = getSamples();
 	const sampleMap = Object.fromEntries(samples.map((s) => [s.slug, s]));
 
 	return (
