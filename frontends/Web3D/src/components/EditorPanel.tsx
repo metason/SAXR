@@ -5,9 +5,10 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
-
-import { loader } from '@monaco-editor/react';
+import { useEffect, useRef, useState } from 'react';
+import Ajv2020, { type ErrorObject } from 'ajv/dist/2020';
+import addFormats from 'ajv-formats';
+import { parseTree, findNodeAtLocation, type Node } from 'jsonc-parser';
 import configSchema from '../../../../schemas/config.json';
 
 /**
@@ -32,6 +33,85 @@ interface EditorPanelProps {
 	onRun: (configText: string) => Promise<string | null>;
 }
 
+const ajv = new Ajv2020({ allErrors: true });
+addFormats(ajv);
+const validateConfig = ajv.compile(configSchema);
+
+/**
+ * Convert an AJV instancePath (RFC 6901 JSON Pointer) into a path array
+ * suitable for jsonc-parser's findNodeAtLocation.
+ */
+function instancePathToSegments(instancePath: string): (string | number)[] {
+	if (!instancePath) return [];
+	return instancePath
+		.split('/')
+		.slice(1)
+		.map((seg) => {
+			const decoded = seg.replace(/~1/g, '/').replace(/~0/g, '~');
+			return /^\d+$/.test(decoded) ? Number(decoded) : decoded;
+		});
+}
+
+/**
+ * Convert a character offset in `text` to a Monaco {line, column} position.
+ * Both line and column are 1-based, matching Monaco's API.
+ */
+function offsetToPosition(text: string, offset: number): { line: number; column: number } {
+	let line = 1;
+	let column = 1;
+	const limit = Math.min(offset, text.length);
+	for (let i = 0; i < limit; i++) {
+		if (text.charCodeAt(i) === 10) {
+			line++;
+			column = 1;
+		} else {
+			column++;
+		}
+	}
+	return { line, column };
+}
+
+/**
+ * Convert AJV errors to Monaco markers using a real JSON parse tree
+ * (jsonc-parser) so the squiggle lands exactly on the offending node —
+ * including disambiguating duplicate keys nested at different paths.
+ */
+function toMarkers(errors: ErrorObject[], text: string, monaco: any): any[] {
+	const tree = parseTree(text);
+	if (!tree) return [];
+
+	return errors.map((err) => {
+		const segments = instancePathToSegments(err.instancePath);
+
+		// For 'required' errors AJV reports the parent object's path; we
+		// look up the missing key inside that object so the marker lands on
+		// the closest visible token (the object's opening brace if the key
+		// itself is absent).
+		let target: Node | undefined = findNodeAtLocation(tree, segments);
+		if (err.keyword === 'required') {
+			const missing = (err.params as { missingProperty?: string }).missingProperty;
+			if (missing && target) {
+				const child = findNodeAtLocation(tree, [...segments, missing]);
+				if (child) target = child;
+			}
+		}
+
+		const offset = target?.offset ?? 0;
+		const length = target?.length ?? 1;
+		const start = offsetToPosition(text, offset);
+		const end = offsetToPosition(text, offset + length);
+
+		return {
+			severity: monaco.MarkerSeverity.Error,
+			message: `${err.instancePath || '(root)'}: ${err.message}`,
+			startLineNumber: start.line,
+			startColumn: start.column,
+			endLineNumber: end.line,
+			endColumn: end.column,
+		};
+	});
+}
+
 export default function EditorPanel({
 	assetBasePath,
 	onRun,
@@ -42,6 +122,9 @@ export default function EditorPanel({
 	const [isRunning, setIsRunning] = useState(false);
 	const [runError, setRunError] = useState<string | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
+	const [editorReady, setEditorReady] = useState(false);
+	const monacoRef = useRef<any>(null);
+	const editorRef = useRef<any>(null);
 
 	useEffect(() => {
 		if (!assetBasePath) return;
@@ -54,6 +137,38 @@ export default function EditorPanel({
 			.catch(() => setLoadError('Failed to load config.json'));
 	}, [assetBasePath]);
 
+	const runValidation = (value: string) => {
+		const monaco = monacoRef.current;
+		const editor = editorRef.current;
+		if (!monaco || !editor) return;
+		const model = editor.getModel();
+		if (!model) return;
+
+		try {
+			const parsed = JSON.parse(value);
+			setHasError(false);
+			setSpecsText(value);
+			const valid = validateConfig(parsed);
+			const markers = valid
+				? []
+				: toMarkers(validateConfig.errors ?? [], value, monaco);
+			monaco.editor.setModelMarkers(model, 'ajv', markers);
+			setSchemaError(!valid);
+		} catch {
+			setHasError(true);
+			setSchemaError(false);
+			monaco.editor.setModelMarkers(model, 'ajv', []);
+		}
+	};
+
+	// Validate as soon as both the editor is mounted and content is loaded,
+	// so freshly opened samples show squiggles without requiring a keystroke.
+	useEffect(() => {
+		if (!editorReady || !specsText) return;
+		runValidation(specsText);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [editorReady, specsText]);
+
 	return (
 		<div className="h-full w-full flex flex-col">
 			<div className="flex-1 min-h-0">
@@ -63,32 +178,14 @@ export default function EditorPanel({
 					defaultLanguage="json"
 					value={specsText}
 					theme="vs-dark"
-					beforeMount={(monaco) => {
-						monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-							validate: true,
-							schemas: [
-								{
-									uri: 'https://saxr/config-schema.json',
-									fileMatch: ['*'],
-									schema: configSchema,
-								},
-							],
-						});
-					}}
-					onValidate={(markers) => {
-						// markers with severity 8 = Error
-						setSchemaError(markers.some((m) => m.severity === 8));
+					onMount={(editor, monaco) => {
+						editorRef.current = editor;
+						monacoRef.current = monaco;
+						setEditorReady(true);
 					}}
 					onChange={(value) => {
-						if (value) {
-							try {
-								JSON.parse(value); // Validate JSON syntax before applying
-								setHasError(false);
-								setSpecsText(value);
-							} catch {
-								setHasError(true);
-							}
-						}
+						if (!value) return;
+						runValidation(value);
 					}}
 				/>
 			</div>

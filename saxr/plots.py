@@ -151,12 +151,12 @@ def create_bar(gen: DataRepGenerator) -> None:
             if gen.encoding['x']['type'] == "quantitative":
                 posX = gen.placeX(x)
             else:
-                posX = gen.encoding['x']['scale']['range'][gen.indexOf(x, 'x')]
+                posX = gen.placeNominal(x, 'x')
             posY = sh / 2.0
             if gen.encoding['z']['type'] == "quantitative":
                 posZ = gen.placeZ(z)
             else:
-                posZ = gen.encoding['z']['scale']['range'][gen.indexOf(z, 'z')]
+                posZ = gen.placeNominal(z, 'z')
             if 'offset' in gen.encoding['x']['scale']:
                 posX = posX + gen.encoding['x']['scale']['offset']
             if 'offset' in gen.encoding['y']['scale']:

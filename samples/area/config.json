@@ -1,7 +1,7 @@
 {
 	"$schema": "../../schemas/config.json",
 	"description": "Energy usage of radiator",
-	"title": "Heating energy",
+	"title": "Heating energy (area)",
 	"data": {
 		"url": "../energy/heating.json"
 	},
