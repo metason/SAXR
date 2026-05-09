@@ -35,6 +35,11 @@ namespace SAXR
         private Text _playPauseText;
         private List<Button> _labelButtons = new List<Button>();
 
+        // Comparative mode state
+        private List<int> _comparativeSceneIndices = new List<int>(); // all available indices
+        private HashSet<int> _comparativeSelected = new HashSet<int>();
+        private List<Button> _comparativeButtons = new List<Button>();
+
         // Styling
         private static readonly Color BgColor = new Color(0f, 0f, 0f, 0.6f);
         private static readonly Color BtnNormal = new Color(1f, 1f, 1f, 0.15f);
@@ -79,12 +84,21 @@ namespace SAXR
                 _playPauseText.text = _controller.IsPlaying ? "Pause" : "Play";
             }
 
-            // Highlight active label button
+            // Highlight active label button (narrative mode)
             for (int i = 0; i < _labelButtons.Count; i++)
             {
                 var colors = _labelButtons[i].colors;
                 colors.normalColor = (i == _loader.selectedScene) ? BtnActive : BtnNormal;
                 _labelButtons[i].colors = colors;
+            }
+
+            // Highlight comparative toggle buttons
+            for (int i = 0; i < _comparativeButtons.Count; i++)
+            {
+                int sceneIdx = _comparativeSceneIndices[i];
+                var colors = _comparativeButtons[i].colors;
+                colors.normalColor = _comparativeSelected.Contains(sceneIdx) ? BtnActive : BtnNormal;
+                _comparativeButtons[i].colors = colors;
             }
         }
 
@@ -122,14 +136,16 @@ namespace SAXR
 
             _canvasRoot.AddComponent<GraphicRaycaster>();
 
-            // Ensure an EventSystem exists (required for UI click handling)
-            if (FindObjectOfType<EventSystem>() == null)
+            // In VR, VRPointerInteractor handles all input via direct raycast — no EventSystem needed.
+            // In desktop mode, create one at scene root (never as a Canvas child).
+            if (!vr && FindObjectOfType<EventSystem>() == null)
             {
                 var es = new GameObject("EventSystem");
-                es.transform.SetParent(_canvasRoot.transform, false);
                 es.AddComponent<EventSystem>();
                 es.AddComponent<StandaloneInputModule>();
             }
+
+            Debug.Log($"[SequenceUI] RebuildUI: vr={vr}, SceneCount={_loader.SceneCount}");
 
             // Bottom-center container (anchored to canvas centre in VR, bottom-centre on screen)
             var container = CreatePanel(_canvasRoot, "NavContainer");
@@ -159,6 +175,14 @@ namespace SAXR
             var vertFitter = container.AddComponent<ContentSizeFitter>();
             vertFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
             vertFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            // Comparative mode: toggle buttons, no Prev/Next/Play
+            if (seq != null && seq.IsComparative)
+            {
+                BuildComparativeUI(container, seq);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_canvasRoot.GetComponent<RectTransform>());
+                return;
+            }
 
             // Narrative labels row (if labels present)
             if (seq != null && seq.labels != null && seq.labels.Length > 0)
@@ -190,11 +214,16 @@ namespace SAXR
             _sceneLabel = labelGo.GetComponent<Text>();
 
             CreateButton(navBar, "Next >", () => _loader.NextScene());
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_canvasRoot.GetComponent<RectTransform>());
         }
 
         private void DestroyUI()
         {
             _labelButtons.Clear();
+            _comparativeButtons.Clear();
+            _comparativeSceneIndices.Clear();
+            _comparativeSelected.Clear();
             _sceneLabel = null;
             _playPauseBtn = null;
             _playPauseText = null;
@@ -203,6 +232,64 @@ namespace SAXR
                 Destroy(_canvasRoot);
                 _canvasRoot = null;
             }
+        }
+
+        // ── Comparative UI ──────────────────────────
+
+        private void BuildComparativeUI(GameObject container, SequenceConfig seq)
+        {
+            _comparativeButtons.Clear();
+            _comparativeSceneIndices.Clear();
+            _comparativeSelected = new HashSet<int>(_loader.ComparativeSelectedScenes);
+
+            // Determine available scene indices and their display labels
+            int sceneCount = _loader.SceneCount;
+            bool hasDomain = seq.domain != null && seq.domain.Length >= 2 && sceneCount > 1;
+            var availableIndices = new List<int>();
+            var displayLabels = new List<string>();
+
+            for (int i = 1; i < sceneCount; i++) // skip scene 0 (stage)
+            {
+                availableIndices.Add(i);
+                if (hasDomain)
+                {
+                    float t = (sceneCount > 1) ? (float)(i) / (sceneCount - 1) : 0f;
+                    float val = seq.domain[0] + t * (seq.domain[1] - seq.domain[0]);
+                    displayLabels.Add(Mathf.RoundToInt(val).ToString());
+                }
+                else
+                {
+                    displayLabels.Add($"Scene {i}");
+                }
+            }
+
+            _comparativeSceneIndices.AddRange(availableIndices);
+
+            var toggleRow = CreateBar(container, "ComparativeRow");
+
+            for (int i = 0; i < availableIndices.Count; i++)
+            {
+                int sceneIdx = availableIndices[i]; // capture
+                var btn = CreateButton(toggleRow, displayLabels[i], () => ToggleComparativeScene(sceneIdx));
+                _comparativeButtons.Add(btn);
+            }
+        }
+
+        private void ToggleComparativeScene(int sceneIdx)
+        {
+            if (_comparativeSelected.Contains(sceneIdx))
+            {
+                if (_comparativeSelected.Count > 1) // keep at least one visible
+                    _comparativeSelected.Remove(sceneIdx);
+            }
+            else
+            {
+                _comparativeSelected.Add(sceneIdx);
+            }
+
+            var ordered = new List<int>(_comparativeSelected);
+            ordered.Sort();
+            _loader.ShowComparativeScenes(ordered);
         }
 
         // ── UI Factory Helpers ──────────────────────

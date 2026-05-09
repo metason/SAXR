@@ -20,9 +20,7 @@ namespace SAXR
         private Transform _aimTransform;
         private bool _wasTriggered;
         private Button _hoveredButton;
-        private float _scanLogTimer;
 
-        //On start move the Aim object to same position as object this script is attached to
         private void Start()
         {
             foreach (Transform t in GetComponentsInChildren<Transform>(true))
@@ -41,52 +39,25 @@ namespace SAXR
         {
             if (_aimTransform == null) return;
 
-            // Read trigger
             var device = InputDevices.GetDeviceAtXRNode(Node);
             bool triggered = false;
             if (device.isValid)
             {
-                //try reading trigger as a button (bool). If that does not work read it as an axis (float)
                 if (!device.TryGetFeatureValue(CommonUsages.triggerButton, out triggered))
                 {
-                    //translate float value from axis to bool
                     device.TryGetFeatureValue(CommonUsages.trigger, out float a);
                     triggered = a > 0.5f;
                 }
             }
-            //only read trigger once per update 
             bool justPressed = triggered && !_wasTriggered;
             _wasTriggered = triggered;
 
             Canvas.ForceUpdateCanvases();
 
+            // Ray along the Aim object's Z axis — matches the visible ray in the prefab
             var ray = new Ray(_aimTransform.position, _aimTransform.forward);
+            Debug.DrawRay(ray.origin, ray.direction * _maxDistance, Color.cyan);
 
-            // On trigger press: detailed per-button diagnostic
-            if (justPressed)
-            {
-                Debug.Log($"[VRPointerInteractor] ({_hand}) Trigger pressed. Ray origin={ray.origin:F2} dir={ray.direction:F2}");
-                var all = FindObjectsByType<Button>(FindObjectsSortMode.None);
-                foreach (var btn in all)
-                {
-                    var rt = btn.GetComponent<RectTransform>();
-                    if (rt == null) { Debug.Log($"  {btn.name}: no RectTransform"); continue; }
-
-                    var corners = new Vector3[4];
-                    rt.GetWorldCorners(corners);
-                    var normal = Vector3.Cross(corners[1] - corners[0], corners[3] - corners[0]).normalized;
-                    var plane = new Plane(normal, corners[0]);
-                    bool planeHit = plane.Raycast(ray, out float dist);
-                    Vector3 hitPt = planeHit ? ray.GetPoint(dist) : Vector3.zero;
-                    bool inRect = planeHit && IsPointInQuad(hitPt, corners, 0f);
-                    bool inRectPadded = planeHit && IsPointInQuad(hitPt, corners, _hitPadding);
-
-                    Debug.Log($"  {btn.name}: corners=({corners[0]:F2},{corners[1]:F2},{corners[2]:F2},{corners[3]:F2}) " +
-                              $"planeHit={planeHit} dist={dist:F2} hitPt={hitPt:F2} inRect={inRect} inRect+pad={inRectPadded}");
-                }
-            }
-
-            // Hover detection every frame
             Button hit = FindClosestButton(ray);
             if (hit != _hoveredButton)
             {
@@ -96,11 +67,49 @@ namespace SAXR
                     : $"[VRPointerInteractor] ({_hand}) Ray left buttons.");
             }
 
-            if (justPressed && _hoveredButton != null)
+            if (justPressed)
             {
-                Debug.Log($"[VRPointerInteractor] ({_hand}) Clicking: {_hoveredButton.name}");
-                _hoveredButton.onClick.Invoke();
+                // Spawn debug cube at the point where the ray meets the closest button's plane
+                SpawnHitMarker(ray);
+
+                if (_hoveredButton != null)
+                {
+                    Debug.Log($"[VRPointerInteractor] ({_hand}) Clicking: {_hoveredButton.name}");
+                    _hoveredButton.onClick.Invoke();
+                }
             }
+        }
+
+        private void SpawnHitMarker(Ray ray)
+        {
+            // Find the first button plane the ray intersects and place the marker there
+            var corners = new Vector3[4];
+            float closest = _maxDistance;
+            Vector3 hitPoint = ray.GetPoint(_maxDistance);
+
+            foreach (var btn in FindObjectsByType<Button>(FindObjectsSortMode.None))
+            {
+                if (!btn.gameObject.activeInHierarchy) continue;
+                var rt = btn.GetComponent<RectTransform>();
+                if (rt == null) continue;
+
+                rt.GetWorldCorners(corners);
+                var normal = Vector3.Cross(corners[1] - corners[0], corners[3] - corners[0]).normalized;
+                if (normal == Vector3.zero) continue;
+
+                var plane = new Plane(normal, corners[0]);
+                if (!plane.Raycast(ray, out float dist) || dist >= closest) continue;
+
+                closest = dist;
+                hitPoint = ray.GetPoint(dist);
+            }
+
+            var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            marker.name = "HitMarker";
+            marker.transform.position = hitPoint;
+            marker.transform.localScale = Vector3.one * 0.02f;
+            Destroy(marker.GetComponent<Collider>());
+            Destroy(marker, 3f);
         }
 
         private Button FindClosestButton(Ray ray)
@@ -131,7 +140,6 @@ namespace SAXR
             return closest;
         }
 
-        // Returns true if worldPoint lies inside the world-space quad (optionally expanded by padding)
         // corners order: bottom-left, top-left, top-right, bottom-right (Unity GetWorldCorners order)
         private static bool IsPointInQuad(Vector3 point, Vector3[] corners, float padding)
         {
