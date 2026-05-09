@@ -14,6 +14,8 @@ namespace SAXR
         [SerializeField] private Hand _hand = Hand.Left;
         [SerializeField] private float _maxDistance = 10f;
         [SerializeField] private float _hitPadding = 0.06f; // world-space expansion around each button
+        [SerializeField] private float _markerSize = 0.02f;
+        [SerializeField] private float _markerLifetime = 3f;
 
         private XRNode Node => _hand == Hand.Left ? XRNode.LeftHand : XRNode.RightHand;
 
@@ -61,6 +63,7 @@ namespace SAXR
             Canvas.ForceUpdateCanvases();
 
             var ray = new Ray(_aimTransform.position, _aimTransform.forward);
+            Debug.DrawRay(ray.origin, ray.direction * _maxDistance, Color.cyan);
 
             // On trigger press: detailed per-button diagnostic
             if (justPressed)
@@ -83,6 +86,16 @@ namespace SAXR
 
                     Debug.Log($"  {btn.name}: corners=({corners[0]:F2},{corners[1]:F2},{corners[2]:F2},{corners[3]:F2}) " +
                               $"planeHit={planeHit} dist={dist:F2} hitPt={hitPt:F2} inRect={inRect} inRect+pad={inRectPadded}");
+
+                    if (planeHit)
+                    {
+                        var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        marker.name = "HitMarker";
+                        marker.transform.position = hitPt;
+                        marker.transform.localScale = Vector3.one * 0.02f;
+                        Destroy(marker.GetComponent<Collider>());
+                        Destroy(marker, 3f);
+                    }
                 }
             }
 

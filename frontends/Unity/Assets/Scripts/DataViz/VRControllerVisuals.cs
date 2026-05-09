@@ -5,7 +5,7 @@
 
 using UnityEngine;
 using UnityEngine.XR;
-
+//Sets the controller representation visible on load and updates it's position according to the position of the controller
 namespace SAXR
 {
     public class VRControllerVisuals : MonoBehaviour

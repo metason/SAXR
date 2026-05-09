@@ -96,8 +96,15 @@ namespace SAXR
         public int selectedScene = 0;
 
         private GameObject _stageRoot;
+        private GameObject _stageSet;
+        private List<GameObject> _stageSetClones = new List<GameObject>();
         private List<GameObject> _sceneNodes = new List<GameObject>();
         private SpecsJson _specs;
+
+        /// <summary>
+        /// Scene indices currently displayed in comparative mode.
+        /// </summary>
+        public List<int> ComparativeSelectedScenes { get; private set; } = new List<int>();
 
         /// <summary>
         /// Parsed specs.json for the current sample (null if not available).
@@ -156,6 +163,8 @@ namespace SAXR
             }
             _sceneNodes.Clear();
             _specs = null;
+            _stageSet = null;
+            _stageSetClones.Clear();
 
             string path = ResolvedVizJsonPath;
             if (!string.IsNullOrEmpty(path))
@@ -218,6 +227,12 @@ namespace SAXR
 
             // Load specs.json from the same folder (best-effort)
             yield return StartCoroutine(LoadSpecsJson());
+
+            if (_specs?.sequence != null && _specs.sequence.IsComparative)
+            {
+                ComputeInitialComparativeSelection();
+                ShowComparativeScenes(ComparativeSelectedScenes);
+            }
 
             OnLoaded?.Invoke();
         }
@@ -330,11 +345,17 @@ namespace SAXR
                 }
             }
 
-            // Remove empty stage set
+            // Remove empty stage set; otherwise store reference for comparative cloning
             if (stageSet.transform.childCount == 0)
             {
                 Destroy(stageSet);
+                _stageSet = null;
             }
+            else
+            {
+                _stageSet = stageSet;
+            }
+            _stageSetClones.Clear();
 
             Debug.Log($"DataViz: Loaded {scenes.Count} scene(s), showing scene {selectedScene}.");
         }
@@ -371,6 +392,18 @@ namespace SAXR
                 if (renderer != null)
                 {
                     renderer.material.mainTexture = tex;
+
+                    // Propagate texture to the matching panel in each stageSet clone
+                    foreach (var clone in _stageSetClones)
+                    {
+                        if (clone == null) continue;
+                        var t = clone.transform.Find(panel.name);
+                        if (t != null)
+                        {
+                            var r = t.GetComponent<Renderer>();
+                            if (r != null) r.material.mainTexture = tex;
+                        }
+                    }
                 }
             }
         }
@@ -471,6 +504,115 @@ namespace SAXR
         {
             if (_sceneNodes.Count == 0) return;
             ShowScene((selectedScene - 1 + _sceneNodes.Count) % _sceneNodes.Count);
+        }
+
+        // ── Comparative mode ───────────────────────
+
+        /// <summary>
+        /// Show multiple scenes simultaneously at grid positions defined by gap and columns.
+        /// </summary>
+        public void ShowComparativeScenes(List<int> selectedIndices)
+        {
+            // Destroy stageSet clones from any previous call
+            foreach (var clone in _stageSetClones)
+                if (clone != null) Destroy(clone);
+            _stageSetClones.Clear();
+
+            var seq = _specs?.sequence;
+            Vector3 gap = seq != null ? seq.GapVector : new Vector3(2f, 0f, 0f);
+            int cols = (seq != null && seq.columns > 0)
+                ? seq.columns
+                : Mathf.CeilToInt(Mathf.Sqrt(selectedIndices.Count));
+            if (cols < 1) cols = 1;
+
+            int rows = Mathf.CeilToInt((float)selectedIndices.Count / cols);
+            float totalX = (cols - 1) * gap.x;
+            float totalZ = (rows - 1) * gap.z;
+
+            for (int i = 0; i < _sceneNodes.Count; i++)
+                _sceneNodes[i].SetActive(false);
+
+            for (int gridIdx = 0; gridIdx < selectedIndices.Count; gridIdx++)
+            {
+                int sceneIdx = selectedIndices[gridIdx];
+                if (sceneIdx < 0 || sceneIdx >= _sceneNodes.Count) continue;
+
+                int col = gridIdx % cols;
+                int row = gridIdx / cols;
+                float x = col * gap.x - totalX * 0.5f;
+                float y = row * gap.y;
+                float z = row * gap.z - totalZ * 0.5f;
+                var offset = new Vector3(x, y, z);
+
+                _sceneNodes[sceneIdx].SetActive(true);
+                _sceneNodes[sceneIdx].transform.localPosition = offset;
+
+                // Move the original stageSet to the first scene; clone it for every additional scene
+                if (_stageSet != null)
+                {
+                    if (gridIdx == 0)
+                    {
+                        _stageSet.transform.localPosition = offset;
+                    }
+                    else
+                    {
+                        var clone = Instantiate(_stageSet, _stageRoot.transform);
+                        clone.name = _stageSet.name + $" ({gridIdx})";
+                        clone.transform.localPosition = offset;
+                        CopyPanelTexturesToClone(_stageSet, clone);
+                        _stageSetClones.Add(clone);
+                    }
+                }
+            }
+
+            ComparativeSelectedScenes = new List<int>(selectedIndices);
+        }
+
+        private void CopyPanelTexturesToClone(GameObject source, GameObject clone)
+        {
+            var srcRenderers = source.GetComponentsInChildren<Renderer>();
+            var dstRenderers = clone.GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < Mathf.Min(srcRenderers.Length, dstRenderers.Length); i++)
+            {
+                var tex = srcRenderers[i].sharedMaterial?.mainTexture;
+                if (tex != null)
+                    dstRenderers[i].material.mainTexture = tex;
+            }
+        }
+
+        /// <summary>
+        /// Populate ComparativeSelectedScenes from specs.sequence.selection (domain values → indices).
+        /// Falls back to all scenes [1..SceneCount-1] if selection is unset.
+        /// </summary>
+        public void ComputeInitialComparativeSelection()
+        {
+            ComparativeSelectedScenes.Clear();
+            var seq = _specs?.sequence;
+            if (seq == null) return;
+
+            bool hasDomain = seq.domain != null && seq.domain.Length >= 2 && _sceneNodes.Count > 1;
+
+            if (seq.selection != null && seq.selection.Length > 0 && hasDomain)
+            {
+                float dMin = seq.domain[0];
+                float dMax = seq.domain[1];
+                int sceneCount = _sceneNodes.Count;
+
+                foreach (float val in seq.selection)
+                {
+                    float t = (dMax > dMin) ? (val - dMin) / (dMax - dMin) : 0f;
+                    int idx = Mathf.RoundToInt(t * (sceneCount - 1));
+                    idx = Mathf.Clamp(idx, 0, sceneCount - 1);
+                    if (!ComparativeSelectedScenes.Contains(idx))
+                        ComparativeSelectedScenes.Add(idx);
+                }
+            }
+            else
+            {
+                // Default: show all data scenes (skip scene 0 which is the stage)
+                for (int i = 1; i < _sceneNodes.Count; i++)
+                    ComparativeSelectedScenes.Add(i);
+            }
         }
     }
 }
