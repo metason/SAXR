@@ -347,8 +347,6 @@ class DataRepGenerator:
                         self.df[col] = pd.to_datetime(self.df[col])
                     except ValueError:
                         pass
-            print(self.df)
-            print(self.df.dtypes)
             self.deduceDimensions()
 
         # --- Grouping / aux visuals / panels / mark / plot type -----------
