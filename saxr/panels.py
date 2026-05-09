@@ -45,8 +45,6 @@ def export_legend(gen: DataRepGenerator, legend, filename: str = "legend.png"):
     fig.canvas.draw()
     bbox = legend.get_window_extent()
     bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
-    print("EXPORT LEGEND")
-    print(os.path.join(gen.folder, filename))
     fig.savefig(os.path.join(gen.folder, filename), dpi=gen.dpi, bbox_inches=bbox)
     return bbox
 
@@ -75,7 +73,6 @@ def create_legend(gen: DataRepGenerator, spec: str, bbox, y0: float) -> dict:
     # Convert legend bbox from figure inches to stage meters
     w = inch2m((bbox.x1 - bbox.x0) * 4.8)
     h = inch2m((bbox.y1 - bbox.y0) * 4.8)
-    print(w, h, y0)
     x = 0.0
     y = 0.0
     z = 0.0
@@ -520,4 +517,3 @@ def render_panels(gen: DataRepGenerator, spec: list) -> None:
     if gen.doSaveEncoding:
         panel = {"type": "encoding", "x": 0, "y": 0, "z": 0, "w": float(gen.chartWidth), "d": float(gen.chartDepth), "h": float(gen.chartHeight), "asset": gen.assetURL + "specs.json"}
         gen.visuals.insert(0, panel)
-    print("Factors: ", gen.factorX, gen.factorY, gen.factorZ)

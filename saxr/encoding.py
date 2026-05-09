@@ -40,8 +40,6 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
         gen: The generator instance whose ``df`` and ``encoding`` are read
              and whose ``dimension`` dict is populated in-place.
     """
-    print(gen.df.columns)
-    print(gen.encoding)
     for col in gen.df.columns:
         calcDomain = True
         spec = {}
@@ -50,7 +48,6 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
         if col in gen.encoding and 'scale' in gen.encoding[col] and 'domain' in gen.encoding[col]['scale']:
             spec['domain'] = gen.encoding[col]['scale']['domain']
             calcDomain = False
-        print(col, calcDomain)
         # --- Classify column dtype -----------------------------------------------
         if gen.df[col].dtype == 'object' or gen.df[col].dtype == 'category' or gen.df[col].dtype == 'str' or gen.df[col].dtype.name == 'string':
             spec['type'] = 'nominal'
@@ -72,8 +69,6 @@ def deduce_dimensions(gen: DataRepGenerator) -> None:
             if calcDomain:
                 spec['domain'] = [float(gen.df[col].min()), float(gen.df[col].max())]
         gen.dimension[col] = spec
-    print("Dimensions:")
-    print(gen.dimension)
 
 
 def deduce_encoding(gen: DataRepGenerator) -> None:
@@ -250,8 +245,6 @@ def deduce_encoding(gen: DataRepGenerator) -> None:
                         rgb0 = cmap(cat[0])
                         rgb1 = cmap(cat[1])
                         rgb_values = [rgb0, rgb1]
-                        print("rgb_values")
-                        print(rgb_values)
                         color_list = [rgb2hex(r, g, b) for r, g, b, a in rgb_values[:len(cat)]]
                         scale = {'domain': cat, 'range': color_list}
                         gen.encoding['color']['scale'] = scale
@@ -297,6 +290,3 @@ def deduce_encoding(gen: DataRepGenerator) -> None:
         # Inline size values override the data column
         if 'values' in gen.encoding["size"]:
             gen.df['size'] = gen.encoding["size"]["values"]
-    print("Encoding:")
-    print(gen.encoding)
-    print("Boundaries: ", gen.lowerX, gen.upperX, gen.lowerY, gen.upperY, gen.lowerZ, gen.upperZ)

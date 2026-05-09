@@ -126,7 +126,6 @@ def create_bar(gen: DataRepGenerator) -> None:
     colors = None
     if gen.group is not None and 'colors' in gen.group:
         colors = gen.group['colors']
-    print(gen.lowerX, gen.upperX, gen.lowerY, gen.upperY, gen.lowerZ, gen.upperZ)
     for index, row in gen.df.iterrows():
         x = gen.resolve_channel(row, 'x')
         z = gen.resolve_channel(row, 'z')

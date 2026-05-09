@@ -22,7 +22,10 @@ def create_line(gen: DataRepGenerator) -> None:
         z = gen.resolve_channel(row, 'z')
         posX = gen.placeX(x)
         posY = gen.placeY(y)
-        posZ = gen.placeZ(z)
+        if gen.encoding['z']['type'] == "quantitative":
+            posZ = gen.placeZ(z)
+        else:
+            posZ = gen.placeNominal(z, 'z')
         color = gen.resolve_color(row, default='white')
         if c == color:
             w = posX - posx
