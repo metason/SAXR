@@ -230,7 +230,12 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 - Download repository
 - Prerequisite: Python 3.11
   - Hint: Check available precompiled bpy version for Blender and setup pyenv with corresponding version
-- Install Numpy, Pandas and Matplotlib (and optionally GeoPandas)
+- Install Python dependencies from the project root:
+  ```bash
+  pip install -e .          # installs numpy, pandas, matplotlib, jsonschema
+  pip install -e ".[geo]"   # also installs geopandas (needed for samples/geo)
+  pip install -e ".[test]"  # also installs pytest (needed to run tests)
+  ```
 - In project folder run: `python datarepgen.py samples/iris`
   - the python script reads the `samples/iris/config.json` file as input
 - Find generated output in `samples/iris` folder:

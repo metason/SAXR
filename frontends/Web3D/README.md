@@ -5,10 +5,20 @@ Loads `datareps.json` files produced by the SAXR pipeline and renders interactiv
 
 ## Requirements
 
-| Dependency | Version     |
-| ---------- | ----------- |
-| Node.js    | 18 or later |
-| npm        | 9 or later  |
+| Dependency | Version     | Required for                          |
+| ---------- | ----------- | ------------------------------------- |
+| Node.js    | 18 or later | Viewer (always)                       |
+| npm        | 9 or later  | Viewer (always)                       |
+| Python     | 3.11+       | In-browser pipeline execution only    |
+
+All JavaScript dependencies (Monaco Editor, AJV, Three.js, etc.) are listed in `package.json` and installed by `npm install` — no separate installs needed.
+
+Python is only required if you use the in-browser **Run** button in the config editor. Install the pipeline dependencies from the repository root:
+
+```bash
+pip install -e .        # numpy, pandas, matplotlib, jsonschema
+pip install -e ".[geo]" # + geopandas (for geo/map samples)
+```
 
 ## Quick Start
 
@@ -281,7 +291,7 @@ Features:
 
 - **Schema validation**: `config.json` is validated against `schemas/config.json` (draft-2020-12) using AJV as you type, with error markers surfaced in the editor gutter.
 - **JSONC support**: Comments are allowed and stripped before validation via `jsonc-parser`.
-- **Run pipeline**: Clicking "Run" saves the edited config and triggers `POST /api/run-pipeline`, which executes `datarepgen.py` for the sample. The viewer reloads the output automatically on completion.
+- **Run pipeline**: Clicking "Run" saves the edited config and triggers `POST /api/run-pipeline`, which executes `datarepgen.py` for the sample. The viewer reloads the output automatically on completion. Requires Python 3.11+ with the pipeline dependencies installed (see [Requirements](#requirements)).
 
 ## API Routes
 
