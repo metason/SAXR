@@ -3,7 +3,7 @@ name = "saxr"
 version = "0.1.0"
 description = "SAXR – Situated Analytics in eXtended Reality: data visualization pipeline"
 requires-python = ">=3.11"
-license = {text = "MIT"}
+license = "MIT"
 dependencies = [
     "numpy",
     "pandas",
@@ -16,8 +16,8 @@ geo = ["geopandas"]
 test = ["pytest"]
 blender = []  # bpy is bundled with Blender, not pip-installable
 
-[project.scripts]
-saxr-generate = "saxr.cli:main"
+[tool.setuptools.packages.find]
+include = ["saxr*"]
 
 [build-system]
 requires = ["setuptools>=64"]

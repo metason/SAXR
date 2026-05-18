@@ -5,11 +5,11 @@ Loads `datareps.json` files produced by the SAXR pipeline and renders interactiv
 
 ## Requirements
 
-| Dependency | Version     | Required for                          |
-| ---------- | ----------- | ------------------------------------- |
-| Node.js    | 18 or later | Viewer (always)                       |
-| npm        | 9 or later  | Viewer (always)                       |
-| Python     | 3.11+       | In-browser pipeline execution only    |
+| Dependency | Version     | Required for                       |
+| ---------- | ----------- | ---------------------------------- |
+| Node.js    | 18 or later | Viewer (always)                    |
+| npm        | 9 or later  | Viewer (always)                    |
+| Python     | 3.11+       | In-browser pipeline execution only |
 
 All JavaScript dependencies (Monaco Editor, AJV, Three.js, etc.) are listed in `package.json` and installed by `npm install` — no separate installs needed.
 
@@ -153,15 +153,15 @@ Each element in the visualization is a `DataRep` — a positioned, scaled, color
 
 ```typescript
 interface DataRep {
-type: string; // Shape type: 'sphere', 'box', 'arc', 'xy', 'pyramid_down', etc.
-x: number; // Position X
-y: number; // Position Y
-z: number; // Position Z
-w: number; // Width (scale X)
-h: number; // Height (scale Y)
-d: number; // Depth (scale Z)
-color?: string; // Hex color: '#RRGGBB' or '#RRGGBBAA'
-asset?: string; // Image path (panels), KV params (arcs), or PLY path (surfaces)
+	type: string; // Shape type: 'sphere', 'box', 'arc', 'xy', 'pyramid_down', etc.
+	x: number; // Position X
+	y: number; // Position Y
+	z: number; // Position Z
+	w: number; // Width (scale X)
+	h: number; // Height (scale Y)
+	d: number; // Depth (scale Z)
+	color?: string; // Hex color: '#RRGGBB' or '#RRGGBBAA'
+	asset?: string; // Image path (panels), KV params (arcs), or PLY path (surfaces)
 }
 ```
 
@@ -177,17 +177,17 @@ The outer array represents **scenes**. Scene 0 holds **stage-level** elements (p
 
 ```typescript
 interface SpecsJson {
-sequence?: {
-field?: string;       // Data field driving the sequence
-domain?: number[];    // [min, max] value range (e.g. [2000, 2020])
-arrangement?: 'animated' | 'narrative' | 'comparative' | 'LOD';
-interval?: number;    // Auto-play interval in seconds (default: 1.5)
-labels?: string[];    // Scene labels for narrative mode
-gap?: [number, number, number]; // XYZ spacing between scenes in comparative mode
-selection?: number[]; // Initial domain values to show in comparative mode
-columns?: number;     // Column count for comparative grid layout
-};
-encoding?: Record<string, unknown>; // Encoding metadata
+	sequence?: {
+		field?: string; // Data field driving the sequence
+		domain?: number[]; // [min, max] value range (e.g. [2000, 2020])
+		arrangement?: 'animated' | 'narrative' | 'comparative' | 'LOD';
+		interval?: number; // Auto-play interval in seconds (default: 1.5)
+		labels?: string[]; // Scene labels for narrative mode
+		gap?: [number, number, number]; // XYZ spacing between scenes in comparative mode
+		selection?: number[]; // Initial domain values to show in comparative mode
+		columns?: number; // Column count for comparative grid layout
+	};
+	encoding?: Record<string, unknown>; // Encoding metadata
 }
 ```
 
@@ -195,13 +195,13 @@ encoding?: Record<string, unknown>; // Encoding metadata
 
 The `specs.json` `sequence.arrangement` field controls how scenes are presented. `SceneNav` adapts its UI accordingly:
 
-| Arrangement   | Behavior                                                                     | UI Controls                                       |
-| ------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
-| `animated`    | Auto-plays through scenes at `interval` seconds. Loops continuously.         | ◀ Prev \| ▶/⏸ Play/Pause \| counter \| Next ▶    |
-| `narrative`   | User-driven storytelling. Each scene has a label from `sequence.labels`.     | [Label 1] [Label 2] … (top) + ◀ Prev / Next ▶    |
-| `comparative` | Side-by-side scenes in a grid. Users toggle which scenes are shown.          | Scene toggle buttons via `ComparativeScenePicker` |
-| `LOD`         | Level-of-detail progression. Manual navigation.                              | ◀ Prev \| counter \| Next ▶                       |
-| _(not set)_   | Default manual navigation.                                                   | ◀ Prev \| counter \| Next ▶                       |
+| Arrangement   | Behavior                                                                 | UI Controls                                       |
+| ------------- | ------------------------------------------------------------------------ | ------------------------------------------------- |
+| `animated`    | Auto-plays through scenes at `interval` seconds. Loops continuously.     | ◀ Prev \| ▶/⏸ Play/Pause \| counter \| Next ▶     |
+| `narrative`   | User-driven storytelling. Each scene has a label from `sequence.labels`. | [Label 1] [Label 2] … (top) + ◀ Prev / Next ▶     |
+| `comparative` | Side-by-side scenes in a grid. Users toggle which scenes are shown.      | Scene toggle buttons via `ComparativeScenePicker` |
+| `LOD`         | Level-of-detail progression. Manual navigation.                          | ◀ Prev \| counter \| Next ▶                       |
+| _(not set)_   | Default manual navigation.                                               | ◀ Prev \| counter \| Next ▶                       |
 
 The scene counter displays domain values (e.g. "2003") when `sequence.domain` is available, otherwise shows "Scene 3 / 25". Navigation is hidden entirely for single-scene datasets.
 
@@ -303,12 +303,12 @@ Discovers available sample datasets by scanning `SAXR/samples/` for subdirectori
 
 ```json
 [
-{
-"name": "Eco",
-"slug": "eco",
-"vizJsonPath": "/samples/eco/datareps.json",
-"assetBasePath": "/samples/eco"
-}
+	{
+		"name": "Eco",
+		"slug": "eco",
+		"vizJsonPath": "/samples/eco/datareps.json",
+		"assetBasePath": "/samples/eco"
+	}
 ]
 ```
 
@@ -368,10 +368,10 @@ The project includes a `vercel.json` for Vercel deployment:
 
 ```json
 {
-"buildCommand": "npm run build",
-"outputDirectory": ".next",
-"framework": "nextjs",
-"installCommand": "npm install"
+	"buildCommand": "npm run build",
+	"outputDirectory": ".next",
+	"framework": "nextjs",
+	"installCommand": "npm install"
 }
 ```
 

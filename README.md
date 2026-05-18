@@ -16,7 +16,6 @@
 - **3D Export**: Generation of 3D files of data viz in usdz/gltf/glb/fbx format
 - **3D Viz Frontends**: Interactive data viz components for Web3D and Unity
 
-
 ## 3D Plot Layouts
 
 Supported 3D plot types using `datarepgen.py`:
@@ -143,7 +142,7 @@ The data fields of Data Reps are:
     - `arc`: arc bow for pie charts
     - `plane`: for flat overlays, e.g. as transparent plane infront of panels
     - `line`: line segment from bottom-front-left to top-back-right corner of bbox
-    - `area`: area segmemt (quad analog to line going down to ground level of data stage)  
+    - `area`: area segmemt (quad analog to line going down to ground level of data stage)
     - `image`: for placing any icon or image defined as asset in PNG or JPG format
     - `surface`: mesh provided as asset in PLY format
     - `text`: for labels
