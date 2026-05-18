@@ -16,7 +16,6 @@
 - **3D Export**: Generation of 3D files of data viz in usdz/gltf/glb/fbx format
 - **3D Viz Frontends**: Interactive data viz components for Web3D and Unity
 
-
 ## 3D Plot Layouts
 
 Supported 3D plot types using `datarepgen.py`:
@@ -143,7 +142,7 @@ The data fields of Data Reps are:
     - `arc`: arc bow for pie charts
     - `plane`: for flat overlays, e.g. as transparent plane infront of panels
     - `line`: line segment from bottom-front-left to top-back-right corner of bbox
-    - `area`: area segmemt (quad analog to line going down to ground level of data stage)  
+    - `area`: area segmemt (quad analog to line going down to ground level of data stage)
     - `image`: for placing any icon or image defined as asset in PNG or JPG format
     - `surface`: mesh provided as asset in PLY format
     - `text`: for labels
@@ -230,7 +229,12 @@ All [colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.h
 - Download repository
 - Prerequisite: Python 3.11
   - Hint: Check available precompiled bpy version for Blender and setup pyenv with corresponding version
-- Install Numpy, Pandas and Matplotlib (and optionally GeoPandas)
+- Install Python dependencies from the project root:
+  ```bash
+  pip install -e .          # installs numpy, pandas, matplotlib, jsonschema
+  pip install -e ".[geo]"   # also installs geopandas (needed for samples/geo)
+  pip install -e ".[test]"  # also installs pytest (needed to run tests)
+  ```
 - In project folder run: `python datarepgen.py samples/iris`
   - the python script reads the `samples/iris/config.json` file as input
 - Find generated output in `samples/iris` folder:
