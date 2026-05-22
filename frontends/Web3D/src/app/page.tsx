@@ -3,6 +3,7 @@
  * SAXR landing page - hero, pipeline, arrangement showcase, and sample gallery.
  */
 
+import { Fragment } from 'react';
 import { SampleInfo } from '@/lib/types';
 import { listSamples } from '@/lib/listSamples';
 
@@ -282,16 +283,13 @@ export default async function HomePage() {
 					</h2>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm font-mono text-white/50 mb-14 flex-wrap">
 						{PIPELINE_STEPS.map((step, i) => (
-							<>
+							<Fragment key={step.label}>
 								{i > 0 && (
-									<span
-										key={`arrow-${i}`}
-										className="text-white/20 text-xl hidden sm:block"
-									>
+									<span className="text-white/20 text-xl hidden sm:block">
 										&gt;
 									</span>
 								)}
-								<div key={step.label} className="flex flex-col">
+								<div className="flex flex-col">
 									<span className="text-white/80 font-semibold">
 										{step.label}
 									</span>
@@ -301,7 +299,7 @@ export default async function HomePage() {
 										</span>
 									)}
 								</div>
-							</>
+							</Fragment>
 						))}
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
