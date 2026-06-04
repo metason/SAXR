@@ -248,7 +248,7 @@ namespace SAXR
             var availableIndices = new List<int>();
             var displayLabels = new List<string>();
 
-            for (int i = 1; i < sceneCount; i++) // skip scene 0 (stage)
+            for (int i = 0; i < sceneCount; i++)
             {
                 availableIndices.Add(i);
                 if (hasDomain)

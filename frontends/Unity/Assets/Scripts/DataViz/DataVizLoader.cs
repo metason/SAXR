@@ -298,9 +298,18 @@ namespace SAXR
 
             for (int i = 0; i < scenes.Count; i++)
             {
-                GameObject sceneNode = new GameObject($"Scene {i}");
-                sceneNode.transform.SetParent(sceneList.transform, false);
-                _sceneNodes.Add(sceneNode);
+                // Scene 0 is the stage scene (panels + auxReps like flags).
+                // All its reps go into stageSet so they are always visible.
+                // Data scenes start at index 1.
+                bool isStageScene = (i == 0);
+
+                GameObject sceneNode = null;
+                if (!isStageScene)
+                {
+                    sceneNode = new GameObject($"Scene {_sceneNodes.Count}");
+                    sceneNode.transform.SetParent(sceneList.transform, false);
+                    _sceneNodes.Add(sceneNode);
+                }
 
                 foreach (DataRep rep in scenes[i])
                 {
@@ -314,14 +323,14 @@ namespace SAXR
 
                     GameObject node = DataViz.CreateDataRep(rep);
 
-                    if (rep.IsSceneLevel)
+                    if (!isStageScene && rep.IsSceneLevel)
                     {
-                        // Lowercase type → scene-level data rep
+                        // Lowercase type in a data scene → scene-level data rep
                         node.transform.SetParent(sceneNode.transform, false);
                     }
                     else
                     {
-                        // Uppercase type → stage-level panel/wall
+                        // Stage scene reps and uppercase types → always-visible stage set
                         node.transform.SetParent(stageSet.transform, false);
                     }
 
@@ -338,8 +347,8 @@ namespace SAXR
                     }
                 }
 
-                // Hide non-selected scenes
-                if (i != selectedScene)
+                // Hide data scenes that are not the initially selected one
+                if (!isStageScene && (_sceneNodes.Count - 1) != selectedScene)
                 {
                     sceneNode.SetActive(false);
                 }
@@ -357,7 +366,7 @@ namespace SAXR
             }
             _stageSetClones.Clear();
 
-            Debug.Log($"DataViz: Loaded {scenes.Count} scene(s), showing scene {selectedScene}.");
+            Debug.Log($"DataViz: Loaded {_sceneNodes.Count} data scene(s), showing scene {selectedScene}.");
         }
 
         /// <summary>
@@ -609,8 +618,8 @@ namespace SAXR
             }
             else
             {
-                // Default: show all data scenes (skip scene 0 which is the stage)
-                for (int i = 1; i < _sceneNodes.Count; i++)
+                // Default: show all data scenes
+                for (int i = 0; i < _sceneNodes.Count; i++)
                     ComparativeSelectedScenes.Add(i);
             }
         }

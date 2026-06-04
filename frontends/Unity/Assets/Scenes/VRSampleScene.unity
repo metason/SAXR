@@ -1140,8 +1140,6 @@ MonoBehaviour:
   _hand: 0
   _maxDistance: 10
   _hitPadding: 0.06
-  _markerSize: 0.02
-  _markerLifetime: 3
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2301,7 +2299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5f936c6025bc1d49bf4cae0deaa2abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sampleIndex: 2
+  sampleIndex: 1
   vizJsonPath: samples/stars/datareps.json
   assetBasePath: 
   selectedScene: 0
@@ -2385,8 +2383,6 @@ MonoBehaviour:
   _hand: 1
   _maxDistance: 10
   _hitPadding: 0.06
-  _markerSize: 0.02
-  _markerLifetime: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

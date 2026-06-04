@@ -1,6 +1,7 @@
 // MeshFactory.cs
 // Procedural mesh generation for shapes not built into Unity (pyramid, octahedron, arc)
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SAXR
@@ -107,11 +108,14 @@ namespace SAXR
         }
 
         /// <summary>
-        /// Create an arc (donut segment) mesh.
+        /// Create a solid arc (donut segment) mesh: an annular wedge extruded
+        /// vertically by <paramref name="height"/>. The mesh is centered on Y
+        /// (spanning -height/2 .. +height/2) so, once positioned at the DataRep's
+        /// y, the slice sits on the ground plane.
         /// Parameters come from the DataRep asset string: "ratio:X;start:Y;angle:Z"
         /// </summary>
-        /// <param name="width">Total width of the arc area</param>
-        /// <param name="height">Height of the arc strip</param>
+        /// <param name="width">Outer diameter of the arc (outer radius = width/2)</param>
+        /// <param name="height">Vertical thickness of the slice</param>
         /// <param name="ratio">Inner/outer radius ratio (0-1)</param>
         /// <param name="startAngle">Start angle in degrees</param>
         /// <param name="sweepAngle">Sweep angle in degrees</param>
@@ -120,48 +124,79 @@ namespace SAXR
         {
             Mesh mesh = new Mesh { name = "Arc" };
 
+            if (segments < 1) segments = 1;
+
             float outerR = width / 2f;
             float innerR = outerR * ratio;
-
-            int vertCount = (segments + 1) * 2;
-            Vector3[] vertices = new Vector3[vertCount];
-            Vector2[] uv = new Vector2[vertCount];
+            float halfH = height / 2f;
 
             float startRad = startAngle * Mathf.Deg2Rad;
             float sweepRad = sweepAngle * Mathf.Deg2Rad;
 
-            for (int i = 0; i <= segments; i++)
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+
+            // Add a quad as two triangles (a,b,c) + (a,c,d). Vertex order sets the
+            // winding so RecalculateNormals produces an outward-facing normal.
+            void AddQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
             {
-                float t = (float)i / segments;
-                float angle = startRad + t * sweepRad;
-                float cos = Mathf.Cos(angle);
-                float sin = Mathf.Sin(angle);
-
-                // Inner vertex
-                vertices[i * 2] = new Vector3(innerR * cos, 0, innerR * sin);
-                uv[i * 2] = new Vector2(t, 0);
-
-                // Outer vertex
-                vertices[i * 2 + 1] = new Vector3(outerR * cos, 0, outerR * sin);
-                uv[i * 2 + 1] = new Vector2(t, 1);
+                int baseIdx = vertices.Count;
+                vertices.Add(a);
+                vertices.Add(b);
+                vertices.Add(c);
+                vertices.Add(d);
+                triangles.Add(baseIdx + 0);
+                triangles.Add(baseIdx + 1);
+                triangles.Add(baseIdx + 2);
+                triangles.Add(baseIdx + 0);
+                triangles.Add(baseIdx + 2);
+                triangles.Add(baseIdx + 3);
             }
 
-            int[] triangles = new int[segments * 6];
+            // Walls and top/bottom faces, one ring step at a time.
             for (int i = 0; i < segments; i++)
             {
-                int idx = i * 6;
-                int v = i * 2;
-                triangles[idx + 0] = v;
-                triangles[idx + 1] = v + 2;
-                triangles[idx + 2] = v + 1;
-                triangles[idx + 3] = v + 1;
-                triangles[idx + 4] = v + 2;
-                triangles[idx + 5] = v + 3;
+                float a0 = startRad + ((float)i / segments) * sweepRad;
+                float a1 = startRad + ((float)(i + 1) / segments) * sweepRad;
+                float c0 = Mathf.Cos(a0), s0 = Mathf.Sin(a0);
+                float c1 = Mathf.Cos(a1), s1 = Mathf.Sin(a1);
+
+                Vector3 innerTop0 = new Vector3(innerR * c0, halfH, innerR * s0);
+                Vector3 outerTop0 = new Vector3(outerR * c0, halfH, outerR * s0);
+                Vector3 innerTop1 = new Vector3(innerR * c1, halfH, innerR * s1);
+                Vector3 outerTop1 = new Vector3(outerR * c1, halfH, outerR * s1);
+
+                Vector3 innerBot0 = new Vector3(innerR * c0, -halfH, innerR * s0);
+                Vector3 outerBot0 = new Vector3(outerR * c0, -halfH, outerR * s0);
+                Vector3 innerBot1 = new Vector3(innerR * c1, -halfH, innerR * s1);
+                Vector3 outerBot1 = new Vector3(outerR * c1, -halfH, outerR * s1);
+
+                AddQuad(innerTop0, innerTop1, outerTop1, outerTop0); // top (+Y)
+                AddQuad(innerBot0, outerBot0, outerBot1, innerBot1); // bottom (-Y)
+                AddQuad(outerTop0, outerTop1, outerBot1, outerBot0); // outer wall
+                AddQuad(innerTop1, innerTop0, innerBot0, innerBot1); // inner wall
             }
 
-            mesh.vertices = vertices;
-            mesh.uv = uv;
-            mesh.triangles = triangles;
+            // End caps close the wedge at the start and end angles.
+            AddCap(startRad, true);
+            AddCap(startRad + sweepRad, false);
+
+            void AddCap(float angle, bool isStart)
+            {
+                float cos = Mathf.Cos(angle), sin = Mathf.Sin(angle);
+                Vector3 innerTop = new Vector3(innerR * cos, halfH, innerR * sin);
+                Vector3 outerTop = new Vector3(outerR * cos, halfH, outerR * sin);
+                Vector3 outerBot = new Vector3(outerR * cos, -halfH, outerR * sin);
+                Vector3 innerBot = new Vector3(innerR * cos, -halfH, innerR * sin);
+
+                if (isStart)
+                    AddQuad(innerTop, outerTop, outerBot, innerBot);
+                else
+                    AddQuad(innerBot, outerBot, outerTop, innerTop);
+            }
+
+            mesh.vertices = vertices.ToArray();
+            mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
