@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/config.json",
+  "$schema": "https://service.metason.net/saxr/schemas/config.json",
   "description": "Economic situation of US, EU, and CN in 2000-2024.",
   "title": "USD Per Capita",
   "data": {
@@ -16,7 +16,7 @@
       2000,
       2024
     ],
-    "arrangement": "animated",
+    "arrangement": "narrative",
     "selection": [
       2000,
       2006,

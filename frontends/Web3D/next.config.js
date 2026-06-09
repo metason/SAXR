@@ -15,6 +15,10 @@ const nextConfig = {
 				source: '/samples/:path*',
 				destination: '/api/pipeline-file/:path*',
 			},
+			{
+				source: '/api/saxr/:path*',
+				destination: 'https://service.metason.net/saxr/:path*',
+			},
 		];
 	},
 };

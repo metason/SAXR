@@ -1,38 +1,50 @@
 {
-	"$schema": "../../schemas/config.json",
-	"description": "Energy usage of radiator",
-	"title": "Heating energy (area)",
-	"data": {
-		"url": "../energy/heating.json"
-	},
-	"stage": {
-		"width": 0.4,
-		"height": 0.25,
-		"depth": 0.3
-	},
-	"output": "datareps.json",
-	"gridColor": "#FFFF11",
-	"bgColor": "#000055",
-	"plot": "area",
-	"encoding": {
-		"x": {
-			"field": "hour",
-			"scale": {
-				"domain": [0, 24]
-			}
-		},
-		"y": {
-			"field": "kWh",
-			"scale": {
-				"domain": [0.0, 2.5]
-			}
-		},
-		"z": {
-			"field": "day"
-		},
-		"color": {
-			"field": "day"
-		}
-	},
-	"panels": ["XY", "-XY", "ZY", "-ZY", "XZ"]
+  "$schema": "https://service.metason.net/saxr/schemas/config.json",
+  "description": "Energy usage of radiator",
+  "title": "Heating energy (area)",
+  "data": {
+    "url": "../energy/heating.json"
+  },
+  "stage": {
+    "width": 0.4,
+    "height": 0.25,
+    "depth": 0.3
+  },
+  "output": "datareps.json",
+  "gridColor": "#FFFF11",
+  "bgColor": "#000055",
+  "plot": "area",
+  "encoding": {
+    "x": {
+      "field": "hour",
+      "scale": {
+        "domain": [
+          0,
+          24
+        ]
+      }
+    },
+    "y": {
+      "field": "kWh",
+      "scale": {
+        "domain": [
+          0,
+          2.5
+        ]
+      }
+    },
+    "z": {
+      "field": "day"
+    },
+    "color": {
+      "field": "day"
+    }
+  },
+  "panels": [
+    "XY",
+    "-XY",
+    "ZY",
+    "-ZY",
+    "XZ"
+  ]
 }

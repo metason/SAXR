@@ -22,46 +22,32 @@ export default function ShapeArc({ rep }: { rep: DataRep }) {
 
 	const geometry = useMemo(() => {
 		if (sweepAngle === 0) return null;
-		const segments = 32;
 		const outerR = rep.w / 2;
 		const innerR = outerR * ratio;
-
-		const vertices: number[] = [];
-		const indices: number[] = [];
+		const height = rep.h ?? 0;
 
 		const startRad = (startAngle * Math.PI) / 180;
 		const sweepRad = (sweepAngle * Math.PI) / 180;
 
-		for (let i = 0; i <= segments; i++) {
-			const t = i / segments;
-			const angle = startRad + t * sweepRad;
-			const cos = Math.cos(angle);
-			const sin = Math.sin(angle);
+		const shape = new THREE.Shape();
+		shape.absarc(0, 0, outerR, startRad, startRad + sweepRad, false);
+		shape.absarc(0, 0, innerR, startRad + sweepRad, startRad, true);
 
-			vertices.push(innerR * cos, 0, innerR * sin);
-			vertices.push(outerR * cos, 0, outerR * sin);
-		}
-
-		for (let i = 0; i < segments; i++) {
-			const v = i * 2;
-			indices.push(v, v + 2, v + 1);
-			indices.push(v + 1, v + 2, v + 3);
-		}
-
-		const geom = new THREE.BufferGeometry();
-		geom.setAttribute(
-			'position',
-			new THREE.Float32BufferAttribute(vertices, 3),
-		);
-		geom.setIndex(indices);
-		geom.computeVertexNormals();
+		const geom = new THREE.ExtrudeGeometry(shape, {
+			depth: height,
+			bevelEnabled: false,
+		});
+		geom.rotateX(-Math.PI / 2); // XZ plane → Y-up extrusion
 		return geom;
-	}, [rep.w, ratio, startAngle, sweepAngle]);
+	}, [rep.w, rep.h, ratio, startAngle, sweepAngle]);
 
 	if (!geometry) return null;
 
 	return (
-		<mesh position={[rep.x, rep.y, rep.z]} geometry={geometry}>
+		<mesh
+			position={[rep.x, rep.y - (rep.h ?? 0) / 2, rep.z]}
+			geometry={geometry}
+		>
 			<meshStandardMaterial
 				color={color}
 				transparent={opacity < 1}

@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { promises as fs, readFileSync } from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 import Ajv from 'ajv/dist/2020';
@@ -13,24 +13,31 @@ import Ajv from 'ajv/dist/2020';
 /** Tracks which sample slugs currently have a pipeline run in progress. */
 const running = new Set<string>();
 
-/** AJV validator for config.json, compiled once at module load against the draft-2020-12 schema. */
-const ajv = new Ajv({ strict: false });
-const schemaPath = path.resolve(
+const SCHEMA_PATH = path.resolve(
 	process.cwd(),
 	'..',
 	'..',
 	'schemas',
 	'config.json',
 );
+
+/** AJV validator for config.json, lazily initialised on first POST. */
+const ajv = new Ajv({ strict: false });
 let validateConfig: ReturnType<typeof ajv.compile> | null = null;
-try {
-	const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
-	validateConfig = ajv.compile(schema);
-} catch (err) {
-	console.error(
-		'[run-pipeline] Failed to load config schema — validation disabled:',
-		err,
-	);
+
+async function getValidator(): Promise<ReturnType<typeof ajv.compile> | null> {
+	if (validateConfig) return validateConfig;
+	try {
+		const schema = JSON.parse(await fs.readFile(SCHEMA_PATH, 'utf-8'));
+		validateConfig = ajv.compile(schema);
+		return validateConfig;
+	} catch (err) {
+		console.error(
+			'[run-pipeline] Failed to read config schema — validation disabled:',
+			err,
+		);
+		return null;
+	}
 }
 
 export async function POST(request: Request) {
@@ -66,10 +73,11 @@ export async function POST(request: Request) {
 		}
 
 		// Validate against schema — rejects unknown enum values, wrong types, path traversal attempts, etc.
-		if (validateConfig) {
-			const valid = validateConfig(parsed);
+		const validate = await getValidator();
+		if (validate) {
+			const valid = validate(parsed);
 			if (!valid) {
-				const messages = (validateConfig.errors ?? [])
+				const messages = (validate.errors ?? [])
 					.map((e) => `${e.instancePath || '/'} ${e.message}`)
 					.join('; ');
 				return NextResponse.json(

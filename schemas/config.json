@@ -1,5 +1,6 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://service.metason.net/saxr/schemas/config.json",
 	"title": "config.json schema",
 	"description": "Schema for the config.json that are processed to generate the visualization",
 	"required": ["data", "stage", "plot", "panels", "encoding"],

@@ -1,5 +1,5 @@
 {
-	"$schema": "../../schemas/config.json",
+	"$schema": "https://service.metason.net/saxr/schemas/config.json",
 	"description": "3D data viz of Iris data set.",
 	"title": "Iris",
 	"stage": {

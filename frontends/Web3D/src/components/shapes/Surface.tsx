@@ -37,10 +37,11 @@ function SurfaceInner({
 	rep: DataRep;
 	assetBasePath?: string;
 }) {
-	const { color } = useColor(rep.color);
+	const { color, opacity } = useColor(rep.color);
 
-	// Build the URL: strip $SERVER/ prefix, then resolve relative to assetBasePath
-	let assetFile = rep.asset;
+	// Build the URL: strip $SERVER/ prefix, then resolve relative to assetBasePath.
+	// rep.asset is guaranteed by the ShapeSurface guard above; `?? ''` satisfies the type.
+	let assetFile = rep.asset ?? '';
 	if (assetFile.startsWith('$SERVER/'))
 		assetFile = assetFile.split('/').pop() || '';
 	const url = `${assetBasePath || ''}/${assetFile}`;
@@ -55,11 +56,13 @@ function SurfaceInner({
 	}, [geometry]);
 
 	return (
-		<mesh position={[rep.x, rep.y, rep.z]} scale={[rep.w, rep.h, rep.d]}>
+		<mesh>
 			<primitive object={geometry} attach="geometry" />
 			<meshStandardMaterial
 				color={hasVertexColors ? undefined : color}
 				vertexColors={hasVertexColors}
+				transparent={opacity < 1}
+				opacity={opacity}
 				side={THREE.DoubleSide}
 			/>
 		</mesh>

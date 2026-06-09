@@ -1,15 +1,21 @@
 'use client';
 /**
  * @module EditorPanel
+ * In-browser config.json editor with live schema validation (Monaco + AJV + jsonc-parser).
+ * Validates the document against the config schema on every change, maps each schema
+ * error to its exact source token, and runs the SAXR pipeline via POST /api/run-pipeline
+ * once the configuration is valid.
  */
 
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
-import Ajv2020, { type ErrorObject } from 'ajv/dist/2020';
+import Ajv2020, {
+	type ErrorObject,
+	type ValidateFunction,
+} from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { parseTree, findNodeAtLocation, type Node } from 'jsonc-parser';
-import configSchema from '../../../../schemas/config.json';
 
 /**
  * Lazily loaded Monaco editor component.
@@ -33,9 +39,15 @@ interface EditorPanelProps {
 	onRun: (configText: string) => Promise<string | null>;
 }
 
-const ajv = new Ajv2020({ allErrors: true });
-addFormats(ajv);
-const validateConfig = ajv.compile(configSchema);
+/**
+ * URL the editor loads the config schema from.
+ * Uses the same-origin proxy route (app/api/schema/[name]/route.ts) to avoid a
+ * cross-origin fetch to service.metason.net, which does not send CORS headers.
+ */
+const SCHEMA_URL = '/api/schema/config';
+// Direct metason URL — usable only once /saxr/schemas/* serves
+// `Access-Control-Allow-Origin: *`:
+// const SCHEMA_URL = 'https://service.metason.net/saxr/schemas/config.json';
 
 /**
  * Convert an AJV instancePath (RFC 6901 JSON Pointer) into a path array
@@ -56,7 +68,10 @@ function instancePathToSegments(instancePath: string): (string | number)[] {
  * Convert a character offset in `text` to a Monaco {line, column} position.
  * Both line and column are 1-based, matching Monaco's API.
  */
-function offsetToPosition(text: string, offset: number): { line: number; column: number } {
+function offsetToPosition(
+	text: string,
+	offset: number,
+): { line: number; column: number } {
 	let line = 1;
 	let column = 1;
 	const limit = Math.min(offset, text.length);
@@ -89,7 +104,8 @@ function toMarkers(errors: ErrorObject[], text: string, monaco: any): any[] {
 		// itself is absent).
 		let target: Node | undefined = findNodeAtLocation(tree, segments);
 		if (err.keyword === 'required') {
-			const missing = (err.params as { missingProperty?: string }).missingProperty;
+			const missing = (err.params as { missingProperty?: string })
+				.missingProperty;
 			if (missing && target) {
 				const child = findNodeAtLocation(tree, [...segments, missing]);
 				if (child) target = child;
@@ -123,8 +139,39 @@ export default function EditorPanel({
 	const [runError, setRunError] = useState<string | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const [editorReady, setEditorReady] = useState(false);
+	const [validatorReady, setValidatorReady] = useState(false);
 	const monacoRef = useRef<any>(null);
 	const editorRef = useRef<any>(null);
+	const validateFnRef = useRef<ValidateFunction | null>(null);
+
+	// Load the config schema once on mount and compile the AJV validator.
+	// Without this, validateFnRef stays null, validatorReady stays false,
+	// and the schema-validation effect below would never run.
+	useEffect(() => {
+		let cancelled = false;
+		const ajv = new Ajv2020({ allErrors: true });
+		addFormats(ajv);
+
+		fetch(SCHEMA_URL)
+			.then((r) => {
+				if (!r.ok) throw new Error(`Schema fetch failed: ${r.status}`);
+				return r.json();
+			})
+			.then((schema) => {
+				if (cancelled) return;
+				validateFnRef.current = ajv.compile(schema);
+				setValidatorReady(true);
+			})
+			.catch((err) => {
+				if (cancelled) return;
+				console.error('Failed to load schema:', err);
+				setLoadError('Failed to load schema — live validation disabled');
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	useEffect(() => {
 		if (!assetBasePath) return;
@@ -148,10 +195,16 @@ export default function EditorPanel({
 			const parsed = JSON.parse(value);
 			setHasError(false);
 			setSpecsText(value);
-			const valid = validateConfig(parsed);
+			const validate = validateFnRef.current;
+			if (!validate) {
+				monaco.editor.setModelMarkers(model, 'ajv', []);
+				setSchemaError(false);
+				return;
+			}
+			const valid = validate(parsed);
 			const markers = valid
 				? []
-				: toMarkers(validateConfig.errors ?? [], value, monaco);
+				: toMarkers(validate.errors ?? [], value, monaco);
 			monaco.editor.setModelMarkers(model, 'ajv', markers);
 			setSchemaError(!valid);
 		} catch {
@@ -164,10 +217,10 @@ export default function EditorPanel({
 	// Validate as soon as both the editor is mounted and content is loaded,
 	// so freshly opened samples show squiggles without requiring a keystroke.
 	useEffect(() => {
-		if (!editorReady || !specsText) return;
+		if (!editorReady || !specsText || !validatorReady) return;
 		runValidation(specsText);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [editorReady, specsText]);
+	}, [editorReady, specsText, validatorReady]);
 
 	return (
 		<div className="h-full w-full flex flex-col">

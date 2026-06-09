@@ -11,6 +11,7 @@
   - specs schema?
   - https URL for schemas on metason.net?
     - "$schema": "https://service.metason.net/saxr/schemas/config.json"
+  - Once hosted: refactor `EditorPanel.tsx` to fetch schema at runtime and remove `@schemas` alias from `next.config.js` (bandaid for Turbopack project-root boundary)
 
 ## Config Schema Extensions
 

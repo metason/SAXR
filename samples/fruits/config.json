@@ -1,5 +1,5 @@
 {
-	"$schema": "../../schemas/config.json",
+	"$schema": "https://service.metason.net/saxr/schemas/config.json",
 	"description": "Fruits analysis with weekly turnover and mean weight in gramms.",
 	"title": "Sales Volume of Fruits",
 	"stage": {

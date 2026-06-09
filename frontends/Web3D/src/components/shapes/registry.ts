@@ -1,6 +1,8 @@
-// registry.ts
-// Shape component registry — maps type strings to React components.
-// To add a new shape: import it and add a single entry here.
+/**
+ * @module registry
+ * Shape component registry — maps type strings to React components.
+ * To add a new shape: import it and add a single entry here.
+ */
 
 import { ComponentType } from 'react';
 import { DataRep } from '@/lib/types';
@@ -42,11 +44,9 @@ export const SHAPE_REGISTRY: Record<string, ComponentType<ShapeProps>> = {
 	area: ShapeArea,
 };
 
-/**
- * Pyramid-down is the same component with an extra prop.
- * Handled as a special case in the dispatcher rather than here,
- * because it needs the `upsideDown` prop.
- */
+// Pyramid-down is the same component with an extra prop.
+// Handled as a special case in the dispatcher (DataRepMesh) rather than here,
+// because it needs the `upsideDown` prop.
 
 /**
  * Category for routing a DataRep to the correct renderer.
