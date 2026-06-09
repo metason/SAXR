@@ -1,6 +1,12 @@
-// TODO: this route can be deleted once service.metason.net adds
-// `Access-Control-Allow-Origin: *` for /saxr/schemas/* — EditorPanel.tsx
-// already fetches directly from there and nothing else calls this route.
+/**
+ * @module api/schema
+ * GET /api/schema/:name — serves a JSON Schema (config, datareps, specs) from the
+ * repository's schemas/ directory through the app's own origin.
+ * EditorPanel.tsx loads the config schema from here (SCHEMA_URL = '/api/schema/config')
+ * to avoid a cross-origin fetch to service.metason.net. This proxy can be removed only
+ * once EditorPanel fetches the schema directly, which requires metason to serve
+ * /saxr/schemas/* with `Access-Control-Allow-Origin: *`.
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import path from 'path';

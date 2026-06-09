@@ -46,8 +46,11 @@
 				},
 				"color": {
 					"type": "string",
-					"pattern": "^#[0-9a-fA-F]{6}$",
-					"description": "Hex colour of the data rep."
+					"anyOf": [
+						{ "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$" },
+						{ "pattern": "^[a-zA-Z]+$" }
+					],
+					"description": "Hex colour (#RRGGBB / #RRGGBBAA) or CSS colour name of the data rep."
 				},
 				"asset": {
 					"type": "string",

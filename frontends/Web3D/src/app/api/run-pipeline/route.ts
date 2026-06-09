@@ -13,8 +13,13 @@ import Ajv from 'ajv/dist/2020';
 /** Tracks which sample slugs currently have a pipeline run in progress. */
 const running = new Set<string>();
 
-const CONFIG_SCHEMA_URL =
-	'https://service.metason.net/saxr/schemas/config.json';
+const SCHEMA_PATH = path.resolve(
+	process.cwd(),
+	'..',
+	'..',
+	'schemas',
+	'config.json',
+);
 
 /** AJV validator for config.json, lazily initialised on first POST. */
 const ajv = new Ajv({ strict: false });
@@ -23,12 +28,12 @@ let validateConfig: ReturnType<typeof ajv.compile> | null = null;
 async function getValidator(): Promise<ReturnType<typeof ajv.compile> | null> {
 	if (validateConfig) return validateConfig;
 	try {
-		const schema = await fetch(CONFIG_SCHEMA_URL).then((r) => r.json());
+		const schema = JSON.parse(await fs.readFile(SCHEMA_PATH, 'utf-8'));
 		validateConfig = ajv.compile(schema);
 		return validateConfig;
 	} catch (err) {
 		console.error(
-			'[run-pipeline] Failed to fetch config schema — validation disabled:',
+			'[run-pipeline] Failed to read config schema — validation disabled:',
 			err,
 		);
 		return null;

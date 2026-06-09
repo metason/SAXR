@@ -232,7 +232,7 @@ For `comparative` arrangement, `useComparativeSelection` tracks which scenes are
 | -------------- | -------------------------- | --------------------------------------------------- |
 | `sphere`       | `THREE.SphereGeometry`     | 16×16 segments                                      |
 | `box`          | `THREE.BoxGeometry`        | Standard cube scaled by w/h/d                       |
-| `cylinder`     | `THREE.CylinderGeometry`   | 32 segments                                         |
+| `cylinder`     | `THREE.CylinderGeometry`   | 16 segments; height halved to match SAXR units      |
 | `pyramid`      | `THREE.ConeGeometry`       | 4 sides, point up                                   |
 | `pyramid_down` | `THREE.ConeGeometry`       | 4 sides, point down (`upsideDown` prop)             |
 | `octahedron`   | `THREE.OctahedronGeometry` | 8-sided polyhedron                                  |
@@ -325,10 +325,10 @@ Validates and saves a `config.json` for the given sample slug, then spawns `data
 **Request body**:
 
 ```json
-{ "slug": "eco", "config": "{ ... }" }
+{ "slug": "eco", "configText": "{ ... }" }
 ```
 
-**Response**: `200 OK` on success, `409` if busy, `422` if config is invalid, `500` on pipeline error.
+**Response**: `200 OK` on success, `409` if busy, `400` if the config is invalid (bad JSON or schema violation), `500` on pipeline error.
 
 ### URL Rewriting
 
@@ -364,18 +364,7 @@ Unit tests live alongside the modules they test (`*.test.ts`) or under `src/app/
 
 ## Deployment
 
-The project includes a `vercel.json` for Vercel deployment:
-
-```json
-{
-	"buildCommand": "npm run build",
-	"outputDirectory": ".next",
-	"framework": "nextjs",
-	"installCommand": "npm install"
-}
-```
-
-**Note**: The `/api/pipeline-file` route reads from the local filesystem (`SAXR/samples/`), and `/api/run-pipeline` spawns a Python subprocess. These features require a server environment and are not available in purely static deployments. For Vercel, sample data must be available at build time or served from an external source.
+The viewer currently runs locally (`npm run dev`). The `/api/pipeline-file` route reads from the local filesystem (`SAXR/samples/`) and `/api/run-pipeline` spawns a Python subprocess, so the full authoring loop needs a server environment with filesystem access and Python installed. A static export can render pre-generated `datareps.json` but cannot run the in-browser pipeline. Hosting the viewer (and the pipeline) behind a long-running service is left as future work.
 
 ## Technology Stack
 

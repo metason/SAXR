@@ -1,6 +1,10 @@
 'use client';
 /**
  * @module EditorPanel
+ * In-browser config.json editor with live schema validation (Monaco + AJV + jsonc-parser).
+ * Validates the document against the config schema on every change, maps each schema
+ * error to its exact source token, and runs the SAXR pipeline via POST /api/run-pipeline
+ * once the configuration is valid.
  */
 
 import React from 'react';
@@ -35,8 +39,15 @@ interface EditorPanelProps {
 	onRun: (configText: string) => Promise<string | null>;
 }
 
-/** Canonical URL of the config schema, served by service.metason.net. */
-const SCHEMA_URL = 'https://service.metason.net/saxr/schemas/config.json';
+/**
+ * URL the editor loads the config schema from.
+ * Uses the same-origin proxy route (app/api/schema/[name]/route.ts) to avoid a
+ * cross-origin fetch to service.metason.net, which does not send CORS headers.
+ */
+const SCHEMA_URL = '/api/schema/config';
+// Direct metason URL — usable only once /saxr/schemas/* serves
+// `Access-Control-Allow-Origin: *`:
+// const SCHEMA_URL = 'https://service.metason.net/saxr/schemas/config.json';
 
 /**
  * Convert an AJV instancePath (RFC 6901 JSON Pointer) into a path array

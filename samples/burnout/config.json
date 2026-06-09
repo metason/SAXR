@@ -16,7 +16,7 @@
 	"mark": "sphere",
 	"encoding": {
 		"x": {
-			"field": "Work_overoad",
+			"field": "Work_overload",
 			"title": "Work Overload"
 		},
 		"y": {

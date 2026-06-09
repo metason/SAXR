@@ -35,9 +35,15 @@ import { promises as fs } from 'fs';
 function mockSpawn(exitCode: number, stderrOutput = '') {
 	const proc = new EventEmitter() as any;
 	proc.stderr = new EventEmitter();
-	setImmediate(() => {
-		if (stderrOutput) proc.stderr.emit('data', Buffer.from(stderrOutput));
-		proc.emit('close', exitCode);
+	// Emit 'close' only once the route attaches its 'close' listener, so the
+	// event is never lost to a setup-time race (e.g. the first call's one-time
+	// schema readFile delaying the route past a setImmediate).
+	proc.on('newListener', (event: string) => {
+		if (event !== 'close') return;
+		setImmediate(() => {
+			if (stderrOutput) proc.stderr.emit('data', Buffer.from(stderrOutput));
+			proc.emit('close', exitCode);
+		});
 	});
 	(spawn as ReturnType<typeof vi.fn>).mockReturnValue(proc);
 }
