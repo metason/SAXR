@@ -285,6 +285,26 @@ The presentation of SAXR data reps is supported by:
 - ecoANIM: https://youtube.com/shorts/PjelVMMz4Dk
 - salesSTORY: https://youtube.com/shorts/85cTH27r540
 
+
+## Paper
+
+A paper on SAXR will be published and presented at [XR Salento 2026](https://www.xrsalento.it) conference.
+
+
+Please cite our work if you use SAXR.
+
+```bibtex
+@inproceedings{SAXR26,
+  author={Ackermann, Philipp},
+  booktitle={Extended Reality, International Conference, XR Salento 2026}, 
+  title={SAXR: Situated Analytics in eXtended Reality}, 
+  pages={?-?},
+  year={2026},
+  publisher = {Springer},
+  doi={???}
+}
+```
+
 ## References
 
 - Optomancy: https://github.com/Wizualization/optomancy
