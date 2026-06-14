@@ -16,7 +16,7 @@ import ShapePyramid from './shapes/Pyramid';
  * via {@link SHAPE_REGISTRY}. Handles `pyramid_down` as a special case.
  */
 export default function DataRepMesh({ rep }: { rep: DataRep }) {
-	const { assetBasePath } = useVizContext();
+	const { assetBasePath, assetVersion } = useVizContext();
 	const t = rep.type.toLowerCase();
 
 	// pyramid_down is a special case: same component with upsideDown prop
@@ -30,5 +30,7 @@ export default function DataRepMesh({ rep }: { rep: DataRep }) {
 		return null;
 	}
 
-	return <Shape rep={rep} assetBasePath={assetBasePath} />;
+	return (
+		<Shape rep={rep} assetBasePath={assetBasePath} assetVersion={assetVersion} />
+	);
 }

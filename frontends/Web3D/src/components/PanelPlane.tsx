@@ -109,14 +109,16 @@ function PanelWithTexture({
  * {@link PanelWithTexture}. Returns `null` if the panel has no valid image asset.
  */
 export default function PanelPlane({ rep }: { rep: DataRep }) {
-	const { assetBasePath } = useVizContext();
+	const { assetBasePath, assetVersion } = useVizContext();
 
 	if (!rep.asset) {
 		return null;
 	}
 
-	const url = resolveAssetUrl(rep.asset, assetBasePath);
+	let url = resolveAssetUrl(rep.asset, assetBasePath);
 	if (!url) return null;
+	// Cache-bust so a re-run's freshly rendered panel replaces the cached texture.
+	if (assetVersion) url += (url.includes('?') ? '&' : '?') + `v=${assetVersion}`;
 
 	return <PanelWithTexture rep={rep} textureUrl={url} />;
 }

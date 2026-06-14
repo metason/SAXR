@@ -57,6 +57,8 @@ interface DataVizCanvasProps {
 	sceneLabels?: string[];
 	/** Base path for resolving panel image assets. */
 	assetBasePath?: string;
+	/** Cache-bust token appended to asset URLs; bumps on each (re)load. */
+	assetVersion?: number;
 	/** Number of columns in the comparative grid. If omitted, computed from scene count. */
 	columns?: number;
 }
@@ -189,6 +191,7 @@ export default function DataVizCanvas({
 	gap = DEFAULT_GAP,
 	sceneLabels,
 	assetBasePath,
+	assetVersion = 0,
 	columns,
 }: DataVizCanvasProps) {
 	return (
@@ -203,7 +206,10 @@ export default function DataVizCanvas({
 				style={{ width: '100%', height: '100%' }}
 				gl={{ antialias: true }}
 			>
-				<VizProvider assetBasePath={assetBasePath || ''}>
+				<VizProvider
+					assetBasePath={assetBasePath || ''}
+					assetVersion={assetVersion}
+				>
 					{/* Lighting */}
 					<ambientLight intensity={AMBIENT_INTENSITY} />
 					<directionalLight

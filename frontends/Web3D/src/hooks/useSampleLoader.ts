@@ -22,6 +22,10 @@ export function useSampleLoader(initialSlug?: string) {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [specs, setSpecs] = useState<SpecsJson | null>(null);
+	// Bumped on every (re)load so consumers can cache-bust asset URLs. The
+	// pipeline overwrites panel PNGs / PLY meshes in place under unchanged names,
+	// so without a changing token the loaders return the previously cached asset.
+	const [reloadKey, setReloadKey] = useState(0);
 
 	// Auto-discover available samples via API (reads pipeline output directory)
 	useEffect(() => {
@@ -57,6 +61,7 @@ export function useSampleLoader(initialSlug?: string) {
 					samples.find((s) => s.vizJsonPath === path)?.assetBasePath ?? '',
 				);
 				setSpecs(specsData);
+				setReloadKey((k) => k + 1);
 			} catch (err) {
 				setError(
 					err instanceof Error ? err.message : 'Failed to load datareps.json',
@@ -88,5 +93,6 @@ export function useSampleLoader(initialSlug?: string) {
 		assetBasePath,
 		slug,
 		loadSample,
+		reloadKey,
 	};
 }

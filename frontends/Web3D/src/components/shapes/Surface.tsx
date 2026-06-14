@@ -21,21 +21,31 @@ import { useColor } from '@/hooks/useColor';
 export default function ShapeSurface({
 	rep,
 	assetBasePath,
+	assetVersion,
 }: {
 	rep: DataRep;
 	assetBasePath?: string;
+	assetVersion?: number;
 }) {
 	if (!rep.asset) return null;
-	return <SurfaceInner rep={rep} assetBasePath={assetBasePath} />;
+	return (
+		<SurfaceInner
+			rep={rep}
+			assetBasePath={assetBasePath}
+			assetVersion={assetVersion}
+		/>
+	);
 }
 
 /** Inner component that calls `useLoader` unconditionally (React hook rules). */
 function SurfaceInner({
 	rep,
 	assetBasePath,
+	assetVersion,
 }: {
 	rep: DataRep;
 	assetBasePath?: string;
+	assetVersion?: number;
 }) {
 	const { color, opacity } = useColor(rep.color);
 
@@ -44,7 +54,9 @@ function SurfaceInner({
 	let assetFile = rep.asset ?? '';
 	if (assetFile.startsWith('$SERVER/'))
 		assetFile = assetFile.split('/').pop() || '';
-	const url = `${assetBasePath || ''}/${assetFile}`;
+	let url = `${assetBasePath || ''}/${assetFile}`;
+	// Cache-bust so a re-run's regenerated mesh replaces the cached geometry.
+	if (assetVersion) url += (url.includes('?') ? '&' : '?') + `v=${assetVersion}`;
 
 	// useLoader fetches the .ply file and parses it into a BufferGeometry
 	const geometry = useLoader(PLYLoader, url);

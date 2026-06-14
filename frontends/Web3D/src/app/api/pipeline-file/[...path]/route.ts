@@ -55,6 +55,12 @@ export async function GET(
 		return new NextResponse('Not Found', { status: 404 });
 	}
 	return new NextResponse(content, {
-		headers: { 'Content-Type': MIME[ext] },
+		headers: {
+			'Content-Type': MIME[ext],
+			// The pipeline overwrites these files in place under unchanged names
+			// (xy.png, datareps.json, …), so a cached copy goes stale the moment
+			// the pipeline re-runs. no-store forces a fresh read after each run.
+			'Cache-Control': 'no-store',
+		},
 	});
 }

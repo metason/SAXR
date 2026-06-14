@@ -1,5 +1,6 @@
 {
 	"$schema": "https://service.metason.net/saxr/schemas/config.json",
+	"description": "Relative ingredient portions shown as a stacked bar chart.",
 	"data": {
 		"values": [
 			{
