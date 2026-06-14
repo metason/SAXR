@@ -1,5 +1,6 @@
 {
 	"$schema": "https://service.metason.net/saxr/schemas/config.json",
+	"description": "A line traced through points in 3D space.",
 	"data": {
 		"url": "data.csv"
 	},

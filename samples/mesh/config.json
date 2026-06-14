@@ -1,5 +1,6 @@
 {
 	"$schema": "https://service.metason.net/saxr/schemas/config.json",
+	"description": "A continuous surface rendered from a 3D mesh.",
 	"data": {
 		"url": "data2.csv"
 	},

@@ -42,6 +42,7 @@ export function useViewerState() {
 		assetBasePath,
 		slug,
 		loadSample,
+		reloadKey,
 	} = useSampleLoader(initialSlug);
 
 	// --- Scene playback ---
@@ -87,6 +88,7 @@ export function useViewerState() {
 		assetBasePath,
 		slug,
 		loadSample,
+		reloadKey,
 		// Editor
 		editorOpen,
 		setEditorOpen,

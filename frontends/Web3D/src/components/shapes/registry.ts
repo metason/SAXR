@@ -23,6 +23,8 @@ import ShapeArea from './Area';
 export interface ShapeProps {
 	rep: DataRep;
 	assetBasePath?: string;
+	/** Cache-bust token appended to external asset URLs (e.g. PLY meshes). */
+	assetVersion?: number;
 }
 
 /**

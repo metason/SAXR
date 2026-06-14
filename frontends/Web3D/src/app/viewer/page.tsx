@@ -37,6 +37,7 @@ export default function ViewerPage() {
 		assetBasePath,
 		slug,
 		loadSample,
+		reloadKey,
 		editorOpen,
 		setEditorOpen,
 		currentScene,
@@ -70,12 +71,14 @@ export default function ViewerPage() {
 							columns={columns}
 							sceneLabels={sceneLabels}
 							assetBasePath={assetBasePath}
+							assetVersion={reloadKey}
 						/>
 					) : (
 						<DataVizCanvas
 							key={assetBasePath}
 							scene={scene}
 							assetBasePath={assetBasePath}
+							assetVersion={reloadKey}
 						/>
 					))}
 			</div>
