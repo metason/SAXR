@@ -1,0 +1,1179 @@
+[
+	{
+		"q": "Arrangement modes are split into two families. Which split is correct?",
+		"choices": [
+			"2D vs 3D",
+			"Temporal (one at a time) vs spatial (many at once)",
+			"Local vs remote",
+			"Static vs interactive"
+		],
+		"answer": 1,
+		"explain": "Temporal = animated/narrative (one scene shown), spatial = comparative (several at once)."
+	},
+	{
+		"q": "Which mode belongs to the spatial family?",
+		"choices": [
+			"LOD",
+			"Comparative",
+			"Narrative",
+			"Animated"
+		],
+		"answer": 1,
+		"explain": "Comparative shows several scenes at once; LOD is planned but not built."
+	},
+	{
+		"q": "How many arrangement modes are defined in the schema (built or not)?",
+		"choices": [
+			"Two",
+			"Five",
+			"Three",
+			"Four"
+		],
+		"answer": 3,
+		"explain": "animated, narrative, comparative, and LOD (LOD unimplemented)."
+	},
+	{
+		"q": "What field selects the arrangement mode?",
+		"choices": [
+			"datareps[0].type",
+			"encoding.mode",
+			"config.plot",
+			"specs.sequence.arrangement"
+		],
+		"answer": 3,
+		"explain": "It lives in the sequence block of specs.json."
+	},
+	{
+		"q": "What do all multi-scene arrangements share before they diverge?",
+		"choices": [
+			"The same grid layout",
+			"A timer",
+			"The trunk: load + parse + useViewerState",
+			"The picker UI"
+		],
+		"answer": 2,
+		"explain": "Everything runs the shared trunk up to useViewerState, which then forks."
+	},
+	{
+		"q": "Which statement about LOD is true?",
+		"choices": [
+			"It is defined in the schema but not implemented",
+			"It is the default mode",
+			"It auto-plays scenes",
+			"It only works in comparative"
+		],
+		"answer": 0,
+		"explain": "LOD is a valid schema value with no frontend implementation."
+	},
+	{
+		"q": "Which is NOT a temporal mode?",
+		"choices": [
+			"All three are temporal",
+			"Narrative",
+			"Animated",
+			"Comparative"
+		],
+		"answer": 3,
+		"explain": "Comparative is spatial; animated and narrative are temporal."
+	},
+	{
+		"q": "A single-scene dataset is loaded. What does SceneNav render?",
+		"choices": [
+			"All four arrangement tabs",
+			"A play button",
+			"Nothing (it returns null)",
+			"The comparative picker"
+		],
+		"answer": 2,
+		"explain": "With totalScenes <= 1 there is nothing to navigate, so it returns null."
+	},
+	{
+		"q": "What does specs.json contribute to arrangement?",
+		"choices": [
+			"The raw geometry",
+			"The panel images",
+			"The schema itself",
+			"The presentation metadata (mode + parameters)"
+		],
+		"answer": 3,
+		"explain": "datareps holds geometry; specs adds arrangement mode and its parameters."
+	},
+	{
+		"q": "Where does the actual arrangement logic run?",
+		"choices": [
+			"In the JSON schema",
+			"In the frontend, driven by specs",
+			"In datarepgen.py",
+			"In Blender"
+		],
+		"answer": 1,
+		"explain": "The pipeline just produces scenes; the frontend interprets the arrangement."
+	},
+	{
+		"q": "Which component is THE fork between arrangement paths?",
+		"choices": [
+			"SceneNav",
+			"vizLoader",
+			"DataVizCanvas",
+			"useViewerState"
+		],
+		"answer": 3,
+		"explain": "useViewerState derives isComparative and selects the path."
+	},
+	{
+		"q": "How does useViewerState decide if comparative runs?",
+		"choices": [
+			"By counting scenes",
+			"By reading the URL",
+			"specs?.sequence?.arrangement === 'comparative'",
+			"By the number of panels"
+		],
+		"answer": 2,
+		"explain": "A single derived boolean off the arrangement field."
+	},
+	{
+		"q": "Why concentrate the mode decision in one hook?",
+		"choices": [
+			"To reduce file count",
+			"So every component sees one consistent interpretation of the spec",
+			"Because React requires it",
+			"To avoid TypeScript"
+		],
+		"answer": 1,
+		"explain": "Single source of derived state; no scattered mode checks."
+	},
+	{
+		"q": "If arrangement is missing from specs entirely, what happens?",
+		"choices": [
+			"isComparative is false; it falls back to default single-scene nav",
+			"All scenes show at once",
+			"The app crashes",
+			"It defaults to LOD"
+		],
+		"answer": 0,
+		"explain": "No arrangement => not comparative; the default manual nav path runs."
+	},
+	{
+		"q": "The fork lives between which two trunk steps?",
+		"choices": [
+			"vizLoader and the mode-specific hooks",
+			"SceneNav and DataRepMesh",
+			"datareps and specs",
+			"config and datarepgen"
+		],
+		"answer": 0,
+		"explain": "After load/parse, useViewerState branches into the mode logic."
+	},
+	{
+		"q": "Which hook does useViewerState NOT compose?",
+		"choices": [
+			"useScenePlayback",
+			"useSampleLoader",
+			"useColor",
+			"useComparativeSelection"
+		],
+		"answer": 2,
+		"explain": "useColor is used by shape components, not composed by useViewerState."
+	},
+	{
+		"q": "What drives scene changes in animated mode?",
+		"choices": [
+			"A setInterval timer",
+			"Schema validation",
+			"User clicks only",
+			"Camera distance"
+		],
+		"answer": 0,
+		"explain": "A timer advances the scene automatically."
+	},
+	{
+		"q": "On load, when does useScenePlayback start playing?",
+		"choices": [
+			"Always",
+			"When there are panels",
+			"When arrangement === 'animated'",
+			"Never automatically"
+		],
+		"answer": 2,
+		"explain": "isPlaying is initialised from whether the mode is animated."
+	},
+	{
+		"q": "What does the modulo in scene = (prev + 1) % n produce?",
+		"choices": [
+			"It skips every other scene",
+			"It reverses direction",
+			"It loops back to scene 0",
+			"It stops at the last scene"
+		],
+		"answer": 2,
+		"explain": "% n wraps the index, so animated playback loops."
+	},
+	{
+		"q": "Animated advances with setCurrentScene(prev => ...). Why the functional form?",
+		"choices": [
+			"It avoids re-rendering",
+			"To read the latest index instead of a stale captured value",
+			"It is shorter",
+			"It is required by setInterval"
+		],
+		"answer": 1,
+		"explain": "The interval callback is created once; the functional update avoids a stale closure."
+	},
+	{
+		"q": "Default auto-play interval when none is given?",
+		"choices": [
+			"3.0 s",
+			"0.5 s",
+			"1.0 s",
+			"1.5 s"
+		],
+		"answer": 3,
+		"explain": "interval ?? 1.5 seconds."
+	},
+	{
+		"q": "Animated is best described as which kind of animation?",
+		"choices": [
+			"Smooth interpolation between frames",
+			"Morph targets",
+			"Physics simulation",
+			"Discrete keyframe switching (whole scene swaps)"
+		],
+		"answer": 3,
+		"explain": "Each tick swaps the entire scene; nothing is interpolated."
+	},
+	{
+		"q": "Why does only animated show a play/pause button?",
+		"choices": [
+			"Narrative hides all buttons",
+			"The schema forbids it elsewhere",
+			"togglePlay is only defined for animated; SceneNav shows the button when the callback exists",
+			"It has more scenes"
+		],
+		"answer": 2,
+		"explain": "The presence of togglePlay is the signal to render the control."
+	},
+	{
+		"q": "In animated mode with a domain, what does the counter show?",
+		"choices": [
+			"The interpolated domain value (e.g. 2012)",
+			"Scene 3 / 10",
+			"Nothing",
+			"The frame rate"
+		],
+		"answer": 0,
+		"explain": "With a domain present, domainLabelForScene maps the index to its value."
+	},
+	{
+		"q": "In animated mode WITHOUT a domain, what does the counter show?",
+		"choices": [
+			"The slug",
+			"Nothing",
+			"'Scene 3 / 10'",
+			"The year"
+		],
+		"answer": 2,
+		"explain": "No domain => fall back to the bare index readout."
+	},
+	{
+		"q": "Pausing animated playback is handled by...",
+		"choices": [
+			"togglePlay flipping isPlaying",
+			"Unmounting the canvas",
+			"Removing the timer node",
+			"Reloading specs"
+		],
+		"answer": 0,
+		"explain": "togglePlay toggles the boolean that gates the interval effect."
+	},
+	{
+		"q": "Which is TRUE of animated mode?",
+		"choices": [
+			"It auto-plays on a loop and is machine-paced",
+			"It needs explicit labels",
+			"It shows several scenes side by side",
+			"It uses the inverse value->index map"
+		],
+		"answer": 0,
+		"explain": "Animated is the looping, timer-driven temporal mode."
+	},
+	{
+		"q": "If isPlaying is true but only one scene exists, the timer effect...",
+		"choices": [
+			"Switches to comparative",
+			"Does not advance (guarded on scene count)",
+			"Loops on the same scene rapidly",
+			"Crashes"
+		],
+		"answer": 1,
+		"explain": "The effect bails out when there are not enough scenes."
+	},
+	{
+		"q": "Animated and narrative differ mainly in...",
+		"choices": [
+			"The canvas used",
+			"Who drives progression (timer vs user)",
+			"Their data format",
+			"The number of scenes"
+		],
+		"answer": 1,
+		"explain": "Same engine, different driver."
+	},
+	{
+		"q": "Stopping at the last scene instead of looping would require changing...",
+		"choices": [
+			"The schema",
+			"The merge function",
+			"The camera",
+			"The modulo wrap in the advance step"
+		],
+		"answer": 3,
+		"explain": "The % n is exactly what makes it loop."
+	},
+	{
+		"q": "The auto-play timer is created using...",
+		"choices": [
+			"useFrame",
+			"requestAnimationFrame",
+			"a Web Worker",
+			"setInterval inside an effect"
+		],
+		"answer": 3,
+		"explain": "A setInterval in a React effect, cleaned up on unmount."
+	},
+	{
+		"q": "What makes the animated effect re-run when you pause/resume?",
+		"choices": [
+			"isPlaying being in its dependency list",
+			"The camera position",
+			"The scene array",
+			"The panel count"
+		],
+		"answer": 0,
+		"explain": "Toggling isPlaying re-runs the effect, starting or clearing the timer."
+	},
+	{
+		"q": "Narrative mode is paced by...",
+		"choices": [
+			"The viewer (manual)",
+			"Camera proximity",
+			"A timer",
+			"The pipeline"
+		],
+		"answer": 0,
+		"explain": "Narrative is viewer-driven; you step through it."
+	},
+	{
+		"q": "Narrative step buttons come from which field?",
+		"choices": [
+			"config.panels",
+			"datareps[0]",
+			"specs.sequence.domain",
+			"specs.sequence.labels"
+		],
+		"answer": 3,
+		"explain": "The labels array provides the clickable captions."
+	},
+	{
+		"q": "Clicking a narrative label calls onSceneChange with...",
+		"choices": [
+			"The label text",
+			"The array index of that label",
+			"A random scene",
+			"The domain value"
+		],
+		"answer": 1,
+		"explain": "Labels are positional: labels[i] jumps to scene i."
+	},
+	{
+		"q": "Why does narrative NOT need the value->index map?",
+		"choices": [
+			"It only has one scene",
+			"It uses comparative selection",
+			"The label's array position already IS the scene index",
+			"It has no scenes"
+		],
+		"answer": 2,
+		"explain": "Positional mapping means no numeric conversion is required."
+	},
+	{
+		"q": "When narrative labels are present, the numeric counter is...",
+		"choices": [
+			"Doubled",
+			"Shown in red",
+			"Hidden (the labels already name each step)",
+			"Replaced by the slug"
+		],
+		"answer": 2,
+		"explain": "SceneNav suppresses the counter when labels exist."
+	},
+	{
+		"q": "A narrative sample has a domain but NO labels. What shows?",
+		"choices": [
+			"An error",
+			"Nothing",
+			"The comparative picker",
+			"The numeric year counter via the forward map"
+		],
+		"answer": 3,
+		"explain": "No labels => the counter path runs, showing the domain value."
+	},
+	{
+		"q": "Narrative reuses which rendering path?",
+		"choices": [
+			"The Blender exporter",
+			"A separate 2D renderer",
+			"The same single-scene path as animated",
+			"The comparative grid"
+		],
+		"answer": 2,
+		"explain": "It is single-scene rendering, just viewer-paced."
+	},
+	{
+		"q": "Which is TRUE about narrative vs animated UI?",
+		"choices": [
+			"Narrative shows labels; animated shows play/pause + counter",
+			"Animated shows clickable step labels",
+			"Narrative shows play/pause",
+			"Both hide all controls"
+		],
+		"answer": 0,
+		"explain": "The control set differs with the mode."
+	},
+	{
+		"q": "If you see years on the buttons in narrative, those years are...",
+		"choices": [
+			"Literal strings in the labels array",
+			"The camera coordinates",
+			"Computed by the inverse map",
+			"Scene indices"
+		],
+		"answer": 0,
+		"explain": "Labels can be any text, including year strings; they are not computed."
+	},
+	{
+		"q": "Narrative lets you jump to any step because...",
+		"choices": [
+			"The timer is paused",
+			"It merges all scenes",
+			"Each label button carries its captured scene index",
+			"It preloads all scenes"
+		],
+		"answer": 2,
+		"explain": "Direct index jump, no sequential stepping required."
+	},
+	{
+		"q": "Which mode is viewer-paced AND single-scene?",
+		"choices": [
+			"Comparative",
+			"Narrative",
+			"Animated",
+			"LOD"
+		],
+		"answer": 1,
+		"explain": "Narrative: one scene at a time, advanced by the user."
+	},
+	{
+		"q": "Narrative with labels [Pre, Boom, Post] has how many scenes shown at once?",
+		"choices": [
+			"All of them",
+			"Three",
+			"Zero",
+			"One"
+		],
+		"answer": 3,
+		"explain": "Temporal: one scene at a time, even though there are three labels."
+	},
+	{
+		"q": "The narrative counter being hidden is decided by...",
+		"choices": [
+			"The number of scenes",
+			"Whether a labels array is present (hasLabels)",
+			"The domain length",
+			"The arrangement string directly"
+		],
+		"answer": 1,
+		"explain": "SceneNav gates the counter on hasLabels, not the mode name."
+	},
+	{
+		"q": "Narrative and animated are implemented as...",
+		"choices": [
+			"Two separate engines",
+			"Two canvases",
+			"One engine (useScenePlayback) with different config",
+			"Two pipelines"
+		],
+		"answer": 2,
+		"explain": "Shared hook; the boolean and labels differ."
+	},
+	{
+		"q": "A label click in narrative that is out of range would...",
+		"choices": [
+			"Be impossible (indices come from the array)",
+			"Crash the pipeline",
+			"Switch to comparative",
+			"Reset the domain"
+		],
+		"answer": 0,
+		"explain": "Indices are generated from the labels array, so they are always valid."
+	},
+	{
+		"q": "To convert narrative into self-advancing playback you would...",
+		"choices": [
+			"Set arrangement to animated (enabling the timer)",
+			"Add a comparative selection",
+			"Remove the domain",
+			"Add more panels"
+		],
+		"answer": 0,
+		"explain": "The mode boolean flips the timer on."
+	},
+	{
+		"q": "A comparative config refers to scenes by their...",
+		"choices": [
+			"Integer index",
+			"File name",
+			"Data value (e.g. a year)",
+			"Color"
+		],
+		"answer": 2,
+		"explain": "Selection is expressed in domain values."
+	},
+	{
+		"q": "The renderer, by contrast, addresses scenes by their...",
+		"choices": [
+			"Integer index into the scenes array",
+			"Data value",
+			"Hash",
+			"Timestamp"
+		],
+		"answer": 0,
+		"explain": "Hence the need for a value<->index map."
+	},
+	{
+		"q": "The value->index conversion is the...",
+		"choices": [
+			"Hash map",
+			"Identity map",
+			"Inverse map",
+			"Forward map"
+		],
+		"answer": 2,
+		"explain": "Inverse: value in, index out."
+	},
+	{
+		"q": "The index->value conversion (domainLabelForScene) is the...",
+		"choices": [
+			"Reverse hash",
+			"Forward map",
+			"Clamp",
+			"Inverse map"
+		],
+		"answer": 1,
+		"explain": "Forward: index in, value out."
+	},
+	{
+		"q": "Inverse map formula i = round((v - min)/(max - min) * (n - 1)). The round() is there to...",
+		"choices": [
+			"Speed it up",
+			"Avoid negatives",
+			"Snap an in-between value to the nearest existing scene",
+			"Cap the index at 10"
+		],
+		"answer": 2,
+		"explain": "Requested values between scenes resolve to the nearest real one."
+	},
+	{
+		"q": "Domain [2000, 2024], 25 scenes. The index for value 2012 is...",
+		"choices": [
+			"6",
+			"11",
+			"12",
+			"24"
+		],
+		"answer": 2,
+		"explain": "round(12/24 * 24) = 12."
+	},
+	{
+		"q": "Domain [2000, 2024], 25 scenes. The index for value 2000 is...",
+		"choices": [
+			"12",
+			"0",
+			"24",
+			"1"
+		],
+		"answer": 1,
+		"explain": "round(0) = 0, the first scene."
+	},
+	{
+		"q": "Domain [2000, 2024], 25 scenes. The index for value 2024 is...",
+		"choices": [
+			"12",
+			"24",
+			"23",
+			"25"
+		],
+		"answer": 1,
+		"explain": "round(24/24 * 24) = 24, the last of 25 (0..24)."
+	},
+	{
+		"q": "Domain [2000, 2024], 25 scenes. The index for value 2006 is...",
+		"choices": [
+			"12",
+			"6",
+			"9",
+			"3"
+		],
+		"answer": 1,
+		"explain": "round(6/24 * 24) = 6."
+	},
+	{
+		"q": "Domain [0, 10], 11 scenes. The index for value 5 is...",
+		"choices": [
+			"6",
+			"4",
+			"5",
+			"10"
+		],
+		"answer": 2,
+		"explain": "round(5/10 * 10) = 5."
+	},
+	{
+		"q": "Domain [2000, 2024], 13 scenes (every 2 years). The index for 2012 is...",
+		"choices": [
+			"12",
+			"3",
+			"8",
+			"6"
+		],
+		"answer": 3,
+		"explain": "round(12/24 * 12) = 6."
+	},
+	{
+		"q": "Forward map, domain [2000,2024], 25 scenes: index 6 gives value...",
+		"choices": [
+			"2006",
+			"2009",
+			"2003",
+			"2012"
+		],
+		"answer": 0,
+		"explain": "2000 + 6*(24/24) = 2006."
+	},
+	{
+		"q": "Forward map, domain [2000,2024], 25 scenes: index 12 gives value...",
+		"choices": [
+			"2018",
+			"2024",
+			"2012",
+			"2006"
+		],
+		"answer": 2,
+		"explain": "2000 + 12 = 2012."
+	},
+	{
+		"q": "Why must forward and inverse maps be exact inverses?",
+		"choices": [
+			"So a button labelled 2006 actually selects the 2006 scene",
+			"To avoid rounding",
+			"To support LOD",
+			"For speed"
+		],
+		"answer": 0,
+		"explain": "If they disagree, the label misrepresents the chosen scene."
+	},
+	{
+		"q": "The picker labels its buttons using which direction?",
+		"choices": [
+			"Forward (index->value)",
+			"Neither",
+			"A separate lookup table",
+			"Inverse (value->index)"
+		],
+		"answer": 0,
+		"explain": "It turns each index into its display value."
+	},
+	{
+		"q": "The selection resolves a clicked value using which direction?",
+		"choices": [
+			"Identity",
+			"Inverse (value->index)",
+			"Random",
+			"Forward"
+		],
+		"answer": 1,
+		"explain": "It converts the requested value to a scene index."
+	},
+	{
+		"q": "domainLabelForScene with totalScenes = 1 avoids division by zero by...",
+		"choices": [
+			"Using Math.max(totalScenes - 1, 1) in the denominator",
+			"Skipping the label",
+			"Returning min always",
+			"Throwing"
+		],
+		"answer": 0,
+		"explain": "The max() guards the (n-1) denominator."
+	},
+	{
+		"q": "Which components share domainLabelForScene?",
+		"choices": [
+			"SceneNav, the comparative picker, and the floating 3D labels",
+			"DataRepMesh and PanelPlane",
+			"Only the picker",
+			"Only SceneNav"
+		],
+		"answer": 0,
+		"explain": "One helper keeps the displayed value consistent everywhere."
+	},
+	{
+		"q": "A benefit of selecting by value rather than index is...",
+		"choices": [
+			"Fewer files",
+			"Smaller datareps",
+			"It survives the data being regenerated at a different resolution",
+			"Faster rendering"
+		],
+		"answer": 2,
+		"explain": "The index is recomputed from n, so the value still resolves."
+	},
+	{
+		"q": "If a requested value lies exactly between two scenes, the inverse map...",
+		"choices": [
+			"Returns both",
+			"Returns -1",
+			"Errors",
+			"Rounds to the nearest of the two"
+		],
+		"answer": 3,
+		"explain": "round() picks the closer scene."
+	},
+	{
+		"q": "The map between value and index is...",
+		"choices": [
+			"Exponential",
+			"Logarithmic",
+			"Stepwise random",
+			"Linear"
+		],
+		"answer": 3,
+		"explain": "A single linear relation, used in both directions."
+	},
+	{
+		"q": "Narrative uses which direction of the map (if any)?",
+		"choices": [
+			"Inverse only",
+			"Neither, ever",
+			"Both",
+			"Forward only, and only for the counter when no labels exist"
+		],
+		"answer": 3,
+		"explain": "The counter readout uses the forward map; selection is positional, not the inverse."
+	},
+	{
+		"q": "Which is TRUE about the inverse map?",
+		"choices": [
+			"It is the same as domainLabelForScene",
+			"It runs on the server",
+			"It lives in useComparativeSelection",
+			"It is used in narrative selection"
+		],
+		"answer": 2,
+		"explain": "Only comparative selection needs value->index."
+	},
+	{
+		"q": "specs has selection [2000, 2006, 2009]. allowedScenes becomes...",
+		"choices": [
+			"[0, 1]",
+			"all scenes",
+			"the resolved indices (the comparison is locked)",
+			"null (any scene allowed)"
+		],
+		"answer": 2,
+		"explain": "An explicit selection both seeds and locks the set."
+	},
+	{
+		"q": "specs has no valid selection. The selection falls back to...",
+		"choices": [
+			"All scenes",
+			"A random pair",
+			"The first two scenes, indices [0, 1]",
+			"The last scene"
+		],
+		"answer": 2,
+		"explain": "No selection => default to [0, 1], allowedScenes stays null."
+	},
+	{
+		"q": "With allowedScenes = null, toggling a scene is...",
+		"choices": [
+			"Disabled",
+			"Limited to two",
+			"Blocked",
+			"Allowed for any scene"
+		],
+		"answer": 3,
+		"explain": "null means every scene can be toggled."
+	},
+	{
+		"q": "The comparative invariant is: a selected scene can be removed only while...",
+		"choices": [
+			"the domain is set",
+			"the timer is paused",
+			"more than one remains",
+			"fewer than 5 are shown"
+		],
+		"answer": 2,
+		"explain": "It can never collapse to an empty stage."
+	},
+	{
+		"q": "Selected indices are kept...",
+		"choices": [
+			"In click order",
+			"Randomised",
+			"Reversed",
+			"Sorted, so scenes appear in domain order"
+		],
+		"answer": 3,
+		"explain": "Sorting keeps display order independent of click sequence."
+	},
+	{
+		"q": "The merged comparative data is computed...",
+		"choices": [
+			"Never",
+			"On the server",
+			"During render, every frame",
+			"Once in a useMemo when inputs change"
+		],
+		"answer": 3,
+		"explain": "Single source of derived state; the canvas gets a ready array."
+	},
+	{
+		"q": "Which function builds the comparative DataRep[][]?",
+		"choices": [
+			"mergeMultipleScenesWithStage",
+			"mergeSceneWithStage",
+			"domainLabelForScene",
+			"classifyRep"
+		],
+		"answer": 0,
+		"explain": "It maps each selected index through mergeSceneWithStage."
+	},
+	{
+		"q": "Each merged comparative scene contains...",
+		"choices": [
+			"Only the stage",
+			"Only its data points",
+			"Its data points plus the persistent stage",
+			"All other scenes too"
+		],
+		"answer": 2,
+		"explain": "Stage scaffolding is carried into every scene."
+	},
+	{
+		"q": "Always being able to ADD a scene but only REMOVE while >1 remains prevents...",
+		"choices": [
+			"Slow rendering",
+			"Out-of-order labels",
+			"An empty comparison",
+			"Duplicate scenes"
+		],
+		"answer": 2,
+		"explain": "Guarantees at least one scene is always shown."
+	},
+	{
+		"q": "When specs lock the set, arbitrary scenes...",
+		"choices": [
+			"Replace the stage",
+			"Cannot be added (toggles restricted to allowedScenes)",
+			"Are added automatically",
+			"Can still be added"
+		],
+		"answer": 1,
+		"explain": "allowedScenes restricts toggling to the configured subset."
+	},
+	{
+		"q": "The canvas in comparative receives...",
+		"choices": [
+			"Just the indices",
+			"The raw vizData",
+			"Only specs",
+			"The precomputed merged DataRep[][]"
+		],
+		"answer": 3,
+		"explain": "It never touches raw data; it gets the derived array."
+	},
+	{
+		"q": "Why precompute the merge in a useMemo rather than in render?",
+		"choices": [
+			"So it only runs when inputs change and every consumer sees the same result",
+			"To avoid imports",
+			"To support narrative",
+			"To shrink the bundle"
+		],
+		"answer": 0,
+		"explain": "Derived-state-once principle."
+	},
+	{
+		"q": "If the picker is 'locked', that corresponds to allowedScenes being...",
+		"choices": [
+			"a non-null array",
+			"an empty array",
+			"undefined",
+			"null"
+		],
+		"answer": 0,
+		"explain": "A concrete set means the comparison is fixed."
+	},
+	{
+		"q": "Removing the last-but-one selected scene is...",
+		"choices": [
+			"Switches to animated",
+			"Allowed (drops to one)",
+			"Blocked once only one would remain",
+			"Allowed (drops to zero)"
+		],
+		"answer": 2,
+		"explain": "You can drop to one, never to zero."
+	},
+	{
+		"q": "Comparative selection state is recomputed when...",
+		"choices": [
+			"A panel loads",
+			"Every frame",
+			"The camera moves",
+			"vizData or specs change"
+		],
+		"answer": 3,
+		"explain": "It is derived from the data and the spec."
+	},
+	{
+		"q": "Default comparative column count for n scenes is...",
+		"choices": [
+			"n",
+			"ceil(sqrt(n))",
+			"always 2",
+			"floor(n/2)"
+		],
+		"answer": 1,
+		"explain": "Near-square grid unless columns is set in specs."
+	},
+	{
+		"q": "5 selected scenes, no columns set. Number of columns is...",
+		"choices": [
+			"5",
+			"2",
+			"4",
+			"3"
+		],
+		"answer": 3,
+		"explain": "ceil(sqrt(5)) = 3."
+	},
+	{
+		"q": "5 scenes, 3 columns. Number of rows is...",
+		"choices": [
+			"5",
+			"3",
+			"1",
+			"2"
+		],
+		"answer": 3,
+		"explain": "ceil(5/3) = 2."
+	},
+	{
+		"q": "9 selected scenes, no columns set. Columns is...",
+		"choices": [
+			"2",
+			"4",
+			"3",
+			"9"
+		],
+		"answer": 2,
+		"explain": "ceil(sqrt(9)) = 3."
+	},
+	{
+		"q": "4 scenes, no columns set. The grid is...",
+		"choices": [
+			"3 x 2",
+			"4 x 1",
+			"2 x 2",
+			"1 x 4"
+		],
+		"answer": 2,
+		"explain": "ceil(sqrt(4)) = 2 cols, ceil(4/2) = 2 rows."
+	},
+	{
+		"q": "Scene at flat index i, with cols columns, sits at column...",
+		"choices": [
+			"i % cols",
+			"floor(i / cols)",
+			"cols - i",
+			"i * cols"
+		],
+		"answer": 0,
+		"explain": "col = i mod cols, row = floor(i / cols)."
+	},
+	{
+		"q": "Scene at flat index i sits at row...",
+		"choices": [
+			"floor(i / cols)",
+			"i - cols",
+			"cols % i",
+			"i % cols"
+		],
+		"answer": 0,
+		"explain": "row = floor(i / cols)."
+	},
+	{
+		"q": "A scene's x position is col*gap.x - totalWidth/2. The subtraction...",
+		"choices": [
+			"rotates it",
+			"scales the scene",
+			"hides it",
+			"centers the grid on the origin"
+		],
+		"answer": 3,
+		"explain": "Shifting by half the span centers the whole grid."
+	},
+	{
+		"q": "Which gap component spaces the COLUMNS?",
+		"choices": [
+			"gap.w",
+			"gap.y",
+			"gap.z",
+			"gap.x"
+		],
+		"answer": 3,
+		"explain": "x spaces columns, z spaces rows."
+	},
+	{
+		"q": "Which gap component spaces the ROWS (depth)?",
+		"choices": [
+			"gap.z",
+			"gap.y",
+			"none",
+			"gap.x"
+		],
+		"answer": 0,
+		"explain": "z drives row separation."
+	},
+	{
+		"q": "What is gap.y used for in current comparative layouts?",
+		"choices": [
+			"Nothing yet (0); reserved for LOD stacking",
+			"Row spacing",
+			"Column spacing",
+			"Label height"
+		],
+		"answer": 0,
+		"explain": "Vertical offset is reserved for LOD and is zero now."
+	},
+	{
+		"q": "Each comparative cell gets a year label via...",
+		"choices": [
+			"Console output",
+			"A baked PNG",
+			"The schema",
+			"A 3D-positioned HTML overlay"
+		],
+		"answer": 3,
+		"explain": "An HTML label floats above each cell, readable from any angle."
+	},
+	{
+		"q": "The grid stays centered as scenes are added/removed because...",
+		"choices": [
+			"Centering is recomputed over the whole grid each time",
+			"gap.y adjusts",
+			"The camera follows it",
+			"It is fixed at the origin regardless"
+		],
+		"answer": 0,
+		"explain": "Total width/depth is recomputed, keeping framing symmetric."
+	},
+	{
+		"q": "Overriding the grid shape is done with...",
+		"choices": [
+			"gap.y",
+			"config.plot",
+			"the domain",
+			"specs.sequence.columns"
+		],
+		"answer": 3,
+		"explain": "columns sets the column count; rows follow."
+	},
+	{
+		"q": "Comparative reuses which canvas?",
+		"choices": [
+			"A 2D canvas",
+			"The Blender exporter",
+			"The same DataVizCanvas, via ComparativeContent",
+			"A second dedicated canvas"
+		],
+		"answer": 2,
+		"explain": "Same canvas; ComparativeContent lays scenes out inside it."
+	},
+	{
+		"q": "The big payoff of the grid math is...",
+		"choices": [
+			"Any scene count becomes a centered, readable grid with no per-sample tuning",
+			"Faster shaders",
+			"Smaller files",
+			"Fewer panels"
+		],
+		"answer": 0,
+		"explain": "It generalises to any number of scenes automatically."
+	},
+	{
+		"q": "LOD is intended to swap detail based on...",
+		"choices": [
+			"Time",
+			"The viewer's physical proximity to the data stage (AR)",
+			"Color",
+			"Scene count"
+		],
+		"answer": 1,
+		"explain": "Closer viewer => richer scene, meaningful in AR."
+	},
+	{
+		"q": "Why is LOD hard to trigger in a browser?",
+		"choices": [
+			"WebGL forbids it",
+			"React cannot re-render",
+			"There is no natural proximity signal like in AR",
+			"The schema blocks it"
+		],
+		"answer": 2,
+		"explain": "A browser lacks the physical-approach trigger; orbit distance could substitute but is not wired up."
+	},
+	{
+		"q": "In the schema, LOD is...",
+		"choices": [
+			"Absent",
+			"An alias for animated",
+			"A panel type",
+			"A valid arrangement value"
+		],
+		"answer": 3,
+		"explain": "It is defined as a valid mode; only the implementation is missing."
+	},
+	{
+		"q": "Which reserved field hints at the unbuilt LOD feature?",
+		"choices": [
+			"domain",
+			"gap.y (vertical stacking)",
+			"columns",
+			"gap.x"
+		],
+		"answer": 1,
+		"explain": "The gap vector's y component is reserved for LOD."
+	},
+	{
+		"q": "Choosing LOD in the current viewer results in...",
+		"choices": [
+			"Comparative layout",
+			"A crash",
+			"The path stopping at the fork (not implemented)",
+			"Stacked detail levels"
+		],
+		"answer": 2,
+		"explain": "No implementation; nothing mode-specific runs."
+	}
+]

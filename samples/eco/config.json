@@ -16,18 +16,21 @@
       2000,
       2024
     ],
-    "arrangement": "narrative",
+    "arrangement": "comparative",
     "selection": [
       2000,
+      2001,
       2006,
-      2009
+      2009,
+      2010,
+      2015
     ],
     "gap": [
-      0,
-      0,
-      2
+      2,
+      2,
+      0
     ],
-    "columns": 1
+    "columns": 2
   },
   "assetURL": "$SERVER/run/vis/",
   "output": "datareps.json",
@@ -64,7 +67,7 @@
   "panels": [
     "XY",
     "-XY",
-    "ZY",
+    "Zs",
     "-ZY",
     "XZ",
     "LC=_"

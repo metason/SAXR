@@ -100,7 +100,7 @@ function ComparativeContent({
 					<group key={i} position={[x, y, z]}>
 						<SceneContent scene={scene} />
 						{labels?.[i] && (
-							<Html center position={[0, LABEL_Y_LIFT, 0]}>
+							<Html center position={[0, LABEL_Y_LIFT, 0]} zIndexRange={[9, 0]}>
 								<div
 									style={{
 										color: 'white',

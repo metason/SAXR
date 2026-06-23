@@ -16,6 +16,8 @@ import Ajv2020, {
 } from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { parseTree, findNodeAtLocation, type Node } from 'jsonc-parser';
+import type { RunResult, TraceStep, AjvErrorLite } from '@/lib/showcaseTrace';
+import { instancePathToSegments, offsetToPosition } from '@/lib/tokenResolution';
 
 /**
  * Lazily loaded Monaco editor component.
@@ -36,7 +38,15 @@ const MonacoEditor = dynamic(
 
 interface EditorPanelProps {
 	assetBasePath: string;
-	onRun: (configText: string) => Promise<string | null>;
+	onRun: (configText: string) => Promise<RunResult>;
+	/** Reports live + run traces up so the parent can drive the diagram. */
+	onTrace: (s: {
+		clientTrace: TraceStep[];
+		runTrace: TraceStep[];
+		isRunning: boolean;
+		ajvErrors: AjvErrorLite[];
+		configText: string;
+	}) => void;
 }
 
 /**
@@ -48,43 +58,6 @@ const SCHEMA_URL = '/api/schema/config';
 // Direct metason URL — usable only once /saxr/schemas/* serves
 // `Access-Control-Allow-Origin: *`:
 // const SCHEMA_URL = 'https://service.metason.net/saxr/schemas/config.json';
-
-/**
- * Convert an AJV instancePath (RFC 6901 JSON Pointer) into a path array
- * suitable for jsonc-parser's findNodeAtLocation.
- */
-function instancePathToSegments(instancePath: string): (string | number)[] {
-	if (!instancePath) return [];
-	return instancePath
-		.split('/')
-		.slice(1)
-		.map((seg) => {
-			const decoded = seg.replace(/~1/g, '/').replace(/~0/g, '~');
-			return /^\d+$/.test(decoded) ? Number(decoded) : decoded;
-		});
-}
-
-/**
- * Convert a character offset in `text` to a Monaco {line, column} position.
- * Both line and column are 1-based, matching Monaco's API.
- */
-function offsetToPosition(
-	text: string,
-	offset: number,
-): { line: number; column: number } {
-	let line = 1;
-	let column = 1;
-	const limit = Math.min(offset, text.length);
-	for (let i = 0; i < limit; i++) {
-		if (text.charCodeAt(i) === 10) {
-			line++;
-			column = 1;
-		} else {
-			column++;
-		}
-	}
-	return { line, column };
-}
 
 /**
  * Convert AJV errors to Monaco markers using a real JSON parse tree
@@ -131,6 +104,7 @@ function toMarkers(errors: ErrorObject[], text: string, monaco: any): any[] {
 export default function EditorPanel({
 	assetBasePath,
 	onRun,
+	onTrace,
 }: EditorPanelProps) {
 	const [specsText, setSpecsText] = useState('');
 	const [hasError, setHasError] = useState(false);
@@ -140,6 +114,12 @@ export default function EditorPanel({
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const [editorReady, setEditorReady] = useState(false);
 	const [validatorReady, setValidatorReady] = useState(false);
+	// Checkpoints 1+2 — live client validation (AJV + Monaco), updated per keystroke.
+	const [clientTrace, setClientTrace] = useState<TraceStep[]>([]);
+	// Checkpoint 3 + output — server round-trip, set on each Run.
+	const [runTrace, setRunTrace] = useState<TraceStep[]>([]);
+	// Real AJV errors from the latest validation, for the AJV explainer.
+	const [ajvErrors, setAjvErrors] = useState<AjvErrorLite[]>([]);
 	const monacoRef = useRef<any>(null);
 	const editorRef = useRef<any>(null);
 	const validateFnRef = useRef<ValidateFunction | null>(null);
@@ -199,18 +179,75 @@ export default function EditorPanel({
 			if (!validate) {
 				monaco.editor.setModelMarkers(model, 'ajv', []);
 				setSchemaError(false);
+				setAjvErrors([]);
+				setClientTrace([
+					{ label: 'JSON syntax valid', level: 'success', stage: 'client' },
+					{
+						label: 'Schema unavailable',
+						detail: 'Live validation disabled',
+						level: 'detail',
+						stage: 'client',
+					},
+				]);
 				return;
 			}
 			const valid = validate(parsed);
-			const markers = valid
-				? []
-				: toMarkers(validate.errors ?? [], value, monaco);
+			const errors = validate.errors ?? [];
+			const markers = valid ? [] : toMarkers(errors, value, monaco);
 			monaco.editor.setModelMarkers(model, 'ajv', markers);
 			setSchemaError(!valid);
+			setAjvErrors(
+				errors.map((e) => ({
+					instancePath: e.instancePath,
+					keyword: e.keyword,
+					message: e.message,
+					params: e.params as Record<string, unknown>,
+				})),
+			);
+			setClientTrace([
+				{ label: 'JSON syntax valid', level: 'success', stage: 'client', node: 'monaco' },
+				valid
+					? {
+							label: 'AJV: valid against config schema',
+							detail: 'Run enabled',
+							level: 'success',
+							stage: 'client',
+							node: 'ajv-client',
+						}
+					: {
+							label: `AJV: ${errors.length} schema error${errors.length === 1 ? '' : 's'} → Run disabled`,
+							detail: errors
+								.slice(0, 4)
+								.map((e) => `${e.instancePath || '(root)'}: ${e.message}`)
+								.join('\n'),
+							level: 'error',
+							stage: 'client',
+							node: 'ajv-client',
+						},
+				{
+					label: 'jsonc-parser → Monaco markers',
+					detail: valid
+						? 'No squiggles'
+						: `${markers.length} squiggle${markers.length === 1 ? '' : 's'} placed on the exact offending token`,
+					level: 'detail',
+					stage: 'client',
+					node: 'jsonc',
+				},
+			]);
 		} catch {
 			setHasError(true);
 			setSchemaError(false);
+			setAjvErrors([]);
 			monaco.editor.setModelMarkers(model, 'ajv', []);
+			setClientTrace([
+				{
+					label: 'JSON.parse() failed → Run disabled',
+					detail: 'Not valid JSON syntax — AJV never runs',
+					level: 'error',
+					stage: 'client',
+					node: 'monaco',
+				},
+			]);
 		}
 	};
 
@@ -222,8 +259,35 @@ export default function EditorPanel({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editorReady, specsText, validatorReady]);
 
+	// Push the live + run traces up so the parent can drive the diagram window.
+	useEffect(() => {
+		onTrace({ clientTrace, runTrace, isRunning, ajvErrors, configText: specsText });
+	}, [clientTrace, runTrace, isRunning, ajvErrors, specsText, onTrace]);
+
+	const handleRun = async () => {
+		setIsRunning(true);
+		setRunError(null);
+		// Seed the walkthrough with the client-side POST step before awaiting.
+		const posting: TraceStep = {
+			label: 'POST /api/run-pipeline',
+			detail: `{ slug, configText } · ${specsText.length} chars`,
+			level: 'pending',
+			stage: 'client',
+		};
+		setRunTrace([posting]);
+		const { error, trace } = await onRun(specsText);
+		setIsRunning(false);
+		setRunTrace([{ ...posting, level: 'success' }, ...trace]);
+		if (error) setRunError(error);
+	};
+
 	return (
-		<div className="h-full w-full flex flex-col">
+		<div className="h-full w-full flex flex-col bg-[#1e1e1e]">
+			{/* Header */}
+			<div className="flex items-center px-3 py-1.5 border-b border-white/10 bg-black/40">
+				<span className="text-xs text-white/50 font-mono">config.json</span>
+			</div>
+
 			<div className="flex-1 min-h-0">
 				<MonacoEditor
 					key={assetBasePath}
@@ -244,14 +308,8 @@ export default function EditorPanel({
 			</div>
 
 			<button
-				className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-				onClick={async () => {
-					setIsRunning(true);
-					setRunError(null);
-					const error = await onRun(specsText);
-					setIsRunning(false);
-					if (error) setRunError(error);
-				}}
+				className="mt-2 mx-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+				onClick={handleRun}
 				disabled={hasError || schemaError || isRunning}
 			>
 				{isRunning ? 'Running…' : 'Run'}
