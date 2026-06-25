@@ -34,6 +34,7 @@ namespace SAXR
         private Button _playPauseBtn;
         private Text _playPauseText;
         private List<Button> _labelButtons = new List<Button>();
+        private List<int> _labelSceneIndices = new List<int>(); // scene index each label button targets
 
         // Comparative mode state
         private List<int> _comparativeSceneIndices = new List<int>(); // all available indices
@@ -87,8 +88,9 @@ namespace SAXR
             // Highlight active label button (narrative mode)
             for (int i = 0; i < _labelButtons.Count; i++)
             {
+                bool active = i < _labelSceneIndices.Count && _labelSceneIndices[i] == _loader.selectedScene;
                 var colors = _labelButtons[i].colors;
-                colors.normalColor = (i == _loader.selectedScene) ? BtnActive : BtnNormal;
+                colors.normalColor = active ? BtnActive : BtnNormal;
                 _labelButtons[i].colors = colors;
             }
 
@@ -189,12 +191,19 @@ namespace SAXR
             {
                 var labelsRow = CreateBar(container, "LabelsRow");
                 _labelButtons.Clear();
+                _labelSceneIndices.Clear();
+
+                // Scenes are generated one per domain step, so a label's selection value
+                // (e.g. a year) must be projected onto a scene index — not used directly.
+                // Reuse the same selection→index mapping comparative mode already applies.
+                _loader.ComputeInitialComparativeSelection();
+                var selectionIndices = _loader.ComparativeSelectedScenes;
 
                 for (int i = 0; i < seq.labels.Length; i++)
                 {
-                    int sceneIdx = i; // capture for closure
-                    var btn = CreateButton(labelsRow, seq.labels[i], () => _loader.ShowScene(sceneIdx));
-                    _labelButtons.Add(btn);
+                    int sceneIdx = (i < selectionIndices.Count) ? selectionIndices[i] : i;
+                    _labelButtons.Add(CreateButton(labelsRow, seq.labels[i], () => _loader.ShowScene(sceneIdx)));
+                    _labelSceneIndices.Add(sceneIdx);
                 }
             }
 
@@ -221,6 +230,7 @@ namespace SAXR
         private void DestroyUI()
         {
             _labelButtons.Clear();
+            _labelSceneIndices.Clear();
             _comparativeButtons.Clear();
             _comparativeSceneIndices.Clear();
             _comparativeSelected.Clear();
