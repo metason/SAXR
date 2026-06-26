@@ -12,25 +12,16 @@
   },
   "sequence": {
     "field": "year",
+    "arrangement": "animated",
     "domain": [
       2000,
-      2024
+      2020
     ],
-    "arrangement": "comparative",
     "selection": [
       2000,
-      2001,
-      2006,
-      2009,
       2010,
-      2015
-    ],
-    "gap": [
-      2,
-      2,
-      0
-    ],
-    "columns": 2
+      2020
+    ]
   },
   "assetURL": "$SERVER/run/vis/",
   "output": "datareps.json",

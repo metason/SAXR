@@ -274,8 +274,9 @@ class DataRepGenerator:
         idx = enc['scale']['domain'].index(val)
         return enc['scale']['range'][idx]
 
-    def resolve_shape(self, row, default: str = 'sphere') -> str:
+    def resolve_shape(self, row, default: str | None = None) -> str:
         """Resolve the shape channel for *row* from encoding or direct value."""
+        fallback = default if default is not None else self.mark
         if 'shape' in self.encoding:
             if 'value' in self.encoding['shape']:
                 return self.encoding['shape']['value']
@@ -283,10 +284,10 @@ class DataRepGenerator:
             if 'scale' in self.encoding['shape']:
                 idx = self.encoding['shape']['scale']['domain'].index(val)
                 return self.encoding['shape']['scale']['range'][idx]
-            return default
+            return fallback
         if 'shape' in row:
             return row['shape']
-        return default
+        return fallback
 
     def exportLegend(self, legend, filename: str = "legend.png"):
         """Save a Matplotlib legend as a transparent PNG and return its bbox."""

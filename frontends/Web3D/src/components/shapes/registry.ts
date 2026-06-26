@@ -19,6 +19,8 @@ import ShapeArc from './Arc';
 import ShapeSurface from './Surface';
 import ShapeLine from './Line';
 import ShapeArea from './Area';
+import ShapeTorus from './Torus';
+//import ShapeTorus from './Torus';
 
 export interface ShapeProps {
 	rep: DataRep;
@@ -42,6 +44,7 @@ export const SHAPE_REGISTRY: Record<string, ComponentType<ShapeProps>> = {
 	surface: ShapeSurface,
 	line: ShapeLine,
 	area: ShapeArea,
+	//torus: ShapeTorus,
 };
 
 // Pyramid-down is the same component with an extra prop.
