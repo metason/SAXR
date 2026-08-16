@@ -288,7 +288,7 @@ The presentation of SAXR data reps is supported by:
 
 ## Paper
 
-A paper on SAXR will be published and presented at [XR Salento 2026](https://www.xrsalento.it) conference.
+A paper on SAXR has been published and presented at [XR Salento 2026](https://www.xrsalento.it) conference.
 
 
 Please cite our work if you use SAXR.
@@ -298,10 +298,10 @@ Please cite our work if you use SAXR.
   author={Ackermann, Philipp},
   booktitle={Extended Reality, International Conference, XR Salento 2026}, 
   title={SAXR: Situated Analytics in eXtended Reality}, 
-  pages={?-?},
+  pages={32-49},
   year={2026},
-  publisher = {Springer},
-  doi={???}
+  publisher = {Springer Nature Switzerland},
+  doi={10.1007/978-3-032-33500-5_3}
 }
 ```
 
